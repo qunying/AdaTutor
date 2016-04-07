@@ -1,0 +1,198 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='More Records and Types' href='index.html' />
+<link rel='prev' title='Controlled Types' href='ctrl-type.html' />
+<link rel='next' title='Advanced Topics' href='../advanced/index.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, fixed point, modular, universal type">
+
+<title>AdaTutor - Fixed Point, Modular, and Universal Types</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="ctrl-type.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="../advanced/index.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Fixed Point, Modular, and Universal Types</h2>
+<p>The only fixed point type defined in package Standard is Duration.&nbsp;
+However, Ada lets us define our own fixed point types.&nbsp;  We specify the
+accuracy with the reserved word delta, and a range constraint is required.&nbsp;
+For example,
+<pre class="hl">   <span class="hl kwa">type</span> Voltage <span class="hl kwa">is delta</span> <span class="hl num">0.01</span> <span class="hl kwa">range</span> <span class="hl opt">-</span><span class="hl num">20.0</span> <span class="hl opt">..</span> <span class="hl num">20.0</span><span class="hl opt">;</span>
+</pre>
+</p>
+           
+<p>This guarantees that the objects of type Voltage will be represented with at
+least an accuracy of 1/100.&nbsp;  Since the computer is binary, Ada will choose
+an internal representation at least as accurate as 1/128.&nbsp;  It might use
+even greater accuracy, for example, 1/256.&nbsp;  In any event, it's guaranteed
+that the accuracy is at least as good as that requested.</p>
+
+<p>It's possible to make a request that a particular implementation of Ada can't
+handle.&nbsp;  For example, if we write
+<pre class="hl">   <span class="hl kwa">type</span> Voltage <span class="hl kwa">is delta</span> <span class="hl num">1.0E-10</span> <span class="hl kwa">range</span> <span class="hl num">0.0</span> <span class="hl opt">..</span> <span class="hl num">1.0E9</span><span class="hl opt">;</span>
+</pre>
+the Ada compiler that we're using may have to report that it has no internal
+representation that satisfies this requirement.&nbsp;  (Almost any <b>delta</b>
+would be unreasonable if Ada didn't require range constraints on all fixed point
+types.)</p>
+
+<p>The set of numbers that can be represented exactly by any implementation of
+Ada that accepts a type definition like the above is called the <b>model
+numbers</b> of that type.&nbsp;  This applies to floating types as well as
+fixed, for example,
+<pre class="hl">   <span class="hl kwa">type</span> W <span class="hl kwa">is digits</span> <span class="hl num">5</span> <span class="hl kwa">range</span> <span class="hl num">0.0</span> <span class="hl opt">..</span> <span class="hl num">100.0</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>A particular implementation may represent additional numbers exactly; these
+are called <b>safe numbers</b>.&nbsp;  The safe numbers are a superset of the
+model numbers; their range usually is a little larger.</p>
+
+<p>We can add and subtract objects of a fixed point type.&nbsp;  However, if we
+multiply or divide them in Ada 83, we must immediately convert the result to the
+same or another numeric type before we can store it.&nbsp;  For example,
+<pre class="hl">   V1<span class="hl opt">,</span> V2<span class="hl opt">,</span> V3 <span class="hl opt">:</span> Voltage<span class="hl opt">;</span>
+   <span class="hl opt">...</span>
+   V1 <span class="hl opt">:=</span> V2<span class="hl opt">+</span>V3<span class="hl opt">;</span>  <span class="hl slc">-- legal</span>
+   V1 <span class="hl opt">:=</span> V2<span class="hl opt">*</span>V3<span class="hl opt">;</span>  <span class="hl slc">-- illegal in Ada 83, legal in Ada 95</span>
+   V1 <span class="hl opt">:=</span> Voltage<span class="hl opt">(</span>V2<span class="hl opt">*</span>V3<span class="hl opt">);</span>  <span class="hl slc">-- legal</span>
+</pre>
+</p>
+
+<P>In Ada 95, we can multiply two numbers of a fixed point type without an
+explicit type conversion if the type of the multiply is uniquely
+determined.&nbsp; In the previous example, the multiplication is legal in Ada 95
+because storing the result into V1 uniquely determines the type of the product
+of V2 and V3.</p>
+
+<p>Note that <b>V1 := V1*V2*V3</b> is illegal even in Ada 95, because the
+intermediate result has no uniquely determined type.</p>
+
+<p>Also note that if we have <b>procedure Display(V : in Voltage);</b> then in
+Ada 95 we can write
+<pre class="hl">   Display<span class="hl opt">(</span>V2<span class="hl opt">*</span>V3<span class="hl opt">);</span>
+</pre>
+because the type of V2*V3 is uniquely determined by the procedure call.</p>
+
+<p>Ada.Text_IO contains a generic package Fixed_IO for I/O of fixed point types.</p>
+
+<p>Ada 95 also provides <b>modular types</b>.&nbsp; These are unsigned integers,
+and the arithmetic is performed modulo a specified number so that overflow can
+never occur.&nbsp;  For example, in Ada 95 we can write:
+<pre class="hl">   <span class="hl kwa">type</span> Unsigned_Byte <span class="hl kwa">is mod</span> <span class="hl num">256</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>The modulus doesn't have to be a power of two, but it often is.&nbsp;  If we
+now declare <b>A : Unsigned_Byte := 100;</b> and <b>B : Unsigned_Byte
+:= 200;</b> then the result of <b>A + B</b> will be 300 mod 256, or 44.</p>
+
+<p>In Ada 95, the package <b>Interfaces</b> is supplied, and it defines a
+modular type for each signed integer type.&nbsp;  For example, an implementation
+of Ada 95 might define the types <b>Unsigned_8</b>, <b>Unsigned_16</b>, and
+<b>Unsigned_32</b>.&nbsp;  Type <b>Unsigned_8</b> corresponds to the example
+<b>Unsigned_Byte</b> above.</p>
+
+<p>When we declare a variable in Ada, we give its type.&nbsp;  But when we
+declare a constant, we may or may not give its type.&nbsp;  For example,
+<pre class="hl">   L  <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl kwb">Integer</span> <span class="hl opt">:=</span> <span class="hl num">30</span><span class="hl opt">;</span>
+   M  <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> <span class="hl num">1000</span><span class="hl opt">;</span>
+   E  <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl kwb">Float</span> <span class="hl opt">:=</span> <span class="hl num">2.718281828</span><span class="hl opt">;</span>
+   Pi <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> <span class="hl num">3.141592654</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Also, when we write a number, such as 3.0 or 29_999, we usually don't qualify
+it with a type (for example, we usually don't write <b>Float'(3.0)</b>).</p>
+
+<p>Suppose an implementation of Ada provides types Integer, Long_Integer, Float,
+and Long_Float.&nbsp;  How can Ada determine the types of M, Pi, 3.0, and
+29_999?&nbsp;  M and 29_999 are said to be of type <b>universal_integer</b>;
+they can assume any integer type as required.&nbsp;  Pi and 3.0 are said to be
+of type <b>universal_real</b> and can assume any floating or fixed point type
+as required.</p>
+
+<p>We can't explicitly declare objects to be of universal types.&nbsp;  However,
+we can write
+<pre class="hl">   M  <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> <span class="hl num">1000</span><span class="hl opt">;</span>
+   Pi <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> <span class="hl num">3.141592654</span><span class="hl opt">;</span>
+   I  <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+   LI <span class="hl opt">:</span> <span class="hl kwb">Long_Integer</span><span class="hl opt">;</span>
+   F  <span class="hl opt">:</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+   LF <span class="hl opt">:</span> <span class="hl kwb">Long_Float</span><span class="hl opt">;</span>
+   <span class="hl opt">...</span>
+   I <span class="hl opt">:=</span> M<span class="hl opt">;</span>       LI <span class="hl opt">:=</span> M<span class="hl opt">;</span>
+   I <span class="hl opt">:=</span> <span class="hl num">29</span>_999<span class="hl opt">;</span>  LI <span class="hl opt">:=</span> <span class="hl num">29</span>_999<span class="hl opt">;</span>
+   F <span class="hl opt">:=</span> Pi<span class="hl opt">;</span>      LF <span class="hl opt">:=</span> Pi<span class="hl opt">;</span>
+   F <span class="hl opt">:=</span> <span class="hl num">3.0</span><span class="hl opt">;</span>     LF <span class="hl opt">:=</span> <span class="hl num">3.0</span><span class="hl opt">;</span>
+</pre>
+and in each case the constant assumes the correct type.&nbsp;  The result of
+multiplying or dividing two numbers of a fixed point type is said to be of type
+<b>universal_fixed</b>.&nbsp;  As we pointed out, this result must be converted
+to some numeric type before it can be stored.
+</p>
+
+<p>Most of the attributes that produce integer results, like <b>Pos</b>, are of
+type universal_integer.&nbsp;  For example, with the declarations above, we
+could write
+<pre class="hl">   I  <span class="hl opt">:=</span> <span class="hl kwb">Character</span><span class="hl kwd">'Pos</span><span class="hl opt">(</span><span class="hl str">'A'</span><span class="hl opt">);</span>
+   LI <span class="hl opt">:=</span> <span class="hl kwb">Character</span><span class="hl kwd">'Pos</span><span class="hl opt">(</span><span class="hl str">'A'</span><span class="hl opt">);</span>
+</pre>
+</p>
+
+<p><div class="adat-q">
+<h2>Question</h2>
+Which one of the following declarations is <b>illegal</b>?
+
+<ol>
+<li>
+<a href="javascript:adat_toggle('adat-fix-a1');"><span class="hl kwa">type</span> Rate <span class="hl kwa">is digits</span> <span class="hl num">6</span><span class="hl opt">;</span></a>
+<div id="adat-fix-a1" class="adat-a" style="display: none">No, number 1 is
+legal.&nbsp;  A user defined floating point type need not have a range
+constraint.</div>
+</li>
+
+<li>
+<a href="javascript:adat_toggle('adat-fix-a2');"><span class="hl kwa">type</span> Distance <span class="hl kwa">is digits</span> <span class="hl num">6</span> <span class="hl kwa">range</span> <span class="hl num">0.0</span> <span class="hl opt">..</span> <span class="hl num">1.0E6</span><span class="hl opt">;</span></a>
+<div id="adat-fix-a2" class="adat-a" style="display: none">No, number 2 is
+legal.&nbsp;  A user defined floating point type may have a range
+constraint.</div>
+</li>
+
+<li>
+<a href="javascript:adat_toggle('adat-fix-a3');"><span class="hl kwa">type</span> Current <span class="hl kwa">is delta</span> <span class="hl num">0.1</span><span class="hl opt">;</span></a>
+<div id="adat-fix-a3" class="adat-a" style="display: none"><b>You're
+right!</b>&nbsp;  A fixed point type declaration must have a range constraint.
+</div>
+</li>
+
+<li>
+<a href="javascript:adat_toggle('adat-fix-a4');"><span class="hl kwa">type</span> Temp <span class="hl kwa">is delta</span> <span class="hl num">0.05</span> <span class="hl kwa">range</span> <span class="hl opt">-</span><span class="hl num">200.0</span> <span class="hl opt">..</span> <span class="hl num">450.0</span><span class="hl opt">;</span></a>
+<div id="adat-fix-a4" class="adat-a" style="display: none">No, number 4 is
+legal.&nbsp;  A fixed point type declaration must have a range constraint.</div>
+</li>
+</ol>
+
+</div></p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

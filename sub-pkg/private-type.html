@@ -1,0 +1,286 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Subprograms and Packages' href='index.html' />
+<link rel='prev' title='Functions with Infix Notation' href='func-infix.html' />
+<link rel='next' title='Type Text and Limited Private Types' href='limited-type.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, private types">
+
+<title>AdaTutor - Information Hiding: Private Types</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="func-infix.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="limited-type.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Information Hiding: Private Types</h2>
+<p>Information hiding has nothing to do with secrecy; it means containing
+certain programming details to a package so that the parts of the program
+outside the package can't depend on them.&nbp;  Thus, when these details change,
+other parts of the program aren't affected.</p>
+
+<p>Let's write the specification (only) for a graphics CRT controller package
+without information hiding.&nbsp;  Then we'll improve on it by using a private
+type.</p>
+
+<p>The package will let us create arrays in memory representing screens.&nbsp;
+We can create as many of these &ldquo;virtual screens&rdquo; as we like, and
+draw dots, lines, and boxes on them in memory.&nbsp;  We can also display any
+virtual screen.&nbsp;  Here's the package specification:
+<pre class="hl"><span class="hl kwa">package</span> CRT_Controller <span class="hl kwa">is</span>
+   <span class="hl kwa">type</span> Color_Type  <span class="hl kwa">is</span> <span class="hl opt">(</span>White<span class="hl opt">,</span> Black<span class="hl opt">,</span> Red<span class="hl opt">,</span> Yellow<span class="hl opt">,</span> Green<span class="hl opt">,</span> Blue<span class="hl opt">);</span>
+   <span class="hl kwa">type</span> Screen_Type <span class="hl kwa">is array</span><span class="hl opt">(</span><span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">479</span><span class="hl opt">,</span> <span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">639</span><span class="hl opt">)</span> <span class="hl kwa">of</span> Color_Type<span class="hl opt">;</span>
+   <span class="hl kwa">type</span> Point <span class="hl kwa">is record</span>
+      Row    <span class="hl opt">:</span> <span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">479</span><span class="hl opt">;</span>
+      Column <span class="hl opt">:</span> <span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">639</span><span class="hl opt">;</span>
+   <span class="hl kwa">end record</span><span class="hl opt">;</span>
+   <span class="hl kwa">procedure</span> Display <span class="hl opt">(</span>Screen <span class="hl opt">:</span> <span class="hl kwa">in</span> Screen_Type<span class="hl opt">);</span>
+   <span class="hl kwa">procedure</span> Clear   <span class="hl opt">(</span>Screen <span class="hl opt">:</span> <span class="hl kwa">in out</span> Screen_Type<span class="hl opt">;</span>
+                      To     <span class="hl opt">:</span> <span class="hl kwa">in</span> Color_Type <span class="hl opt">:=</span> Black<span class="hl opt">);</span>
+   <span class="hl kwa">procedure</span> Dot     <span class="hl opt">(</span>Screen <span class="hl opt">:</span> <span class="hl kwa">in out</span> Screen_Type<span class="hl opt">;</span>
+                      Place  <span class="hl opt">:</span> <span class="hl kwa">in</span> Point<span class="hl opt">;</span>
+                      Color  <span class="hl opt">:</span> <span class="hl kwa">in</span> Color_Type<span class="hl opt">);</span>
+   <span class="hl kwa">procedure</span> Line    <span class="hl opt">(</span>Screen <span class="hl opt">:</span> <span class="hl kwa">in out</span> Screen_Type<span class="hl opt">;</span>
+                      From<span class="hl opt">,</span> To <span class="hl opt">:</span> <span class="hl kwa">in</span> Point<span class="hl opt">;</span>
+                      Color  <span class="hl opt">:</span> <span class="hl kwa">in</span> Color_Type<span class="hl opt">);</span>
+   <span class="hl kwa">procedure</span> Box     <span class="hl opt">(</span>Screen <span class="hl opt">:</span> <span class="hl kwa">in out</span> Screen_Type<span class="hl opt">;</span>
+                      Corner1<span class="hl opt">,</span> Corner2 <span class="hl opt">:</span> <span class="hl kwa">in</span> Point<span class="hl opt">;</span>
+                      Color  <span class="hl opt">:</span> <span class="hl kwa">in</span> Color_Type<span class="hl opt">);</span>
+<span class="hl kwa">end</span> CRT_Controller<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>This package assumes that the resolution of the CRT is 480 vertically by 640
+horizontally.&nbsp;  A screen is represented in memory by a two-dimensional
+array, each element of which contains one of six possible colors.&nbsp;
+Procedures to draw other figures (circles, etc.) could have been added to the
+package.</p>
+
+<p>That package specification makes the calling program very clear!&nbsp;  For
+example,
+<pre class="hl">   <span class="hl kwa">with</span> CRT_Controller<span class="hl opt">;</span> <span class="hl kwa">use</span> CRT_Controller<span class="hl opt">;</span>
+   <span class="hl kwa">procedure</span> CRT_Demo <span class="hl kwa">is</span>
+      S1<span class="hl opt">,</span> S2 <span class="hl opt">:</span> Screen_Type<span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      Clear<span class="hl opt">(</span>S1<span class="hl opt">);</span>
+      Clear<span class="hl opt">(</span>S2<span class="hl opt">,</span> To <span class="hl opt">=&gt;</span> White<span class="hl opt">);</span>
+      Line<span class="hl opt">(</span>S1<span class="hl opt">,</span> From <span class="hl opt">=&gt; (</span><span class="hl num">240</span><span class="hl opt">,</span> <span class="hl num">160</span><span class="hl opt">),</span> To <span class="hl opt">=&gt; (</span><span class="hl num">240</span><span class="hl opt">,</span> <span class="hl num">480</span><span class="hl opt">),</span>
+           Color <span class="hl opt">=&gt;</span> Green<span class="hl opt">);</span>
+      Dot<span class="hl opt">(</span>S1<span class="hl opt">,</span> Place <span class="hl opt">=&gt; (</span><span class="hl num">240</span><span class="hl opt">,</span> <span class="hl num">320</span><span class="hl opt">),</span> Color <span class="hl opt">=&gt;</span> Red<span class="hl opt">);</span>
+      Display<span class="hl opt">(</span>S1<span class="hl opt">);</span>
+      Box<span class="hl opt">(</span>S2<span class="hl opt">,</span> Corner1 <span class="hl opt">=&gt; (</span><span class="hl num">384</span><span class="hl opt">,</span> <span class="hl num">160</span><span class="hl opt">),</span> Corner2 <span class="hl opt">=&gt; (</span><span class="hl num">96</span><span class="hl opt">,</span> <span class="hl num">480</span><span class="hl opt">),</span>
+          Color <span class="hl opt">=&gt;</span> Blue<span class="hl opt">);</span>
+      Dot<span class="hl opt">(</span>S2<span class="hl opt">,</span> Place <span class="hl opt">=&gt; (</span><span class="hl num">240</span><span class="hl opt">,</span> <span class="hl num">320</span><span class="hl opt">),</span> Color <span class="hl opt">=&gt;</span> Yellow<span class="hl opt">);</span>
+      Display<span class="hl opt">(</span>S2<span class="hl opt">);</span>
+   <span class="hl kwa">end</span> CRT_Demo<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>The first executable line clears memory for screen S1 to all black, because
+of the default parameter in the specification of Clear.&nbsp;  The next line
+clears S2 to all white.&nbsp;  The next three lines draw a line and a dot on
+S1 and display S1.&nbsp; The program then draws a box and a dot on S2 and
+displays S2.&nbsp;  Named notation could optionally have been used for the first
+parameter of each call, and for the objects of type Point, e.g., <b>(Row => 240,
+Column => 160)</b>.</p>
+
+<p><div class="adat-q">
+<h2>Question</h2>
+At a sacrifice in clarity (not recommended!), the calling program CRT_Demo
+could draw a dot in the center of screen S1 without calling Dot.&nbsp; Which of
+the following statements would accomplish the same thing as
+<pre class="hl">   Dot<span class="hl opt">(</span>S1<span class="hl opt">,</span> Place <span class="hl opt">=&gt; (</span><span class="hl num">240</span><span class="hl opt">,</span> <span class="hl num">320</span><span class="hl opt">),</span> Color <span class="hl opt">=&gt;</span> Red<span class="hl opt">);</span>
+</pre>
+
+<ol>
+<li>
+<a href="javascript:adat_toggle('adat-pria1');">S1<span class="hl opt">(</span><span class="hl num">240</span><span class="hl opt">,</span> <span class="hl num">320</span><span class="hl opt">) :=</span> Red<span class="hl opt">;</span>
+</a>
+<div id="adat-pria1" class="adat-a" style="display: none"><b>You're
+right!</b>&nbsp;  At a sacrifice in clarity, the appropriate element of S1 can
+be set directly to Red to draw a dot in the center of the screen.&nbsp;  Number
+2 is wrong because the names Row and Column apply to type Point, not to
+subscripts of the array.
+</div>
+</li>
+
+<li>
+<a href="javascript:adat_toggle('adat-pria2');">S1<span class="hl opt">(</span>Row <span class="hl opt">=&gt;</span> <span class="hl num">240</span><span class="hl opt">,</span> Column <span class="hl opt">=&gt;</span> <span class="hl num">320</span><span class="hl opt">) :=</span> Red<span class="hl opt">;</span>
+</a>
+<div id="adat-pria2" class="adat-a" style="display: none">No, the names Row and
+Column apply to type Point, not to subscripts of the array.&nbsp;  For this
+reason number 2 won't compile.
+</div>
+</li>
+
+<li>
+<a href="javascript:adat_toggle('adat-pria3');">Either of the above would
+work.</a>
+<div id="adat-pria3" class="adat-a" style="display: none">No, the names Row and
+Column apply to type Point, not to subscripts of the array.&nbsp;  For this
+reason number 2 won't compile.
+</div>
+</li>
+</ol>
+
+</div></p>
+
+<p>Although the calling program is very clear, there's one disadvantage that can
+be eliminated by using a private type: if the resolution of the screen is
+changed, the calling program is affected.&nbsp;  For example, the two calls to
+Dot are each intended to draw a dot in the center of the screen.&nbsp;  These
+calls will have to be changed when the resolution changes, or the dot will no
+longer be in the center.&nbsp;  Also, nothing prevents CRT_Demo from saying
+<b>S1(Row => 240, Column => 320) := Red;</b> directly, instead of calling
+Dot.&nbsp;  This is a disadvantage, because referencing the elements of the
+array directly makes CRT_Demo very susceptible to changes in the package.</p>
+
+<p>It would be better to force CRT_Demo to call our procedure Dot, and make it
+impossible for CRT_Demo to use the fact the a screen is represented by a
+two-dimensional array.&nbsp;  Then the representation of a screen can change
+without affecting the correctness of CRT_Demo.</p>
+
+<p>We'll improve our package specification and calling program to make
+Screen_Type a <b>private</b> type, so that its details can be used only inside
+the package.&nbsp;  Since the screen resolution won't be available outside the
+package, we'll normalize Row and Column, making them floating point numbers in
+the range 0.0 .. 1.0.</p>
+
+<p>Here's our improved package specification:
+<pre class="hl"><span class="hl kwa">package</span> CRT_Controller <span class="hl kwa">is</span>
+   <span class="hl kwa">type</span> Color_Type  <span class="hl kwa">is</span> <span class="hl opt">(</span>White<span class="hl opt">,</span> Black<span class="hl opt">,</span> Red<span class="hl opt">,</span> Yellow<span class="hl opt">,</span> Green<span class="hl opt">,</span> Blue<span class="hl opt">);</span>
+   <span class='adat-hl'><span class="hl kwa">type</span> Screen_Type <span class="hl kwa">is private</span><span class="hl opt">;</span></span>
+   <span class="hl kwa">type</span> Point <span class="hl kwa">is record</span>
+      Row    <span class="hl opt">:</span> <span class='adat-hl'><span class="hl kwb">Float</span> <span class="hl kwa">range</span> <span class="hl num">0.0</span> <span class="hl opt">..</span> <span class="hl num">1.0</span></span><span class="hl opt">;</span>
+      Column <span class="hl opt">:</span> <span class='adat-hl'><span class="hl kwb">Float</span> <span class="hl kwa">range</span> <span class="hl num">0.0</span> <span class="hl opt">..</span> <span class="hl num">1.0</span></span><span class="hl opt">;</span>
+   <span class="hl kwa">end record</span><span class="hl opt">;</span>
+   <span class="hl kwa">procedure</span> Display <span class="hl opt">(</span>Screen <span class="hl opt">:</span> <span class="hl kwa">in</span> Screen_Type<span class="hl opt">);</span>
+   <span class="hl kwa">procedure</span> Clear   <span class="hl opt">(</span>Screen <span class="hl opt">:</span> <span class="hl kwa">in out</span> Screen_Type<span class="hl opt">;</span>
+                      To     <span class="hl opt">:</span> <span class="hl kwa">in</span> Color_Type <span class="hl opt">:=</span> Black<span class="hl opt">);</span>
+   <span class="hl kwa">procedure</span> Dot     <span class="hl opt">(</span>Screen <span class="hl opt">:</span> <span class="hl kwa">in out</span> Screen_Type<span class="hl opt">;</span>
+                      Place  <span class="hl opt">:</span> <span class="hl kwa">in</span> Point<span class="hl opt">;</span>
+                      Color  <span class="hl opt">:</span> <span class="hl kwa">in</span> Color_Type<span class="hl opt">);</span>
+   <span class="hl kwa">procedure</span> Line    <span class="hl opt">(</span>Screen <span class="hl opt">:</span> <span class="hl kwa">in out</span> Screen_Type<span class="hl opt">;</span>
+                      From<span class="hl opt">,</span> To <span class="hl opt">:</span> <span class="hl kwa">in</span> Point<span class="hl opt">;</span>
+                      Color  <span class="hl opt">:</span> <span class="hl kwa">in</span> Color_Type<span class="hl opt">);</span>
+   <span class="hl kwa">procedure</span> Box     <span class="hl opt">(</span>Screen <span class="hl opt">:</span> <span class="hl kwa">in out</span> Screen_Type<span class="hl opt">;</span>
+                      Corner1<span class="hl opt">,</span> Corner2 <span class="hl opt">:</span> <span class="hl kwa">in</span> Point<span class="hl opt">;</span>
+                      Color  <span class="hl opt">:</span> <span class="hl kwa">in</span> Color_Type<span class="hl opt">);</span>
+<span class='adat-hl'><span class="hl kwa">private</span>
+   <span class="hl kwa">type</span> Screen_Type <span class="hl kwa">is array</span><span class="hl opt">(</span><span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">479</span><span class="hl opt">,</span> <span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">639</span><span class="hl opt">)</span> <span class="hl kwa">of</span> Color_Type<span class="hl opt">;</span></span>
+<span class="hl kwa">end</span> CRT_Controller<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Outside the package, there are only four things a calling program may do with
+objects of a private type like Screen_Type:
+<ol>
+<li><b>Create them:</b>  S1, S2 : Screen_Type;</li>
+<li><b>Assign them:</b>  S1 := S2;</li>
+<li><b>Test them for equality and inequality:</b>  if S1 = S2 ...   if S1 /= S2 ...</li>
+<li><b>Use any procedures, functions, and infix operators provided by the package:</b>
+    Clear(S1);   Display(S2);   etc.</li>
+</ol></p>
+
+<p>Note that the calling program, outside the package, can no longer say
+<b>S1(240, 320) := Red;</b>, because that's not one of the four things listed
+above.&nbsp; The calling program is forced to call Dot.&nbsp;  The information
+that Screen_Type is an array can be used by code only <b>inside</b> the
+package.&nbsp;  Of course, the <b>compiler</b> uses this information when
+compiling code outside or inside the package.&nbsp; That's why the definition
+of Screen_Type must be in the package specification, not the body.&nbsp;  But
+the <b>programmer</b> isn't allowed to use this information outside the
+package.</p>
+
+<p><b>Inside</b> the package there are no such restrictions.&nbsp;  To write the
+bodies of the subprograms, we'll have to use the structure of Screen_Type and
+write statements similar to <b>S1(240, 320) := Red;</b>.
+
+<p>Here's our calling program, revised to agree with the improved package
+specification:
+
+<pre class="hl">   <span class="hl kwa">with</span> CRT_Controller<span class="hl opt">;</span> <span class="hl kwa">use</span> CRT_Controller<span class="hl opt">;</span>
+   <span class="hl kwa">procedure</span> CRT_Demo <span class="hl kwa">is</span>
+      S1<span class="hl opt">,</span> S2 <span class="hl opt">:</span> Screen_Type<span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      Clear<span class="hl opt">(</span>S1<span class="hl opt">);</span>
+      Clear<span class="hl opt">(</span>S2<span class="hl opt">,</span> To <span class="hl opt">=&gt;</span> White<span class="hl opt">);</span>
+      Line<span class="hl opt">(</span>S1<span class="hl opt">,</span> From <span class="hl opt">=&gt; (</span><span class="hl num">0.5</span><span class="hl opt">,</span> <span class="hl num">0.25</span><span class="hl opt">),</span> To <span class="hl opt">=&gt; (</span><span class="hl num">0.5</span><span class="hl opt">,</span> <span class="hl num">0.75</span><span class="hl opt">),</span>
+           Color <span class="hl opt">=&gt;</span> Green<span class="hl opt">);</span>
+      Dot<span class="hl opt">(</span>S1<span class="hl opt">,</span> Place <span class="hl opt">=&gt; (</span><span class="hl num">0.5</span><span class="hl opt">,</span> <span class="hl num">0.5</span><span class="hl opt">),</span> Color <span class="hl opt">=&gt;</span> Red<span class="hl opt">);</span>
+      Display<span class="hl opt">(</span>S1<span class="hl opt">);</span>
+      Box<span class="hl opt">(</span>S2<span class="hl opt">,</span> Corner1 <span class="hl opt">=&gt; (</span><span class="hl num">0.8</span><span class="hl opt">,</span> <span class="hl num">0.25</span><span class="hl opt">),</span> Corner2 <span class="hl opt">=&gt; (</span><span class="hl num">0.2</span><span class="hl opt">,</span> <span class="hl num">0.75</span><span class="hl opt">),</span>
+          Color <span class="hl opt">=&gt;</span> Blue<span class="hl opt">);</span>
+      Dot<span class="hl opt">(</span>S2<span class="hl opt">,</span> Place <span class="hl opt">=&gt; (</span><span class="hl num">0.5</span><span class="hl opt">,</span> <span class="hl num">0.5</span><span class="hl opt">),</span> Color <span class="hl opt">=&gt;</span> Yellow<span class="hl opt">);</span>
+      Display<span class="hl opt">(</span>S2<span class="hl opt">);</span>
+   <span class="hl kwa">end</span> CRT_Demo<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Now, if a change is made only to the private part of the package
+specification, CRT_Demo won't have to be revised.&nbsp;  It <b>will</b> have to
+be recompiled, because the Ada compiler needs the information in the private
+part of the package specification.&nbsp;  (The linker won't link with obsolete
+units, but will tell us what we must recompile.)&nbsp;  Also, the package body
+may have to be rewritten.&nbsp;  But if CRT_Demo was correct before, it will
+remain correct without any revision!&nbsp; The effects of the change are
+confined to the package.&nbsp;  Containing the effects of changes by means of
+information hiding is one of Ada's greatest features.</p>
+
+<p><div class="adat-q">
+<h2>Question</h2>
+<a href="javascript:adat_toggle('adat-pria11', 'adat-pria12');">True</a> or
+<a href="javascript:adat_toggle('adat-pria12', 'adat-pria11');">False</a>?&nbsp;
+If the private part of a package specification is changed, the calling program
+must be recompiled before the package body is recompiled.
+
+<div id="adat-pria11" class="adat-a" style="display: none">False.&nbsp;  The
+package body and the calling program don't depend on each other, but only on the
+package specification.&nbsp;  Thus they can be compiled in either order after
+the package specification is compiled.
+</div>
+<div id="adat-pria12" class="adat-a" style="display: none"><b>You're
+right!</b>&nbsp; The package body and the calling program don't depend on each
+other, but only on the package specification.&nbsp;  Thus they can be compiled
+in either order after the package specification is compiled.</div>
+</div></p>
+
+<p>If a package exports a constant of a private type, the constant is declared
+in the &ldquo;public&rdquo; part of the package specification, but it can't be
+assigned a value until we get to the private part.&nbsp;  This is called a
+<b>deferred constant</b>. &nbsp; For example,
+<pre class="hl">   <span class="hl kwa">package</span> CRT_Controller <span class="hl kwa">is</span>
+      <span class="hl kwa">type</span> Color_Type  <span class="hl kwa">is</span> <span class="hl opt">(</span>White<span class="hl opt">,</span> Black<span class="hl opt">,</span> Red<span class="hl opt">,</span> Yellow<span class="hl opt">,</span> Green<span class="hl opt">,</span> Blue<span class="hl opt">);</span>
+      <span class="hl kwa">type</span> Screen_Type <span class="hl kwa">is private</span><span class="hl opt">;</span>
+      <span class='adat-hl'>Flag_Of_Italy <span class="hl opt">:</span> <span class="hl kwa">constant</span> Screen_Type<span class="hl opt">;</span></span>
+      <span class="hl kwa">procedure</span> Display <span class="hl opt">(</span>Screen <span class="hl opt">:</span> <span class="hl kwa">in</span> Screen_Type<span class="hl opt">);</span>
+      <span class="hl opt">...</span>
+   <span class="hl kwa">private</span>
+      <span class="hl kwa">type</span> Screen_Type <span class="hl kwa">is array</span><span class="hl opt">(</span><span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">479</span><span class="hl opt">,</span> <span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">639</span><span class="hl opt">)</span> <span class="hl kwa">of</span> Color_Type<span class="hl opt">;</span>
+      <span class='adat-hl'>Flag_Of_Italy <span class="hl opt">:</span> <span class="hl kwa">constant</span> Screen_Type <span class="hl opt">:=</span>
+         <span class="hl opt">(</span><span class="hl kwa">others</span> <span class="hl opt">=&gt; (</span><span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">213</span> <span class="hl opt">=&gt;</span> Green<span class="hl opt">,</span> <span class="hl num">214</span> <span class="hl opt">..</span> <span class="hl num">426</span> <span class="hl opt">=&gt;</span> White<span class="hl opt">,</span>
+                     <span class="hl num">427</span> <span class="hl opt">..</span> <span class="hl num">639</span> <span class="hl opt">=&gt;</span> Red<span class="hl opt">));</span></span>
+   <span class="hl kwa">end</span> CRT_Controller<span class="hl opt">;</span>
+</pre>
+CRT_Demo could then say <b>S1 := Flag_Of_Italy;</b> or
+D<b>isplay(Flag_Of_Italy);</b>.</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

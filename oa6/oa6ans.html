@@ -1,0 +1,99 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Outside Assignment 6' href='index.html' />
+<link rel='prev' title='Exercise in Tasking' href='ex-task.html' />
+<link rel='next' title='More Records and Types' href='../more/index.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor">
+
+<title>AdaTutor - Congratulations on Completing Outside Assignment 6!</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="ex-task.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="../more/index.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Congratulations on Completing Outside Assignment 6!</h2>
+<a href="javascript:adat_toggle('adat-oa6a1');">Click to view our solution:</a>
+<div id='adat-oa6a1' style="display: none">
+<p>If you like, you can compare your solution with ours, which is in
+<a href='tasking.ans'>TASKING.ANS</a>.&nbsp; A listing is on page 36 of your
+printed course notes and here:&nbsp;
+
+<pre class="hl"><span class="hl slc">-- Our solution to Outside Assignment 6:</span>
+<span class="hl slc">-- (Written to work with Ada 83 and Ada 95):</span>
+<span class="hl kwa">with</span> text_io<span class="hl opt">,</span> calendar<span class="hl opt">;</span> <span class="hl kwa">use</span> text_io<span class="hl opt">,</span> calendar<span class="hl opt">;</span>
+<span class="hl kwa">procedure</span> tasking <span class="hl kwa">is</span>
+  interval        <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl kwb">duration</span> <span class="hl opt">:=</span> <span class="hl num">5.0</span><span class="hl opt">;</span>
+  total_intervals <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl kwb">positive</span> <span class="hl opt">:=</span> <span class="hl num">9</span><span class="hl opt">;</span>
+  start_time      <span class="hl opt">:</span> <span class="hl kwa">constant</span> time <span class="hl opt">:=</span> clock<span class="hl opt">;</span>
+  quitting_time   <span class="hl opt">:</span> <span class="hl kwa">constant</span> time <span class="hl opt">:=</span> start_time <span class="hl opt">+</span>
+                                             total_intervals<span class="hl opt">*</span>interval<span class="hl opt">;</span>
+  next_time       <span class="hl opt">:</span> time <span class="hl opt">:=</span> start_time<span class="hl opt">;</span>
+  <span class="hl kwa">task type</span> tick <span class="hl kwa">is</span>
+    <span class="hl kwa">ENTRY</span> IDENTIFY<span class="hl opt">(</span>TASK_NUMBER <span class="hl opt">:</span> <span class="hl kwa">IN</span> <span class="hl kwb">NATURAL</span><span class="hl opt">);</span>
+    <span class="hl kwa">entry</span> shutdown<span class="hl opt">;</span>
+  <span class="hl kwa">end</span> tick<span class="hl opt">;</span>
+  T               <span class="hl opt">:</span> <span class="hl kwa">ARRAY</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">3</span><span class="hl opt">)</span> <span class="hl kwa">OF</span> TICK<span class="hl opt">;</span>
+  PERIOD          <span class="hl opt">:</span> <span class="hl kwa">CONSTANT ARRAY</span><span class="hl opt">(</span>T<span class="hl kwd">'RANGE</span><span class="hl opt">)</span> <span class="hl kwa">OF</span> <span class="hl kwb">POSITIVE</span> <span class="hl opt">:= (</span><span class="hl num">2</span><span class="hl opt">,</span> <span class="hl num">3</span><span class="hl opt">,</span> <span class="hl num">4</span><span class="hl opt">);</span>
+  TIMER           <span class="hl opt">:</span> <span class="hl kwa">ARRAY</span><span class="hl opt">(</span>T<span class="hl kwd">'RANGE</span><span class="hl opt">)</span> <span class="hl kwa">OF</span> <span class="hl kwb">NATURAL</span> <span class="hl opt">:= (</span><span class="hl kwa">OTHERS</span> <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">);</span>
+  <span class="hl kwa">task body</span> tick <span class="hl kwa">is</span>
+    quit <span class="hl opt">:</span> <span class="hl kwb">boolean</span> <span class="hl opt">:=</span> <span class="hl kwd">false</span><span class="hl opt">;</span>
+  <span class="hl kwa">begin</span>
+    <span class="hl kwa">while not</span> quit <span class="hl kwa">loop</span>
+      <span class="hl kwa">select</span>
+        <span class="hl kwa">ACCEPT</span> IDENTIFY<span class="hl opt">(</span>TASK_NUMBER <span class="hl opt">:</span> <span class="hl kwa">IN</span> <span class="hl kwb">NATURAL</span><span class="hl opt">)</span> <span class="hl kwa">DO</span>
+          PUT_LINE<span class="hl opt">(</span><span class="hl str">&quot;Task number&quot;</span> <span class="hl opt">&amp;</span> <span class="hl kwb">INTEGER</span><span class="hl kwd">'IMAGE</span><span class="hl opt">(</span>TASK_NUMBER<span class="hl opt">) &amp;</span>
+               <span class="hl str">&quot; is starting.&quot;</span><span class="hl opt">);</span>
+        <span class="hl kwa">END</span> IDENTIFY<span class="hl opt">;</span>
+      <span class="hl kwa">or</span>
+        <span class="hl kwa">accept</span> shutdown<span class="hl opt">;</span>
+        quit <span class="hl opt">:=</span> <span class="hl kwd">true</span><span class="hl opt">;</span>
+      <span class="hl kwa">end select</span><span class="hl opt">;</span>
+    <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+  <span class="hl kwa">end</span> tick<span class="hl opt">;</span>
+<span class="hl kwa">begin</span>
+  <span class="hl kwa">while</span> next_time <span class="hl opt">&lt;</span> quitting_time <span class="hl kwa">loop</span>
+    <span class="hl kwa">FOR</span> I <span class="hl kwa">IN</span> T<span class="hl kwd">'RANGE</span> <span class="hl kwa">LOOP</span>
+      <span class="hl kwa">IF</span> TIMER<span class="hl opt">(</span>I<span class="hl opt">) =</span> <span class="hl num">0</span> <span class="hl kwa">THEN</span>
+        T<span class="hl opt">(</span>I<span class="hl opt">).</span>IDENTIFY<span class="hl opt">(</span>I<span class="hl opt">);</span>
+        TIMER<span class="hl opt">(</span>I<span class="hl opt">) :=</span> PERIOD<span class="hl opt">(</span>I<span class="hl opt">);</span>
+      <span class="hl kwa">END IF</span><span class="hl opt">;</span>
+      TIMER<span class="hl opt">(</span>I<span class="hl opt">) :=</span> TIMER<span class="hl opt">(</span>I<span class="hl opt">) -</span> <span class="hl num">1</span><span class="hl opt">;</span>
+    <span class="hl kwa">END LOOP</span><span class="hl opt">;</span>
+    next_time <span class="hl opt">:=</span> next_time <span class="hl opt">+</span> interval<span class="hl opt">;</span>
+    put_line<span class="hl opt">(</span><span class="hl str">&quot;(5-second delay)&quot;</span><span class="hl opt">);</span> <span class="hl kwa">delay</span> next_time <span class="hl opt">-</span> clock<span class="hl opt">;</span>
+  <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+  <span class="hl kwa">FOR</span> I <span class="hl kwa">IN</span> T<span class="hl kwd">'RANGE</span> <span class="hl kwa">LOOP</span>
+    T<span class="hl opt">(</span>I<span class="hl opt">).</span>SHUTDOWN<span class="hl opt">;</span>
+  <span class="hl kwa">END LOOP</span><span class="hl opt">;</span>
+<span class="hl kwa">end</span> tasking<span class="hl opt">;</span>
+</pre>
+ Your solution might be different from ours, but if
+your <b>output</b> agrees with page 35 of your printed course notes, your
+solution is correct.</p>
+
+<p>You've learned a great deal of Ada!&nbsp;  Let's go on to discuss some
+<a href="../more/index.html">more records and types</a>.</p>
+
+</div></p>
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

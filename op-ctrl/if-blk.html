@@ -1,0 +1,174 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Control Constructs' href='control.html' />
+<link rel='prev' title='Control Constructs' href='control.html' />
+<link rel='next' title='WHILE Loops' href='while-loop.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor">
+
+<title>AdaTutor - The "IF" Block</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="control.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="control.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="while-loop.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h3>The "IF" Block</h3>
+<pre class="hl">    <span class="hl kwa">if</span> A <span class="hl opt">&gt;=</span> B <span class="hl kwa">and</span> C <span class="hl opt">=</span> A <span class="hl opt">+</span> D <span class="hl kwa">then</span>
+       <span class="hl slc">-----;</span>
+       <span class="hl slc">-----;  (block of code)</span>
+       <span class="hl slc">-----;</span>
+    <span class="hl kwa">end if</span><span class="hl opt">;</span>
+</pre>
+
+<p>In Ada, every <b>if</b> introduces a block of code that ends with <b>end
+if;</b>.&nbsp;  There are no exceptions; every <b>if</b> always has an <b>end
+if;</b>.&nbsp;  The condition is followed by then, and it can be any expression
+with a Boolean result.&nbsp;  The above example is valid if A, B, C, and D are
+suitably declared.&nbsp;  Each statement in the block of code, including the
+last, has a semicolon.&nbsp;  Note that <b>end if;</b> is two reserved words,
+so there must be at least one space between them.&nbsp;  All Ada control
+constructs, including <b>if</b> blocks, can be nested to any depth.</p>
+
+<p>In Pascal and C, <b>if</b> is designed to execute only one statement
+conditionally.&nbsp; If there are several statements to be executed
+conditionally, they have to be enclosed with &ldquo;begin ... end&rdquo; in
+Pascal or braces in C, so they will be considered as one statement.&nbsp;  In
+Ada, however, <b>if</b> always starts a block of code, so &ldquo;begin ...
+end&rdquo; or braces aren't necessary.&nbsp;  The end of the block is always
+marked by <b>end if;</b> even if there's just one statement in the block.</p>
+
+<pre class="hl">      <span class="hl kwa">if</span> A <span class="hl opt">&gt;=</span> B <span class="hl kwa">and</span> C <span class="hl opt">=</span> A <span class="hl opt">+</span> D <span class="hl kwa">then</span>
+         <span class="hl slc">-----;</span>
+         <span class="hl slc">-----;</span>
+         <span class="hl slc">-----;</span>
+      <span class="hl kwa">elsif</span> G <span class="hl opt">=</span> H <span class="hl opt">+</span> P <span class="hl kwa">then</span>
+         <span class="hl slc">-----;</span>
+      <span class="hl kwa">elsif</span> Q <span class="hl opt">&gt;</span> R <span class="hl kwa">or</span> S <span class="hl opt">&lt;=</span> T <span class="hl kwa">then</span>
+         <span class="hl slc">-----;</span>
+         <span class="hl slc">-----;</span>
+      <span class="hl kwa">else</span>
+         <span class="hl slc">-----;</span>
+      <span class="hl kwa">end if</span><span class="hl opt">;</span>
+</pre>
+
+<p>The reserved words <b>elsif</b> and <b>else</b> are also available; note the
+unusual spelling of <b>elsif</b>.&nbsp;  In the above example, only one of the
+four blocks of code will be executed.&nbsp;  If <b>A &gt;= B and C = A + D</b> is
+True, the first block of code will be executed and the remaining tests and
+blocks will be skipped.&nbsp;  Control will continue after the
+<b>end if;</b>.&nbsp;  If <b>A &gt;= B and C = A + D</b> is False, then <b>G =
+H + P</b> will be tested.&nbsp;  If it's True, the second block, and only that
+block, will be executed; otherwise, <b>Q &gt; R or S &lt;= T</b> will be
+tested.&nbsp;  If that's True, the third block will be executed; otherwise the
+<b>else</b> block will be executed.&nbsp;  If all the tests are False and
+there's no <b>else</b> block, then no blocks are executed.</p>
+
+<p>The above block of code is equivalent with the following code:
+<pre class="hl">      <span class="hl kwa">if</span> A <span class="hl opt">&gt;=</span> B <span class="hl kwa">and</span> C <span class="hl opt">=</span> A <span class="hl opt">+</span> D <span class="hl kwa">then</span>
+         <span class="hl slc">-----;</span>
+         <span class="hl slc">-----;</span>
+         <span class="hl slc">-----;</span>
+      <span class="hl kwa">else</span>
+         <span class="hl kwa">if</span> G <span class="hl opt">=</span> H <span class="hl opt">+</span> P <span class="hl kwa">then</span>
+            <span class="hl slc">-----;</span>
+         <span class="hl kwa">else</span>
+            <span class="hl kwa">if</span> Q <span class="hl opt">&gt;</span> R <span class="hl kwa">or</span> S <span class="hl opt">&lt;=</span> T <span class="hl kwa">then</span>
+               <span class="hl slc">-----;</span>
+               <span class="hl slc">-----;</span>
+            <span class="hl kwa">else</span>
+               <span class="hl slc">-----;</span>
+            <span class="hl kwa">end if</span><span class="hl opt">;</span>
+         <span class="hl kwa">end if</span><span class="hl opt">;</span>
+      <span class="hl kwa">end if</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Note that <b>elsif</b> is equivalent to <b>else</b> plus <b>if ... end
+if;</b>.&nbsp;  Although the two program segments above are equivalent, the
+first one is much clearer.&nbsp; The example on first one doesn't require
+multiple <b>end if</b>s at the bottom, and the indentation emphasizes that only
+one of the four blocks of code will be executed.</p>
+
+<p>
+<div class="adat-q">
+<h3>Question</h3>
+<pre class="hl">    D<span class="hl opt">,</span> N <span class="hl opt">:</span> <span class="hl kwb">Integer</span> <span class="hl opt">:=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+    <span class="hl opt">...</span>
+    <span class="hl kwa">if</span> D <span class="hl opt">=</span> <span class="hl num">0</span> <span class="hl kwa">then</span>
+       One<span class="hl opt">;</span>
+    <span class="hl kwa">elsif</span> N<span class="hl opt">/</span>D <span class="hl opt">=</span> <span class="hl num">1</span> <span class="hl kwa">then</span>
+       Two<span class="hl opt">;</span>
+    <span class="hl kwa">elsif</span> D <span class="hl opt">=</span> <span class="hl num">1</span> <span class="hl kwa">then</span>
+       Three<span class="hl opt">;</span>
+    <span class="hl kwa">else</span>
+       Four<span class="hl opt">;</span>
+    <span class="hl kwa">end if</span><span class="hl opt">;</span>
+</pre>
+
+In this segment of code, which procedure(s) will be called?
+<ul>
+<li>
+<a href="javascript:adat_toggle('adat-c2a1');">Procedure One will be called.</a>
+<div id="adat-c2a1" class="adat-a" style="display: none">No, both D and N are
+initialized to 1, so the first test, D = 0, is False and the second test is
+made.&nbsp;  The block that's executed is the first block following a test
+that's True.
+</div></li>
+
+<li>
+<a href="javascript:adat_toggle('adat-c2a2');">Procedure Two will be called</a>
+<div id="adat-c2a2" class="adat-a" style="display: none"><b>You're
+right!</b>&nbsp;  The first test, D = 0, is False, so the second test is
+made.&nbsp; N/D = 1 is True, so Two is called.&nbsp;  Since only one block of
+code is executed in an <b>if</b> block, the remaining tests are not done.
+</div></li>
+
+<li>
+<a href="javascript:adat_toggle('adat-c2a3');">Procedure Three will be
+called.</a>
+<div id="adat-c2a3" class="adat-a" style="display: none">No, both D and N are
+initialized to 1, so the second test, N/D = 1, is True.&nbsp; The block that's
+executed is the <b>first</b> block following a test that's True.&nbsp;
+Once a block is executed, no further tests in that <b>if</b> block are made.&nbsp;  Thus, Three isn't called even though D = 1 is True.</div></li>
+
+<li>
+<a href="javascript:adat_toggle('adat-c2a4');">Procedure Four will be
+called.</a>
+<div id="adat-c2a4" class="adat-a" style="display: none">No, both D and N are
+initialized to 1, so the second test, N/D = 1, is True.&nbsp; The block that's
+executed is the first block following a test that's True.&nbsp;  The <b>else</b>
+block is executed only if all the tests are False.</div></li>
+
+<li>
+<a href="javascript:adat_toggle('adat-c2a5');">Procedures Two and Three will be
+called.</a>
+<div id="adat-c2a5" class="adat-a" style="display: none">No, although N/D = 1
+and D = 1 are both True, only <b>one</b> block of code in an <b>if</b> block is
+executed.&nbsp;  The block that's executed is the <b>first</b> block following
+a test that's True.</div></li>
+</ul>
+</div>
+</p>
+
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

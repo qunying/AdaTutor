@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Advanced Topics' href='index.html' />
+<link rel='prev' title='Packages Standard and Ada.Characters.Latin_1' href='pkg-std.html' />
+<link rel='next' title='More Attributes' href='more-attr.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor">
+
+<title>AdaTutor - Packages Standard and Ada.Characters.Latin_1</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="pkg-std.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="more-attr.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>An Alternative to Infix Notation, and Use Type</h2>
+<p>Earlier we learned to define and use infix operators like
+<pre class="hl">   <span class="hl kwa">type</span> Vector <span class="hl kwa">is array</span><span class="hl opt">(</span><span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl opt">&lt;&gt;)</span> <span class="hl kwa">of</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+   <span class="hl kwa">function</span> <span class="hl str">&quot;*&quot;</span><span class="hl opt">(</span>Left<span class="hl opt">,</span> Right <span class="hl opt">:</span> <span class="hl kwa">in</span> Vector<span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+   A<span class="hl opt">,</span> B <span class="hl opt">:</span> Vector<span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">10</span><span class="hl opt">);</span>
+   F    <span class="hl opt">:</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+   <span class="hl opt">...</span>
+   F <span class="hl opt">:=</span> A <span class="hl opt">*</span> B<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>An alternative notation equivalent to <b>F := A * B;</b> is <b>F :=
+"*"(A, B);</b>.&nbsp;  Why would anyone want to use this clumsier
+notation?&nbsp;  If our function is in a package Math that the calling program
+withs but for some reason doesn't <b>use</b>, we could use dot notation and
+write <b>F := Math."*"(A, B);</b>.&nbsp;  But we couldn't use dot notation
+directly with infix operators, as in F := A Math.* B; or even F := A
+Math."*" B;.&nbsp;  Both of those are illegal.&nbsp;  The alternative notation
+can also be used to emphasize that an operator comes from package
+Standard.&nbsp;  For example, if I, J, and K are Integers, we could write
+<b>I := Standard."*"(J, K);</b>, which is equivalent to <b>I := J * K;</b>.</p>
+
+<p>In Ada 95, a context clause can say <b>use type</b>, followed by the name of
+a type or subtype in a package.&nbsp;  This makes the dot notation automatic
+only for infix operators for that type or subtype. &nbsp; For example, if we
+have a package Math containing the definition of a type Vector and a * operator
+for Vectors, as above, we can write
+<pre class="hl">    <span class="hl kwa">with</span> Math<span class="hl opt">;</span> <span class="hl kwa">use type</span> Math<span class="hl opt">.</span>Vector<span class="hl opt">;</span>
+    <span class="hl opt">...</span>
+      A<span class="hl opt">,</span> B <span class="hl opt">:</span> Math<span class="hl opt">.</span>Vector<span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">10</span><span class="hl opt">);</span>
+      F    <span class="hl opt">:</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+    <span class="hl opt">...</span>
+      F <span class="hl opt">:=</span> A <span class="hl opt">*</span> B<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Here we were able to write <b>F := A * B;</b> instead of <b>F :=
+"*"(A, B);</b> or <b>F := Math."*"(A, B);</b> because we said <b>use type
+Math.Vector;</b> and the <b>*</b> here is an infix operator for that type.&nbsp;
+However, in declaring A and B, we still had to write <b>Math.Vector</b>, because
+<b>use type</b> applies only to infix operators for the type or subtype
+named.</p>
+
+<p><div class="adat-q">
+<h2>Question</h2>
+Assuming X, Y, and Z have been declared Float, which one of the following is
+<b>illegal</b>?
+<ol>
+<li>
+<a href="javascript:adat_toggle('adat-dotna1');">X := Y / Z;</a>
+<div id="adat-dotna1" class="adat-a" style="display: none">No, number 1 is the
+syntax that would ordinarily be used for division, and is legal.</div>
+</li>
+
+<li>
+<a href="javascript:adat_toggle('adat-dotna2');">X := Y Standard."/" Z;</a>
+<div id="adat-dotna2" class="adat-a" style="display: none"><b>You're
+right!</b>&nbsp;  The syntax of number 2 is illegal.&nbsp;  To specify the
+package Standard, we have to use the syntax of number 3.&nbsp;  Normally, of
+course, the syntax of number 1 is used.
+</div>
+</li>
+
+<li>
+<a href="javascript:adat_toggle('adat-dotna3');">X := Standard."/"(Y, Z);</a>
+<div id="adat-dotna3" class="adat-a" style="display: none">No, number 3 is the
+correct way to specify package Standard explicitly.</div>
+</li>
+
+</ol>
+</div></p>
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

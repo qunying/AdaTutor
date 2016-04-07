@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Recursion' href='index.html' />
+<link rel='prev' title='Recursion' href='recursion.html' />
+<link rel='next' title='Outside Assignment 4' href='../oa4/index.html' />
+
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, tower of hanoi">
+
+<title>AdaTutor - The Tower of Hanoi Problem</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+    <td><div class='nav-prev'><a href="recursion.html">Prev</a></div></td>
+    <td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+    <td><div class="nav-next"><a href="../oa4/index.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+
+<h2>The Tower of Hanoi Problem</h2>
+
+<p>The &ldquo;Tower of Hanoi&rdquo; is a solitaire puzzle that was named when
+Hanoi was the capital of a free country: French Indochina.&nbsp;  There are
+three pegs labeled A, B, and C; one of them has a tower of N doughnut-shaped
+disks of decreasing size, like this:
+<pre>
+
+          |                    |                    |
+          |                    |                    |
+         =|=                   |                    |
+        ==|==                  |                    |
+       ===|===                 |                    |
+      ====|====                |                    |
+     =====|=====               |                    |
+  -----------------    -----------------    -----------------
+          A                    B                    C
+</pre>
+</p>
+
+<p>The object is to move the entire tower from one peg to another, say, from A
+to B.&nbsp;  Only one disk may be moved at a time, and a larger disk may never
+be placed on top of a smaller one.&nbsp;  The shortest solution to the puzzle
+with N disks requires 2**N - 1 moves.</p>
+
+<p>For example, we can move five disks from A to B with the following 31 moves:
+(Read them from left to right, not in columns.)</p>
+
+<pre>
+A to B,  A to C,  B to C,  A to B,  C to A,  C to B,
+A to B,  A to C,  B to C,  B to A,  C to A,  B to C,
+A to B,  A to C,  B to C,  A to B,  C to A,  C to B,
+A to B,  C to A,  B to C,  B to A,  C to A,  C to B,
+A to B,  A to C,  B to C,  A to B,  C to A,  C to B,
+A to B.</pre>
+
+<pre>
+
+          |                    |                    |
+          |                    |                    |
+          |                    |                    |
+          |                    |                    |
+         =|=                   |                    |
+      ====|====                |                    |
+     =====|=====            ===|===               ==|==
+  -----------------    -----------------    -----------------
+          A                    B                    C
+                    (The Puzzle After the First Five Moves)
+</pre>
+
+<p>Writing a program to display this series of moves would be very complicated
+without recursion.&nbsp;  Let's develop a recursive solution; we'll see that the
+resulting Ada program is surprisingly simple!</p>
+
+<p>When we developed a recursive solution for the Factorial function:
+<pre>
+          if N = 1,  Factorial(N) = 1
+          otherwise, Factorial(N) = N * Factorial(N - 1)
+</pre>
+we expressed Factorial(N) in terms of Factorial(N - 1), and gave the trivial
+solution for N = 1.&nbsp;  The Ada program was easily written from the
+above.</p>
+
+<p>For the Tower of Hanoi problem, let's develop a solution for N disks in terms
+of a solution for N - 1 disks.&nbsp;  Suppose we want to move five disks from A
+to B, using C as a spare peg.&nbsp;  We first move <b>four</b> disks from A to
+<b>C</b>, then move one disk from A to B, and finally move four disks from C to
+B.&nbsp;  In general, to move N disks from a source peg to a destination peg,
+we first move N - 1 disks from the source to the spare, then move one disk from
+the source to the destination, and finally move N - 1 disks from the spare to
+the destination.</p>
+
+<p>To move the <b>one</b> disk from the source to the destination, our program
+will simply display the move.&nbsp;  To move N - 1 disks, the program will call
+itself.&nbsp; The solution for zero disks is trivial indeed: the program will do
+nothing!</p>
+
+<p>The following program is extremely simple: three executable statements inside
+an <b>if</b> block.&nbsp;  Yet it can display a very complicated series of
+moves!</p>
+
+<pre class="hl"><span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span> <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>
+<span class="hl kwa">procedure</span> Hanoi<span class="hl opt">(</span>N <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span> From<span class="hl opt">,</span> To<span class="hl opt">,</span> Spare <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Character</span><span class="hl opt">)</span> <span class="hl kwa">is</span>
+<span class="hl kwa">begin</span>
+   <span class="hl kwa">if</span> N <span class="hl opt">&gt;</span> <span class="hl num">0</span> <span class="hl kwa">then</span>
+      Hanoi<span class="hl opt">(</span>N <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">,</span> From<span class="hl opt">,</span> Spare<span class="hl opt">,</span> To<span class="hl opt">);</span>
+      Put_Line<span class="hl opt">(</span>From <span class="hl opt">&amp;</span> <span class="hl str">&quot; to &quot;</span> <span class="hl opt">&amp;</span> To<span class="hl opt">);</span>
+      Hanoi<span class="hl opt">(</span>N <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">,</span> Spare<span class="hl opt">,</span> To<span class="hl opt">,</span> From<span class="hl opt">);</span>
+   <span class="hl kwa">end if</span><span class="hl opt">;</span>
+<span class="hl kwa">end</span> Hanoi<span class="hl opt">;</span>
+</pre>
+
+<p>To move five disks from A to B, using C as a spare, we would call
+<b>Hanoi(5, 'A', 'B', 'C');</b> and the program would display the 31 moves.</p>
+
+<p>Note that when Hanoi is called with N = 0, it does nothing.&nbsp;  When
+called with N = 1, the if statement is true, and the three lines within the
+<b>if</b> block are executed.&nbsp;  But the first and third lines do nothing,
+because they call Hanoi with N = 0.&nbsp;  The second line displays, for
+example, <b>A to B</b>.</p>
+
+<p>When called with a larger value of N, the first line within the if block
+moves N - 1 disks from the source to the spare peg.&nbsp;  The second line
+displays the move of one disk from the source to the destination, and the third
+line moves N - 1 disks from the spare peg to the destination.</p>
+
+<p>Most implementations of Ada won't allow Hanoi to be a main program, because
+it has parameters.&nbsp; A short main program to call Hanoi is shown here.&nbsp;
+A slightly longer program could get N and the names of the three pegs from the
+user.&nbsp;  In this example, procedure Demo <b>with</b>s a previously compiled
+<b>procedure</b> rather than a previously compiled <b>package</b>.&nbsp;  We
+never write a <b>use</b> clause for a procedure or a function, because dot
+notation doesn't apply, as it does for packages.</p>
+
+<pre class="hl"><span class="hl kwa">with</span> Hanoi<span class="hl opt">;</span>
+<span class="hl kwa">procedure</span> Demo <span class="hl kwa">is</span>
+<span class="hl kwa">begin</span>
+   Hanoi<span class="hl opt">(</span><span class="hl num">5</span><span class="hl opt">,</span> <span class="hl str">'A'</span><span class="hl opt">,</span> <span class="hl str">'B'</span><span class="hl opt">,</span> <span class="hl str">'C'</span><span class="hl opt">);</span>
+<span class="hl kwa">end</span> Demo<span class="hl opt">;</span>
+</pre>
+
+<p>In summary, our first example of recursion, Factorial, was very simple.&nbsp;
+However, that program would have been simple even without recursion.&nbsp;  Our
+second example, Hanoi, also was very simple, but the program would have been
+quite complicated without recursion.</p>
+
+<p>Our fourth Outside Assignment will be to write a Fibonacci function Fib,
+using recursion.&nbsp;  As with Factorial, this function would be easy to write
+even without recursion.&nbsp;  However, as an exercise we'll write it using
+recursion.</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

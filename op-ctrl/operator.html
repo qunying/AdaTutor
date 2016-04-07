@@ -1,0 +1,100 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Operators and Control Constructs ' href='index.html' />
+<link rel='prev' title='Operators and Control Constructs' href='index.html' />
+<link rel='next' title='Range Tests' href='range.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, operator">
+
+<title>AdaTutor - Operators</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="index.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="range.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Operators</h2>
+<p>The four basic arithmetic operators, <b>+</b>, <b>-</b>, <b>*</b>, and
+<b>/</b>, can be used with any integer or floating point type.&nbsp;  (We'll
+learn about more advanced types, such as fixed point types, later in the
+course.)&nbsp;  The exponentiation operator, <b>**</b>, takes a base of type
+Integer or Float, and an exponent of type Integer.&nbsp;  It returns the same
+type as the base.&nbsp;  (If the base is Integer, the exponent may
+not be negative.)</p>
+
+<p>In Ada 95, Float ** Float is part of the package
+<b>Numerics.Elementary_Functions;</b> that package also provides Exp, Log, and
+the trigonometric functions.&nbsp;  See Annex A.5.1 in the Ada 95 RM for more
+details.&nbsp;  Ada 83 compilers don't necessarily provide these functions, but
+some do provide them in a math package.</p>
+
+<p>If we <b>with</b> and <b>use</b> a package containing Float ** Float, then
+our program can use ** between two Floats.</p>
+
+<p>The six <b>relational operators</b> are these:
+<table>
+<tr>
+<td>&lt;</td><td>less than</td><td>&nbsp;&nbsp;&nbsp;</td>
+<td>&gt;</td><td>greater than</td><td>&nbsp;&nbsp;&nbsp;</td>
+<td>=</td><td>equal to</td>
+</tr>
+<tr><td>&lt;=</td><td>less than or equal to</td><td>&nbsp;&nbsp;&nbsp;</td>
+<td>&gt;=</td><td>greater than or equal to</td><td>&nbsp;&nbsp;&nbsp;</td>
+<td>/=</td><td>not equal to</td>
+</table>
+</p>
+
+<p>Five of these are the same as in Basic and Pascal, but the Ada symbol for
+&ldquo;not equal to&rdquo; is <b>/=</b>, because <b>&lt;&gt;</b> means
+box.&nbsp;  (We'll discuss the &ldquo;box&rdquo; further when we cover array
+declarations and again when we cover generics.)&nbsp;  The relational operators
+compare two objects of the same type, and return a result of type Boolean.</p>
+
+<p>All of the above operators are used <b>between</b> two objects (e.g.,
+<b>B := A + B;</b>).&nbsp; Of course, <b>+</b> and <b>-</b> may also be
+<b>unary</b> operators (<b>B := +A;  A := -A;</b>).</p>
+
+<p>The operators <b>and</b>, <b>or</b>, and <b>xor</b> are used between two
+Boolean objects, and <b>not</b> is a unary Boolean operator.&nbsp;  Naturally,
+<b>xor</b> is the exclusive or:  <b>A xor B</b> is True if either A or B is
+True, but not if both are True.</p>
+
+<p>The numeric operator <b>abs</b> takes the absolute value of an Integer or
+Float.&nbsp; Since <b>abs</b> is a unary operator like <b>-</b>, we can write
+<b>B := abs A;</b>.&nbsp;  We may, but don't have to, use parentheses and write
+<b>B := abs(A);</b>.</p>
+
+<p>When used between two integers, <b>/</b> gives only the integer part of the
+quotient.&nbsp; Thus <b>11/4</b> is 2.&nbsp;  The operators <b>mod</b> (modulo)
+and <b>rem</b> (remainder) are very similar to each other, and are used between
+two integers to give only the remainder in division.&nbsp;  For example,
+<b>11 mod 4</b> is 3.&nbsp;  For positive parameters, mod and rem are the
+same.&nbsp;  But with negative parameters, <b>mod</b> gives the sign of
+the denominator while rem gives the sign of the numerator.&nbsp;  Many
+programmers simply ignore rem and use mod exclusively.</p>
+
+<p>The operator <b>&amp;</b> concatenates arrays, so we'll discuss it
+later.&nbsp;  We'll learn that a String is one type of array (an array of
+Characters), so <b>&amp;</b> can concatenate Strings.</p>
+
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

@@ -1,0 +1,197 @@
+-- Our solution to Outside Assignment 5 (Written for Ada 83 and Ada 95):
+with Text_IO; use Text_IO;
+procedure Ledit is
+  Max_Length      : constant := 80;
+  Max_Line_Number : constant := 29_999;
+  type Text is
+    record
+      Len : Integer range 0 .. Max_Length := 0;
+      Val : String(1 .. Max_Length);
+    end record;
+  type Link;
+  type P is access Link;
+  type Link Is
+    record
+      Num  : Positive;
+      Line : Text;
+      Next : P;
+    end record;
+  Head            : P := new Link;
+  Temp            : P;
+  Input_File      : File_Type;
+  Output_File     : File_Type;
+  Input           : Text;
+  Finished        : Boolean := False;
+  Line_Num        : Natural := 10;
+
+  function  Str(T : in Text) return String is separate;
+  procedure Read_Input_File is separate;
+  procedure Do_Command is separate;
+begin
+  Put("Input file: ");  Get_Line(Input.Val, Input.Len);
+  Read_Input_File;
+  Put("Output file: ");  Get_Line(Input.Val, Input.Len);
+  Create(Output_File, Name => Str(Input));
+
+  -- Get and process commands.
+  while not Finished loop
+    Put("> ");  Get_Line(Input.Val, Input.Len);
+    Do_Command;
+  end loop;
+
+  -- Write the output file.
+  Temp := Head.Next;      -- Skip unused link at start of linked list.
+  while Temp /= null loop
+    Put_Line(Output_File, Str(Temp.Line));      -- Write line of text.
+    Temp := Temp.Next;                               -- Get next link.
+  end loop;
+  Close(Output_File);
+end Ledit;
+
+separate (Ledit)
+function Str(T : in Text) return String is
+begin
+  return T.Val(1 .. T.Len);
+end Str;
+
+separate (Ledit)
+procedure Read_Input_File is
+begin   -- If the input file exists, display a message and read it in.
+  Open(Input_File, In_File, Str(Input));
+  Put_Line("File found.");
+  Temp := Head;
+  while not End_Of_File(Input_File) loop
+    Get_Line(Input_File, Input.Val, Input.Len);        -- Read a line.
+    Temp.Next := new Link'(Line_Num, Input, null);     -- Add to list.
+    Temp := Temp.Next;                        -- Advance to next link.
+    Line_Num := Line_Num + 10;
+  end loop;
+  Close(Input_File);
+exception  -- If the input file doesn't exist, just display a message.
+  when Name_Error => Put_Line("File not found.");
+end Read_Input_File;
+
+separate (Ledit)
+procedure Do_Command is
+  procedure Delete_First_Character(T : in out Text) is separate;
+  procedure Get_Leading_Integer(N : out Natural) is separate;
+  procedure Strip_Leading_Spaces_From_Input is separate;
+  procedure Add_Delete_Replace_Line is separate;
+  procedure List is separate;
+begin
+  Strip_Leading_Spaces_From_Input;
+  if Str(Input) = "exit" or Str(Input) = "EXIT" then
+    Finished := True;
+  elsif Input.Len >= 4 and (Input.Val(1 .. 4) = "list" or
+                            Input.Val(1 .. 4) = "LIST") then
+    List;
+  elsif Input.Len > 0 and Input.Val(1) not in '0' .. '9' then
+    Put_Line("Unrecognized command.");
+  elsif Input.Len > 0 then
+    Get_Leading_Integer(Line_Num);
+    if Line_Num not in 1 .. Max_Line_Number then
+      Put_Line("Illegal line number.");
+    else
+      Add_Delete_Replace_Line;
+    end if;
+  end if;
+exception
+  when Numeric_Error | Constraint_Error =>
+    Put_Line("Line number too large.");
+end Do_Command;
+
+separate (Ledit.Do_Command)
+procedure Add_Delete_Replace_Line is
+  Inp : Text := Input;
+begin
+  if Inp.Len > 0 and Inp.Val(1) = ' ' then   -- Treat "9x" like "9 x".
+    Delete_First_Character(Inp);
+  end if;
+  Temp := Head;      -- Find where this number belongs in linked list.
+  while Temp /= null and then Temp.Next /= null and then
+                              Temp.Next.Num <= Line_Num loop
+    if Temp.Next.Num = Line_Num then
+      Temp.Next := Temp.Next.Next;                     -- Delete line.
+    else
+      Temp := Temp.Next;              -- Advance to next link in list.
+    end if;
+  end loop;
+  if Input.Len > 0 then                                   -- Add line.
+    Temp.Next := new Link'(Line_Num, Inp, Temp.Next);
+  end if;
+end Add_Delete_Replace_Line;
+
+separate (Ledit.Do_Command)
+procedure Delete_First_Character(T : in out Text) is
+begin
+  T.Val(1 .. T.Len - 1) := T.Val(2 .. T.Len);
+  T.Len := T.Len - 1;
+end Delete_First_Character;
+
+separate (Ledit.Do_Command)
+procedure Get_Leading_Integer(N : out Natural) is
+  Ans: Integer := 0;
+begin
+  while Input.Len > 0 and Input.Val(1) in '0' .. '9' loop
+    Ans := Ans*10 + Character'Pos(Input.Val(1)) - Character'Pos('0');
+    Delete_First_Character(Input);
+  end loop;
+  N := Ans;
+end Get_Leading_Integer;
+
+separate (Ledit.Do_Command)
+procedure Strip_Leading_Spaces_From_Input is
+begin
+  while Input.Len > 0 and Input.Val(1) = ' ' loop
+    Delete_First_Character(Input);
+  end loop;
+end Strip_Leading_Spaces_From_Input;
+
+separate (Ledit.Do_Command)
+procedure List is
+  package IIO is new Integer_IO(Integer); use IIO;
+  Start, Finish : Natural;
+  Valid         : Boolean := True;
+begin
+  Input.Len := Input.Len - 4;       -- Delete the name of the command.
+  Input.Val(1 .. Input.Len) := Input.Val(5 .. Input.Len + 4);
+  Strip_Leading_Spaces_From_Input;
+  if Input.Len = 0 then           -- For "LIST" alone, list all lines.
+    Start := 0;
+    Finish := Max_Line_Number + 1;
+  else
+    Get_Leading_Integer(Start);            -- Get number after "LIST".
+    Strip_Leading_Spaces_From_Input;
+    if Input.Len = 0 then           -- For "LIST n", list only line n.
+      Finish := Start;
+    elsif Input.Val(1) /= '-' then          -- Else "-" must follow n.
+      Valid := False;
+    else
+      Delete_First_Character(Input);                -- Delete the "-".
+      Strip_Leading_Spaces_From_Input;
+      Get_Leading_Integer(Finish);            -- Get number after "-".
+      Strip_Leading_Spaces_From_Input;
+      if Finish = 0 and Start = 0 then        -- "LIST -" isn't valid.
+        Valid := False;
+      elsif Finish = 0 then  -- For "LIST n -", list n through end.
+        Finish := Max_Line_Number + 1;
+      end if;
+      Valid := Valid  and  Input.Len = 0;      -- No trailing garbage.
+    end if;
+  end if;
+  if not Valid then
+    Put_Line("Illegal syntax for LIST.");
+  else
+    Temp := Head.Next;  -- Skip unused link at start of linked list.
+    while Temp /= null and then Temp.Num <= Finish loop
+      if Temp.Num >= Start then
+        Put(Temp.Num, Width => 5);         -- Display line #, width 5.
+        Put_Line(' ' & Str(Temp.Line));       -- Display text of line.
+      end if;
+      Temp := Temp.Next;                             -- Get next link.
+    end loop;
+  end if;
+exception
+  when Numeric_Error | Constraint_Error =>
+    Put_Line("Line number too large in List.");
+end List;

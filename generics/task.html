@@ -1,0 +1,549 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Generics and Tasking' href='index.html' />
+<link rel='prev' title='Generics' href='generic.html' />
+<link rel='next' title='Outside Assignment 6' href='../oa6/index.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, task">
+
+<title>AdaTutor - Tasking</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="generic.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="../oa6/index.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Tasking</h2>
+<p>Here are two versions of a program with two parallel tasks.&nbsp;  Since the
+main program is a task, these two versions are equivalent.</p>
+
+<pre class="hl">   <span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span> <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>     
+   <span class="hl kwa">procedure</span> Task_Demo <span class="hl kwa">is</span>                 
+      <span class="hl kwa">task</span> A<span class="hl opt">;</span>                              
+      <span class="hl kwa">task body</span> A <span class="hl kwa">is</span>                       
+      <span class="hl kwa">begin</span>                                
+         Put_Line<span class="hl opt">(</span><span class="hl str">&quot;b&quot;</span><span class="hl opt">);</span>                     
+         Put_Line<span class="hl opt">(</span><span class="hl str">&quot;b&quot;</span><span class="hl opt">);</span>                     
+      <span class="hl kwa">end</span> A<span class="hl opt">;</span>                               
+   <span class="hl kwa">begin</span>                                  
+      Put_Line<span class="hl opt">(</span><span class="hl str">&quot;a&quot;</span><span class="hl opt">);</span>                       
+      Put_Line<span class="hl opt">(</span><span class="hl str">&quot;a&quot;</span><span class="hl opt">);</span>                       
+   <span class="hl kwa">end</span> Task_Demo<span class="hl opt">;</span>                         
+                                         
+   <span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span> <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>
+   <span class="hl kwa">procedure</span> Task_Demo <span class="hl kwa">is</span>
+      <span class="hl kwa">task</span> A<span class="hl opt">;</span>
+      <span class="hl kwa">task body</span> A <span class="hl kwa">is</span>
+      <span class="hl kwa">begin</span>
+         Put_Line<span class="hl opt">(</span><span class="hl str">&quot;a&quot;</span><span class="hl opt">);</span>
+         Put_Line<span class="hl opt">(</span><span class="hl str">&quot;a&quot;</span><span class="hl opt">);</span>
+      <span class="hl kwa">end</span> A<span class="hl opt">;</span>
+      <span class="hl kwa">task</span> B<span class="hl opt">;</span>
+      <span class="hl kwa">task body</span> B <span class="hl kwa">is</span>
+      <span class="hl kwa">begin</span>
+         Put_Line<span class="hl opt">(</span><span class="hl str">&quot;b&quot;</span><span class="hl opt">);</span>
+         Put_Line<span class="hl opt">(</span><span class="hl str">&quot;b&quot;</span><span class="hl opt">);</span>
+      <span class="hl kwa">end</span> B<span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">null</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Task_Demo<span class="hl opt">;</span>
+</pre>
+
+<p>Our program could have specified as many tasks as we like.&nbsp;  Also, our
+tasks could have declarations between <b>task body ... is</b> and
+<b>begin</b>.&nbsp;  If the computer has several processors, and the Ada
+compiler makes use of that fact, the tasks could actually run
+simultaneously.&nbsp;  Otherwise, the compiler may (but doesn't have to) write
+code to <b>time slice</b> among the tasks, making them <b>appear</b> to run
+simultaneously.&nbsp;  One implementation of Ada we tried time slices, and the
+output of the program looked something like this:
+<pre>
+ab
+
+ab
+</pre></p>
+
+<p>This happened because Put_Line is equivalent to Put plus New_Line, and thus
+Put_Line can get interrupted before the CR-LF is output.&nbsp;  Here one task
+displayed "a", the other task displayed "b", and then both tasks sent CR-LF.</p>
+
+<p>Another implementation of Ada we tried won't time-slice unless told to with
+a <b>pragma</b>, covered in the <a href='../advance/index.html'>Advanced
+Topics</a> section.&nbsp;  So the output of the same program with that
+implementation of Ada looked like this:
+<pre>
+a
+a
+b
+b
+</pre>
+
+<p>In this case one task ran to completion before the other task started.&nbsp;
+The point is that both implementations of Ada ran our program correctly, but
+with different results.</p>
+
+<p>When data are passed between tasks, we often don't want the process to be
+interrupted.&nbsp;  For example, suppose one task updates a record with several
+fields, such as a Date.&nbsp;  Another task reads the record.&nbsp;  We don't
+want the second task to interrupt the first in the middle of updating a
+record.&nbsp; Otherwise, the second task might read an updated Day field, an
+updated Month field, and an old Year field, which would be meaningless.&nbsp;
+Ada has an elegant solution to this problem, called the <b>rendezvous</b>.&nbsp;
+(Another solution, Ada 95 protected objects and types, will be discusses
+shortly.)</p>
+
+<p>In this example, we assume that the main program created both procedure
+Caller and task Server, and defined type Date:
+<pre class="hl">   <span class="hl kwa">procedure</span> Caller <span class="hl kwa">is</span>       
+      D <span class="hl opt">:</span> Date<span class="hl opt">;</span>               
+   <span class="hl kwa">begin</span>                     
+      <span class="hl slc">-----;                  </span>
+      <span class="hl slc">-----;  -- Block 1      </span>
+      <span class="hl slc">-----;                  </span>
+                             
+      Server<span class="hl opt">.</span>Update<span class="hl opt">(</span>D<span class="hl opt">);</span>       
+                             
+      <span class="hl slc">-----;                  </span>
+      <span class="hl slc">-----;  -- Block 2      </span>
+      <span class="hl slc">-----;                  </span>
+   <span class="hl kwa">end</span> Caller<span class="hl opt">;</span>               
+
+
+   <span class="hl kwa">task</span> Server <span class="hl kwa">is</span>
+      <span class="hl kwa">entry</span> Update<span class="hl opt">(</span>Item <span class="hl opt">:</span> <span class="hl kwa">in out</span> Date<span class="hl opt">);</span>
+   <span class="hl kwa">end</span> Server<span class="hl opt">;</span>
+   <span class="hl kwa">task body</span> Server <span class="hl kwa">is</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl slc">-----;  -- Block 3</span>
+      <span class="hl slc">-----;</span>
+      <span class="hl kwa">accept</span> Update<span class="hl opt">(</span>Item <span class="hl opt">:</span> <span class="hl kwa">in out</span> Date<span class="hl opt">)</span> <span class="hl kwa">do</span>
+         <span class="hl slc">-----;  -- Block 4</span>
+         <span class="hl slc">-----;</span>
+      <span class="hl kwa">end</span> Update<span class="hl opt">;</span>
+      <span class="hl slc">-----;  -- Block 5</span>
+      <span class="hl slc">-----;</span>
+   <span class="hl kwa">end</span> Server<span class="hl opt">;</span>
+</pre></p>
+
+<p>Code blocks 1 and 3 run in parallel (perhaps simultaneously, as
+discussed).&nbsp; Then Caller waits at the call to Server.Update while Server
+executes block 4.&nbsp; Block 4 is called the critical section of code, where
+records might be updated, etc.&nbsp;  When this <b>rendezvous</b> is over,
+blocks 2 and 5 run in parallel.&nbsp;  If Caller reaches the call before Server
+reaches <b>accept</b>, Caller will wait patiently there for Server.&nbsp;  If
+Server reaches <b>accept</b> first, it will wait patiently there for a caller.
+</p>
+
+<p>The call to Update looks like a procedure call.&nbsp;  We can't <b>use</b> a
+task, so the call requires dot notation.&nbsp;  The <b>entry</b> specification
+looks like a procedure specification, with <b>entry</b> replacing
+<b>procedure</b>.&nbsp;  The task specification may have any number of
+<b>entry</b> statements; if it has none, we write simply <b>task
+Server;</b>.&nbsp; The <b>accept</b> block looks like a procedure without
+declarations, but <b>accept</b> replaces <b>procedure</b>, and <b>do</b>
+replaces <b>is begin</b>.&nbsp;  An <b>accept</b> with no parameters and no
+statements may be written simply as <b>accept Update;</b>.</p>
+
+<p>In Ada 95 there's another way, simpler than the rendezvous, to assure that
+one task won't try to read an item while another task is writing it.&nbsp; It's
+called a <b>protected</b> object.&nbsp;  For example:
+<pre class="hl">   <span class="hl kwa">type</span> Date <span class="hl kwa">is</span> <span class="hl opt">...</span>                  
+   <span class="hl opt">...</span>                               
+   <span class="hl kwa">protected</span> Prot_Date <span class="hl kwa">is</span>            
+      <span class="hl kwa">function</span> Read <span class="hl kwa">return</span> Date<span class="hl opt">;</span>      
+      <span class="hl kwa">procedure</span> Write<span class="hl opt">(</span>D <span class="hl opt">:</span> <span class="hl kwa">in</span> Date<span class="hl opt">);</span>   
+   <span class="hl kwa">private</span>
+       Item <span class="hl opt">:</span> Date<span class="hl opt">;</span>                    
+   <span class="hl kwa">end</span> Prot_Date<span class="hl opt">;</span>                    
+                                       
+   <span class="hl kwa">protected body</span> Prot_Date <span class="hl kwa">is</span>
+      <span class="hl kwa">function</span> Read <span class="hl kwa">return</span> Date <span class="hl kwa">is</span>
+      <span class="hl kwa">begin</span>
+         <span class="hl kwa">return</span> Item<span class="hl opt">;</span>
+      <span class="hl kwa">end</span> Read<span class="hl opt">;</span>
+
+      <span class="hl kwa">procedure</span> Write<span class="hl opt">(</span>D <span class="hl opt">:</span> <span class="hl kwa">in</span> Date<span class="hl opt">)</span> <span class="hl kwa">is</span>
+      <span class="hl kwa">begin</span>
+         Item <span class="hl opt">:=</span> D<span class="hl opt">;</span>
+      <span class="hl kwa">end</span> Write<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Prot_Date<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>The syntax is similar to a package or a task, and the calls to Read and Write
+are similar to task calls: <b>D : Date;</b> ... <b>D := Prot_Date.Read;</b> ...
+<b>Prot_Date.Write(D);</b>.&nbsp;  Ada 95 guarantees that calls to the protected
+subprograms, in this case Read and Write, won't execute simultaneously.</p>
+
+<p>This is a protected <b>object</b>.  We'll learn about Ada 95 protected
+<b>types</b> shortly.</p>
+
+<p><div class="adat-q">
+<h2>Question</h2>
+<pre class="hl">   <span class="hl kwa">procedure</span> Master <span class="hl kwa">is              task</span> Slave <span class="hl kwa">is</span>
+                                       <span class="hl kwa">entry</span> Sync<span class="hl opt">;</span>
+                                    <span class="hl kwa">end</span> Slave<span class="hl opt">;</span>
+                                    <span class="hl kwa">task body</span> Slave <span class="hl kwa">is</span>
+   <span class="hl kwa">begin                            begin</span>
+     <span class="hl slc">-----;                           -----;</span>
+     <span class="hl slc">-----;  -- Block 1               -----;  -- Block 3</span>
+     <span class="hl slc">-----;                           -----;</span>
+     Slave<span class="hl opt">.</span>Sync<span class="hl opt">;</span>                      <span class="hl kwa">accept</span> Sync<span class="hl opt">;</span>
+     <span class="hl slc">-----;                           -----;</span>
+     <span class="hl slc">-----;  -- Block 2               -----;  -- Block 4</span>
+     <span class="hl slc">-----;                           -----;</span>
+   <span class="hl kwa">end</span> Master<span class="hl opt">;</span>                      <span class="hl kwa">end</span> Slave<span class="hl opt">;</span>
+
+</pre>
+
+<a href="javascript:adat_toggle('adat-task-a1', 'adat-task-a2');">True</a> or
+<a href="javascript:adat_toggle('adat-task-a2', 'adat-task-a1');">False</a>?&nbsp;  Statements in blocks 1 and 4 could execute simultaneously.
+
+<div id="adat-task-a1" class="adat-a" style="display: none">False.&nbsp;  Master
+will wait patiently at <b>Slave.Sync</b> for Slave to reach <b>accept</b>, or
+Slave will wait patiently at <b>accept</b> for Master to reach
+<b>Slave.Sync;</b>.&nbs; Therefore, blocks 1 and 4 can't execute simultaneously.
+</div>
+<div id="adat-task-a2" class="adat-a" style="display: none"><b>You're
+right!</b>&nbsp;  Master will wait patiently at <b>Slave.Sync</b> for Slave to
+reach <b>accept</b>, or Slave will wait patiently at <b>accept</b> for Master to
+reach <b>Slave.Sync;</b>.&nbsp;  Therefore, blocks 1 and 4 can't execute
+simultaneously.
+</div>
+
+</div></p>
+
+<p>If several tasks call an entry before the server reaches <b>accept</b>, the
+calls are queued first-in, first-out.</p>
+
+<p>We can write a <b>select</b> block to accept any of several different calls:
+<pre class="hl">   <span class="hl kwa">select</span>
+      <span class="hl kwa">accept</span> A<span class="hl opt">;</span>
+   <span class="hl kwa">or</span>
+      <span class="hl kwa">accept</span> B<span class="hl opt">(</span>I <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span> <span class="hl kwa">do</span>
+         <span class="hl slc">-----;</span>
+      <span class="hl kwa">end</span> B<span class="hl opt">;</span>
+   <span class="hl kwa">or</span>
+      <span class="hl kwa">accept</span> C<span class="hl opt">;</span>
+   <span class="hl kwa">end select</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>When <b>select</b> is reached, the task waits for a call to A or B or
+C.&nbsp;  If calls to more than one entry are pending, one will be chosen
+arbitrarily.</p>
+
+<p>A <b>delay</b> statement, used in ordinary code, will delay a specified
+number of seconds (plus any system overhead).&nbsp;  For example,
+<pre class="hl">   A<span class="hl opt">;</span>
+   <span class="hl kwa">delay</span> <span class="hl num">5.0</span><span class="hl opt">;</span>
+   B<span class="hl opt">;</span>
+</pre>
+will call A, delay five seconds (plus system overhead), and then call B.&nbsp;
+However, when used in a <b>select</b> block, the meaning is a bit
+different.&nbsp;  It's used to implement an <b>impatient server</b>.&nbsp;  For
+example,
+<pre class="hl">   <span class="hl kwa">select</span>
+      <span class="hl kwa">accept</span> A<span class="hl opt">;</span>
+   <span class="hl kwa">or</span>
+      <span class="hl kwa">accept</span> B<span class="hl opt">;</span>
+   <span class="hl kwa">or</span>
+      <span class="hl kwa">delay</span> <span class="hl num">5.0</span><span class="hl opt">;</span>
+      C<span class="hl opt">;</span>
+   <span class="hl kwa">end select</span><span class="hl opt">;</span>
+</pre>
+will wait up to five seconds for a call to A or B.&nbsp;  If no call is
+received, C will be called.</p>
+
+<p><b>Guards</b> can be used to switch alternatives of a <b>select</b> block on
+and off.&nbsp;  For example,
+<pre class="hl">   J <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+   <span class="hl opt">...</span>
+   <span class="hl kwa">select</span>
+      <span class="hl kwa">when</span> J <span class="hl opt">=</span> <span class="hl num">1</span> <span class="hl opt">=&gt;</span>
+      <span class="hl kwa">accept</span> A<span class="hl opt">;</span>
+   <span class="hl kwa">or</span>
+      <span class="hl kwa">when</span> J <span class="hl opt">=</span> <span class="hl num">2</span> <span class="hl opt">=&gt;</span>
+      <span class="hl kwa">accept</span> B<span class="hl opt">;</span>
+   <span class="hl kwa">end select</span><span class="hl opt">;</span>
+</pre></p>
+
+<p>Here A is an alternative only if the condition (J = 1) is true; B is an
+alternative only if J = 2.&nbsp;  If J /= 1, then no call to A will be accepted,
+even if one is pending.&nbsp;  If every branch of a <b>select</b> block has a
+guard and all guards are false, Program_Error is raised.</p>
+
+<p>In Ada 95, we have <b>protected types</b>.&nbsp;  For example:
+<pre class="hl">   <span class="hl kwa">protected type</span> P <span class="hl kwa">is</span>            
+      <span class="hl kwa">entry</span> One<span class="hl opt">;</span>                   
+      <span class="hl kwa">entry</span> Two<span class="hl opt">(</span>I <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">);</span>   
+   <span class="hl kwa">private</span>                        
+      X<span class="hl opt">,</span> Y <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>              
+      <span class="hl opt">...</span>
+   <span class="hl kwa">end</span> P<span class="hl opt">;</span>                         
+
+   <span class="hl kwa">protected body</span> P <span class="hl kwa">is</span>
+      <span class="hl kwa">entry</span> One <span class="hl kwa">when</span> X <span class="hl opt">&gt;</span> Y <span class="hl kwa">is</span>
+      <span class="hl kwa">begin</span>
+         <span class="hl opt">...</span>
+      <span class="hl kwa">end</span> One<span class="hl opt">;</span>
+
+      <span class="hl kwa">entry</span> Two<span class="hl opt">(</span>I <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span> <span class="hl kwa">when</span> <span class="hl kwd">True</span> <span class="hl kwa">is</span>
+      <span class="hl kwa">begin</span>
+         <span class="hl opt">...</span>
+      <span class="hl kwa">end</span> Two<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> P<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>We can declare <b>Q : P;  J : Integer;</b> and then call <b>Q.One;</b> and
+<b>Q.Two(J);</b>.&nbsp;  In the body, each entry has a <b>barrier</b>, similar
+to the guards just discussed.&nbsp;  Here a call to One can be accepted only if X &gt; Y; otherwise, the call is queued.&nbsp;  A call to Two can always be
+accepted because the barrier is simply True.&nbsp;  At the end of each call,
+all the barriers are re-evaluated.</p>
+
+<p>In Ada 95 an entry can requeue itself on another entry.&nbsp;  For example,
+the body of Two can execute <b>requeue One;</b> to requeue itself on entry One.
+</p>
+
+
+<p>Ada 95 also lets us write
+<pre class="hl">   <span class="hl kwa">select</span>
+      <span class="hl kwa">delay</span> <span class="hl num">10.0</span><span class="hl opt">;</span>
+      C<span class="hl opt">;</span>
+   <span class="hl kwa">then abort</span>
+      A<span class="hl opt">;</span>
+      B<span class="hl opt">;</span>
+   <span class="hl kwa">end select</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Here if the statements in the second block (the calls to A and B) take more
+than 10.0 seconds, they are abandoned and the first block (the call to C) is
+executed instead.</p>
+
+<p>Tasks &ldquo;die&rdquo; in three ways.&nbsp;  The least elegant way is for a
+task to abort it, e.g., <b>abort Server;</b>.&nbsp;  This is drastic, because
+Server might be doing anything.&nbsp; A better way is for a family of tasks each
+to include <b>terminate;</b> as one alternative in a <b>select</b> block.&nbsp;
+(A &ldquo;family&rdquo; of tasks is the set of tasks created by one
+&ldquo;parent,&rdquo; for example, the main program.)&nbsp;  When calls to the
+entries in the tasks all cease, all tasks in the family will reach the
+<b>terminate</b> alternative, and all will die together.</p>
+
+<p>But the most orderly way for a task to die is for it simply to reach its last
+statement.&nbsp;  For example, task T below will continue to accept calls to T.A
+and T.B until a task calls T.Shutdown.&nbsp;  At that time, T will die.</p>
+
+<pre class="hl">   <span class="hl kwa">task</span> T <span class="hl kwa">is</span>                   
+      <span class="hl kwa">entry</span> A<span class="hl opt">;</span>                  
+      <span class="hl kwa">entry</span> B<span class="hl opt">;</span>                  
+      <span class="hl kwa">entry</span> Shutdown<span class="hl opt">;</span>           
+   <span class="hl kwa">end</span> T<span class="hl opt">;</span>                      
+                               
+   <span class="hl kwa">task body</span> T <span class="hl kwa">is</span>
+      Done <span class="hl opt">:</span> <span class="hl kwb">Boolean</span> <span class="hl opt">:=</span> <span class="hl kwd">False</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">while not</span> Done <span class="hl kwa">loop</span>
+         <span class="hl kwa">select</span>
+            <span class="hl kwa">accept</span> A <span class="hl kwa">do</span>
+               <span class="hl slc">-----;</span>
+            <span class="hl kwa">end</span> A<span class="hl opt">;</span>
+         <span class="hl kwa">or</span>
+            <span class="hl kwa">accept</span> B <span class="hl kwa">do</span>
+               <span class="hl slc">-----;</span>
+            <span class="hl kwa">end</span> B<span class="hl opt">;</span>
+         <span class="hl kwa">or</span>
+            <span class="hl kwa">accept</span> Shutdown<span class="hl opt">;</span>
+            Done <span class="hl opt">:=</span> <span class="hl kwd">True</span><span class="hl opt">;</span>
+         <span class="hl kwa">end select</span><span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> T<span class="hl opt">;</span>
+</pre>
+
+<p>Trying to call an entry of a task that has died will raise
+Tasking_Error.&nbsp; Also, a task can't terminate until all the tasks it creates
+terminate.&nbsp;  In particular, the main program can't return to the operating
+system until all tasks in the program have died.&nbsp;  Programmers must be
+careful to avoid possible deadlocks.&nbsp;  Ada solves many problems that
+plague other languages, but unfortunately the deadlock problem remains unsolved.</p>
+
+<p>A <b>select</b> block may have an <b>else</b> alternative.&nbsp;  Here's an
+example of a very impatient server.&nbsp;  If a call to A or B is pending it
+will be served, otherwise, C will be called:
+<pre class="hl">   <span class="hl kwa">select</span>
+      <span class="hl kwa">accept</span> A <span class="hl kwa">do</span>
+         <span class="hl slc">-----;</span>
+      <span class="hl kwa">end</span> A<span class="hl opt">;</span>
+   <span class="hl kwa">or</span>
+      <span class="hl kwa">accept</span> B <span class="hl kwa">do</span>
+         <span class="hl slc">-----;</span>
+      <span class="hl kwa">end</span> B<span class="hl opt">;</span>
+   <span class="hl kwa">else</span>
+      C<span class="hl opt">;</span>
+   <span class="hl kwa">end select</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p><div class="adat-q">
+<h2>Question</h2>
+<pre class="hl">   <span class="hl kwa">type</span> Date <span class="hl kwa">is</span> <span class="hl opt">...</span>                  
+   <span class="hl kwa">task</span> Data_Protector <span class="hl kwa">is</span>           
+      <span class="hl kwa">entry</span> Read_Date<span class="hl opt">(</span>D <span class="hl opt">:</span> <span class="hl kwa">out</span> Date<span class="hl opt">);</span> 
+      <span class="hl kwa">entry</span> Write_Date<span class="hl opt">(</span>D <span class="hl opt">:</span> <span class="hl kwa">in</span> Date<span class="hl opt">);</span> 
+      <span class="hl kwa">entry</span> Shutdown<span class="hl opt">;</span>                
+   <span class="hl kwa">end</span> Data_Protector<span class="hl opt">;</span>              
+                                   
+                                   
+   <span class="hl kwa">task body</span> Data_Protector <span class="hl kwa">is</span>
+      Save_D <span class="hl opt">:</span> Date<span class="hl opt">;</span>
+      Done   <span class="hl opt">:</span> <span class="hl kwb">Boolean</span> <span class="hl opt">:=</span> <span class="hl kwd">False</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">accept</span> Write_Date<span class="hl opt">(</span>D <span class="hl opt">:</span> <span class="hl kwa">in</span> Date<span class="hl opt">)</span> <span class="hl kwa">do</span>
+         Save_D <span class="hl opt">:=</span> D<span class="hl opt">:</span>
+      <span class="hl kwa">end</span> Write_Date<span class="hl opt">;</span>
+      <span class="hl kwa">while not</span> Done <span class="hl kwa">loop</span>
+         <span class="hl kwa">select</span>
+            <span class="hl kwa">accept</span> Read_Date<span class="hl opt">(</span>D <span class="hl opt">:</span> <span class="hl kwa">out</span> Date<span class="hl opt">)</span> <span class="hl kwa">do</span>
+               D <span class="hl opt">:=</span> Save_D<span class="hl opt">;</span>
+            <span class="hl kwa">end</span> Read_Date<span class="hl opt">;</span>
+         <span class="hl kwa">or</span>
+            <span class="hl kwa">accept</span> Write_Date<span class="hl opt">(</span>D <span class="hl opt">:</span> <span class="hl kwa">in</span> Date<span class="hl opt">)</span> <span class="hl kwa">do</span>
+               Save_D <span class="hl opt">:=</span> D<span class="hl opt">;</span>
+            <span class="hl kwa">end</span> Write_Date<span class="hl opt">;</span>
+         <span class="hl kwa">or</span>
+            <span class="hl kwa">accept</span> Shutdown<span class="hl opt">;</span>
+            Done <span class="hl opt">:=</span> <span class="hl kwd">True</span><span class="hl opt">;</span>
+         <span class="hl kwa">end select</span><span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Data_Protector<span class="hl opt">;</span>
+</pre>
+
+<a href="javascript:adat_toggle('adat-task2-a1', 'adat-task2-a2');">True</a> or
+<a href="javascript:adat_toggle('adat-task2-a2', 'adat-task2-a1');">False</a>?&nbsp;
+This task must serve at least one call to Write_Date before it will accept calls
+to Read_Date.
+
+<div id="adat-task2-a1" class="adat-a" style="display: none"><b>You are
+right!</b>&nbsp; The extra <b>accept</b> block outside the loop forces us to
+call Write_Date at least once before we can call Read_Data.</div>
+
+<div id="adat-task2-a2" class="adat-a" style="display: none">Ture.&nbsp; The
+extra <b>accept</b> block outside the loop forces us to call Write_Date at least
+once before we can call Read_Data.</div>
+
+</div></p>
+
+<p>The <b>select</b> block can be used in a caller as well as a server.&nbsp;
+The following block waits up to five seconds to call entry A in task T.&nbsp; If
+T isn't ready to accept the call in five seconds, the block calls procedure B
+instead.&nbsp;  This is called an impatient customer:
+<pre class="hl">   <span class="hl kwa">select</span>
+      T<span class="hl opt">.</span>A<span class="hl opt">;</span>
+   <span class="hl kwa">or</span>
+      <span class="hl kwa">delay</span> <span class="hl num">5.0</span><span class="hl opt">;</span>
+      B<span class="hl opt">;</span>
+   <span class="hl kwa">end select</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>A very impatient customer can be implemented with <b>else</b>.&nbsp;  This
+block calls T.A only if T is ready to accept the call immediately, otherwise,
+it calls B.
+<pre class="hl">   <span class="hl kwa">select</span>
+      T<span class="hl opt">.</span>A<span class="hl opt">;</span>
+   <span class="hl kwa">else</span>
+      B<span class="hl opt">;</span>
+   <span class="hl kwa">end select</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Task <b>types</b> may be declared.&nbsp;  This permits us to create an array
+of tasks, and it lets us bring tasks into existence via access types.&nbsp;
+Tasks begin executing as soon as they're brought into existence.&nbsp;  For
+example,
+<pre class="hl">   <span class="hl kwa">task type</span> X <span class="hl kwa">is</span>
+      <span class="hl kwa">entry</span> E<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> X<span class="hl opt">;</span>
+   <span class="hl kwa">type</span> P <span class="hl kwa">is access</span> X<span class="hl opt">;</span>
+   X1 <span class="hl opt">:</span> P<span class="hl opt">;</span>
+   A <span class="hl opt">:</span> <span class="hl kwa">array</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">10</span><span class="hl opt">)</span> <span class="hl kwa">of</span> X<span class="hl opt">;</span>
+   <span class="hl kwa">task body</span> X <span class="hl kwa">is</span>
+      <span class="hl opt">...</span>
+   <span class="hl kwa">end</span> X<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Entries to these tasks are called thus:
+<pre class="hl">   A<span class="hl opt">(</span><span class="hl num">5</span><span class="hl opt">).</span>E<span class="hl opt">;</span>
+   X1 <span class="hl opt">:=</span> <span class="hl kwa">new</span> X<span class="hl opt">;</span>
+   X1<span class="hl opt">.</span><span class="hl kwa">all</span><span class="hl opt">.</span>E<span class="hl opt">;</span> <span class="hl slc">-- or just X1.E;</span>
+</pre>
+</p>
+
+<p>Ada comes with a package Ada.Calendar.&nbsp;  In Ada 83, the name is simply
+Calendar, and Ada 95 accepts the shorter name for compatibility.&nbsp;  The
+specification of Ada.Calendar is in
+<a href='http://www.adahome.com/rm95/rm9x-09-06.html'>section 9.6</a> of the Ada
+95 RM.&nbsp;  The part that concerns us here is shown below.&nbsp;  Type
+Duration is a fixed point type built into Ada; the <b>delay</b> statement
+discussed earlier takes an object of type Duration.
+<pre class="hl">   <span class="hl kwa">package</span> Ada<span class="hl opt">.</span>Calendar <span class="hl kwa">is</span>
+      <span class="hl kwa">type</span> Time <span class="hl kwa">is private</span><span class="hl opt">;</span>
+      <span class="hl kwa">function</span> Clock <span class="hl kwa">return</span> Time<span class="hl opt">;</span>
+      <span class="hl kwa">function</span> <span class="hl str">&quot;+&quot;</span><span class="hl opt">(</span>Left <span class="hl opt">:</span> Time<span class="hl opt">;</span> Right <span class="hl opt">:</span> <span class="hl kwb">Duration</span><span class="hl opt">)</span> <span class="hl kwa">return</span> Time<span class="hl opt">;</span>
+      <span class="hl kwa">function</span> <span class="hl str">&quot;-&quot;</span><span class="hl opt">(</span>Left <span class="hl opt">:</span> Time<span class="hl opt">;</span> Right <span class="hl opt">:</span> Time<span class="hl opt">)</span>     <span class="hl kwa">return</span> <span class="hl kwb">Duration</span><span class="hl opt">;</span>
+      <span class="hl opt">...</span>
+   <span class="hl kwa">end</span> Ada<span class="hl opt">.</span>Calendar<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Not shown are a few other operators, and subprograms to convert between type
+Time and the year, month, day, and number of seconds since midnight.</p>
+
+<p>Let's write a program segment, using Calendar, that calls A every five
+seconds.&nbsp; The following example is for Ada 83 as well as Ada 95:
+<pre class="hl">   <span class="hl kwa">with</span> Calendar<span class="hl opt">;</span> <span class="hl kwa">use</span> Calendar<span class="hl opt">;</span>
+   <span class="hl opt">...</span>
+   Next_Event <span class="hl opt">:</span> Time <span class="hl opt">:=</span> Clock <span class="hl opt">+</span> <span class="hl num">5.0</span><span class="hl opt">;</span>
+   <span class="hl opt">...</span>
+   <span class="hl kwa">loop</span>
+      <span class="hl kwa">delay</span> Next_Event <span class="hl opt">-</span> Clock<span class="hl opt">;</span>
+      A<span class="hl opt">;</span>
+      Next_Event <span class="hl opt">:=</span> Next_Event <span class="hl opt">+</span> <span class="hl num">5.0</span><span class="hl opt">;</span>
+   <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Note that this loop accounts for the time required to call A.&nbsp;  Instead
+of delaying 5.0, we calculate the time of the next call in Next_Event, and delay
+that time minus the current time, which we obtain by calling Clock.&nbsp;  Thus
+the program will go through the loop once every 5.0 seconds, even if it takes a
+little time to call A.&nbsp;  In Ada 95, we may write <b>delay until
+Next_Event;</b> which guarantees that no higher-priority task will interrupt the
+calculation of Next_Event - Clock, thereby causing the delay to be too long.</p>
+
+<p>The <b>-</b> and <b>+</b> operators in this example all use infix functions
+from Calendar.</p>
+
+<p>We're now ready for Outside Assignment 6!&nbsp;  It will be much simpler than
+Outside Assignment 5.</p>
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

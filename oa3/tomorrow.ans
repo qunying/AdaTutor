@@ -1,0 +1,20 @@
+-- Our solution to Outside Assignment 3:
+separate (Nextdate)
+function Tomorrow(Today : in Date) return Date is
+  Length : array(Month_Type) of Day_Subtype :=
+                              (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+  Answer : Date;
+begin
+  if Today.Year mod 4 = 0 and
+                       (Today.Year mod 100 /= 0 or Today.Year mod 400 = 0) then
+    Length(Feb) := 29;
+  end if;
+  if Today.Day /= Length(Today.Month) then                 -- Not end of month.
+    Answer := (Today.Day + 1, Today.Month, Today.Year);
+  elsif Today.Month /= Dec then           -- End of month, but not end of year.
+    Answer := (1, Month_Type'Succ(Today.Month), Today.Year);
+  else                                                          -- End of year.
+    Answer := (1, Jan, Today.Year + 1);
+  end if;
+  return Answer;
+end Tomorrow;

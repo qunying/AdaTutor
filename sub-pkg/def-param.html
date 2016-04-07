@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Subprograms and Packages' href='index.html' />
+<link rel='prev' title='Procedures and Functions' href='proc-func.html' />
+<link rel='next' title='Packages' href='package.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, default parameter">
+
+<title>AdaTutor - Default Parameters</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="proc-func.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="package.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Default Parameters</h2>
+<p>The <b>in</b> parameters of a subprogram specification may be given default
+values.&nbsp; For example, here's a simplified version of the specification for
+the procedure Put in Ada.Integer_Text_IO (the actual specification can be found
+in <a href='http://www.adahome.com/rm95/rm9x-A-10-01.html'>Annex A.10.1</a> of
+the Ada 95 RM):
+<pre class="hl">    <span class="hl kwa">procedure</span> Put<span class="hl opt">(</span>Item  <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+                  Width <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span> <span class="hl opt">:=</span> <span class="hl num">6</span><span class="hl opt">;</span>
+                  Base  <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span> <span class="hl opt">:=</span> <span class="hl num">10</span><span class="hl opt">);</span>
+</pre>
+</p>
+
+<p>This means that, in calls to Put, the Width and Base parameters are
+optional.&nbsp; If Width is omitted, it's assumed to be 6, and if Base is
+omitted, it's assumed to be 10.&nbsp;  If either of these parameters is given in
+the call, the default value is overridden.&nbsp;  (The default value for Width
+is shown here as 6.&nbsp; Actually, it depends on the implementation of
+Ada.&nbsp;  Of course, the default value for Base is always 10.)</p>
+
+<p>Default parameters let us make our Ada subprograms both <b>flexible</b> and
+<b>easy to</b> use.&nbsp;  In other languages, we'd often have to choose
+between these two qualities.&nbsp;  For example, suppose J is an integer.&nbsp;
+Here are some calls to Put:
+<pre class="hl"> Put<span class="hl opt">(</span>J<span class="hl opt">);</span>
+ Put<span class="hl opt">(</span>J<span class="hl opt">,</span> Width <span class="hl opt">=&gt;</span> <span class="hl num">4</span><span class="hl opt">);</span>
+ Put<span class="hl opt">(</span>J<span class="hl opt">,</span> Base <span class="hl opt">=&gt;</span> <span class="hl num">16</span><span class="hl opt">);</span>
+ Put<span class="hl opt">(</span>J<span class="hl opt">,</span> Base <span class="hl opt">=&gt;</span> <span class="hl num">16</span><span class="hl opt">,</span> Width <span class="hl opt">=&gt;</span> <span class="hl num">4</span><span class="hl opt">);</span>
+</pre></p>
+
+<p>The first parameter in each call could have been given as
+<b>Item =&gt; J</b>, but everyone remembers that the first parameter of Put is
+the item, so named notation seems unnecessary for this parameter.&nbsp; However,
+Width and Base are used less frequently.&nbsp;  We used named notation for these
+parameters so the reader of our code wouldn't have to remember which parameter
+comes second and which comes third.&nbsp;  Note that if we omit the second
+parameter and specify the third, we <b>must</b> use named notation for the third
+parameter; we're not allowed to write Put(J, ,16); as in some languages.</p>
+
+<p>If we were writing Put in another language, we'd have to choose either making
+the user specify the width and the base in every call (giving flexibility), or
+writing Put with only one parameter (giving ease of use).&nbsp;  In Ada, default
+parameters give us both flexibility and ease of use!</p>
+
+<p>Ada.Text_IO.New_Line has one parameter, Spacing, defaulted to 1.&nbsp;  Thus,
+we can call <b>New_Line;</b> to get one CR-LF, or, for example,
+<b>New_Line(3);</b> to get three.</p>
+
+<p>Default values may also be given in record definitions.&nbsp;  If we write
+<pre class="hl"> <span class="hl kwa">type</span> Month_Type <span class="hl kwa">is</span> <span class="hl opt">(</span>Jan<span class="hl opt">,</span> Feb<span class="hl opt">,</span> Mar<span class="hl opt">,</span> Apr<span class="hl opt">,</span> May<span class="hl opt">,</span> Jun<span class="hl opt">,</span> Jul<span class="hl opt">,</span> Aug<span class="hl opt">,</span> Sep<span class="hl opt">,</span> Oct<span class="hl opt">,</span> Nov<span class="hl opt">,</span> Dec<span class="hl opt">);</span>
+ <span class="hl kwa">subtype</span> Day_Subtype <span class="hl kwa">is</span> <span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">31</span><span class="hl opt">;</span>
+ <span class="hl kwa">type</span> Date <span class="hl kwa">is record</span>
+    Day   <span class="hl opt">:</span> Day_Subtype<span class="hl opt">;</span>
+    Month <span class="hl opt">:</span> Month_Type<span class="hl opt">;</span>
+    Year  <span class="hl opt">:</span> <span class="hl kwb">Integer</span> <span class="hl opt">:=</span> <span class="hl num">1776</span><span class="hl opt">;</span>
+ <span class="hl kwa">end record</span><span class="hl opt">;</span>
+ USA <span class="hl opt">:</span> Date<span class="hl opt">;</span>
+</pre>
+then <b>USA.Year</b> is set to 1776 when the line declaring <b>USA</b> is
+elaborated.&nbsp;  Every time an object of type Date is declared, its Year field
+is set to 1776.&nbsp; However, there's a difference between default values in
+records and default parameters in subprograms.&nbsp;  We can't write
+USA := (4, Jul); all fields of a record must be specified in an aggregate.</p>
+
+<p><div class="adat-q">
+<h2>Question</h2>
+<pre class="hl">   <span class="hl kwa">procedure</span> Put<span class="hl opt">(</span>Item  <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+                 Width <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span> <span class="hl opt">:=</span> <span class="hl num">11</span><span class="hl opt">;</span>
+                 Base  <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span> <span class="hl opt">:=</span> <span class="hl num">10</span><span class="hl opt">);</span>
+</pre>
+Which one of these is <b>legal</b>?
+<ol>
+<li>
+<a href="javascript:adat_toggle('adat-subpa1');">Put(Item => 23, 5, 10);</a>
+<div id="adat-subpa1" class="adat-a" style="display: none">No, number 1 is
+illegal because positional notation may not follow named.
+</div>
+</li>
+
+<li>
+<a href="javascript:adat_toggle('adat-subpa2');">Put(23, 5)</a>
+<div id="adat-subpa2" class="adat-a" style="display: none">
+<b>You're right!</b>&nbsp;  The third parameter may be omitted because it has a
+default value.&nbsp;  In number 1, positional notation follows named, which
+isn't allowed, and in number 3, the separators should be commas.</div>
+</li>
+
+<li>
+<a href="javascript:adat_toggle('adat-subpa3');">Put(23; 5; 10);</a>
+<div id="adat-subpa3" class="adat-a" style="display: none">No, number 3 is
+illegal because in a call, the parameters are always separated with commas, not
+semicolons.
+</div>
+</li>
+</ol>
+
+</div></p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

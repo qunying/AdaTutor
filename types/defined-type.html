@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Access Types, User Defined Types, and Derived Types' href='index.html' />
+<link rel='prev' title='Access Types' href='access-type.html' />
+<link rel='next' title='Derived Types' href='derived-type.html' />
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, defined type, portability">
+
+<title>AdaTutor - User Defined Types and Portability</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="access-type.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="derived-type.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>User Defined Types and Portability</h2>
+<p>In some implementations of Ada, Integers are represented by 32-bit two's
+complement numbers, giving the range -2_147_483_648 .. 2_147_483_647.&nbsp;
+Other implementations use 16-bit two's complement Integers, giving the range
+-32_768 .. 32_767.&nbsp;  However, some of the 16-bit implementations also
+provide a 32-bit type called Long_Integer.</p>
+
+<p>Suppose we need a variable called Number to count from zero to one
+million.&nbsp;  We could declare <b>Number: Integer;</b> for the 32-bit
+implementation, and change this to <b>Number: Long_Integer;</b> when we port the
+program to a machine running a 16-bit version that provides Long_Integer.&nbsp;
+However, we could also declare
+<pre class="hl">   <span class="hl kwa">type</span> Counter <span class="hl kwa">is range</span> <span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">1_000_000</span><span class="hl opt">;</span>
+   Number <span class="hl opt">:</span> Counter<span class="hl opt">;</span>
+</pre>
+and both implementations of Ada will automatically select the appropriate
+internal representation for our type Counter!&nbsp;  The 32-bit Ada will select
+Integer, and the 16-bit Ada will select Long_Integer.&nbsp;  This gives us the
+advantage that no code has to be changed when the program is ported.&nbsp;
+Counter is called a <b>user-defined type</b>.&nbsp;  Of course, we must use
+explicit type conversion to mix objects of type Counter with objects of other
+types.</p>
+
+<p>Similarly, different implementations of Ada provide different representations
+for type Float, and some provide a type Long_Float.&nbsp;  We can declare
+<pre class="hl">   <span class="hl kwa">type</span> Real <span class="hl kwa">is digits</span> <span class="hl num">8</span><span class="hl opt">;</span>
+   F <span class="hl opt">:</span> Real<span class="hl opt">;</span>
+</pre>
+and be certain that F will have at least 8 digits of accuracy on any machine
+that accepts this type declaration.&nbsp;  A range constraint is optional.</p>
+
+<p>User defined types also apply to fixed point numbers; these will be discussed
+in the section on <a href='../more/index.html'>More Records and Types</a>.</p>
+
+<p>It's possible to make a declaration that will be accepted by only some
+implementations of Ada.&nbsp;  For example, if we declare
+<pre class="hl">   <span class="hl kwa">type</span> X <span class="hl kwa">is digits</span> <span class="hl num">30</span> <span class="hl kwa">range</span> <span class="hl num">0.0</span> <span class="hl opt">..</span> <span class="hl num">100.0</span><span class="hl opt">;</span>
+</pre>
+some implementations of Ada might have to report that there's no available type
+that gives at least 30 digits of accuracy.</p>
+
+<p>No language can give perfectly portable programs, but Ada truly advanced the
+state of the art in portability.</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

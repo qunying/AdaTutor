@@ -1,0 +1,7 @@
+-- Dummy solution for Outside Assignment 2
+-- Edit to become your real solution.
+separate (Tritest)
+function Tritype(Len1, Len2, Len3 : in Integer) return Triangle is
+begin
+  return Not_A_Triangle;
+end Tritype;

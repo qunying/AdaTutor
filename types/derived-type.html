@@ -1,0 +1,129 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Access Types, User Defined Types, and Derived Types' href='index.html' />
+<link rel='prev' title='User Defined Types and Portability' href='defined-type.html' />
+<link rel='next' title='Exceptions, Ada.Text_IO' href='../exception/index.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, types">
+
+<title>AdaTutor - Derived Types</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+ <td><div class='nav-prev'><a href="defined-type.html">Prev</a></div></td>
+ <td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+ <td><div class="nav-next"><a href="../exception/index.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Derived Types</h2>
+<p>Derived types are created to prevent accidental mixing of objects.&nbsp;
+Unlike subtypes, derived types are distinct types.&nbsp;  For example,
+<pre class="hl">   <span class="hl kwa">type</span> No_Of_Apples  <span class="hl kwa">is new</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+   <span class="hl kwa">type</span> No_Of_Oranges <span class="hl kwa">is new</span> <span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">100</span><span class="hl opt">;</span>
+   NOA <span class="hl opt">:</span> No_Of_Apples<span class="hl opt">;</span>
+   NOO <span class="hl opt">:</span> No_Of_Oranges<span class="hl opt">;</span>
+   I   <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+   <span class="hl opt">...</span>
+   NOA <span class="hl opt">:=</span> NOA <span class="hl opt">+</span> NOO<span class="hl opt">;</span>  <span class="hl slc">-- illegal</span>
+   NOA <span class="hl opt">:=</span> NOA <span class="hl opt">+</span> NOA<span class="hl opt">;</span>
+   NOA <span class="hl opt">:=</span> NOA <span class="hl opt">+</span> I<span class="hl opt">;</span>  <span class="hl slc">-- illegal</span>
+   NOA <span class="hl opt">:=</span> NOA <span class="hl opt">+</span> No_Of_Apples<span class="hl opt">(</span>I<span class="hl opt">);</span>
+   NOA <span class="hl opt">:=</span> NOA <span class="hl opt">+</span> No_Of_Apples<span class="hl opt">(</span>NOO<span class="hl opt">);</span>
+</pre></p>
+
+<p>A derived type is denoted by the reserved word <b>new</b> followed by an
+existing type like Integer.&nbsp; The operations that Ada knows for Integers,
+such as addition, are &ldquo;inherited&rdquo; by the derived types so that, for
+example, Ada knows how to add two objects of type No_Of_Oranges.&nbsp;  As the
+examples above show, we can't mix types accidentally, but we can deliberately
+mix them by converting first.</p>
+
+<p>In summary,
+<ul>
+<li><b>Subtypes</b> are usually created to provide range constraints:
+<pre class="hl">   <span class="hl kwa">subtype</span> Day_Subtype <span class="hl kwa">is</span> <span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">31</span><span class="hl opt">;</span>
+</pre>
+</li>
+
+<li><b>Derived types</b> are usually created to prevent accidental mixing:
+<pre class="hl">   <span class="hl kwa">type</span> No_Of_Apples  <span class="hl kwa">is new</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+   <span class="hl kwa">type</span> No_Of_Oranges <span class="hl kwa">is new</span> <span class="hl kwb">Integer</span> <span class="hl opt">... ;</span>
+</pre>
+</li>
+
+<li><b>User-defined types</b> are usually created to gain portability:
+<pre class="hl">   <span class="hl kwa">type</span> Counter <span class="hl kwa">is range</span> <span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">1_000_000</span><span class="hl opt">;</span>
+   <span class="hl kwa">type</span> Real    <span class="hl kwa">is digits</span> <span class="hl num">8</span><span class="hl opt">;</span>
+</pre>
+</li>
+</ul>
+
+<p><div class="adat-q">
+<h2>Question</h2>
+<pre class="hl">  <span class="hl kwa">type</span> Meters            <span class="hl kwa">is new</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+  <span class="hl kwa">type</span> Seconds           <span class="hl kwa">is new</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+  <span class="hl kwa">type</span> Meters_Per_Second <span class="hl kwa">is new</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+  <span class="hl opt">...</span>
+  <span class="hl kwa">function</span> <span class="hl str">&quot;*&quot;</span><span class="hl opt">(</span>Left <span class="hl opt">:</span> <span class="hl kwa">in</span> Meters_Per_Second<span class="hl opt">;</span> Right <span class="hl opt">:</span> <span class="hl kwa">in</span> Seconds<span class="hl opt">)</span>
+    <span class="hl kwa">return</span> Meters <span class="hl kwa">is</span>
+  <span class="hl kwa">begin</span>
+     <span class="hl kwa">return</span> Meters<span class="hl opt">(</span>Left<span class="hl opt">) *</span> Meters<span class="hl opt">(</span>Right<span class="hl opt">);</span>
+  <span class="hl kwa">end</span> <span class="hl str">&quot;*&quot;</span><span class="hl opt">;</span>
+  <span class="hl kwa">function</span> <span class="hl str">&quot;*&quot;</span><span class="hl opt">(</span>Left <span class="hl opt">:</span> <span class="hl kwa">in</span> Seconds<span class="hl opt">;</span> Right <span class="hl opt">:</span> <span class="hl kwa">in</span> Meters_Per_Second<span class="hl opt">)</span>
+    <span class="hl kwa">return</span> Meters <span class="hl kwa">is</span>
+  <span class="hl kwa">begin</span>
+     <span class="hl kwa">return</span> Right <span class="hl opt">*</span> Left<span class="hl opt">;</span>
+  <span class="hl kwa">end</span> <span class="hl str">&quot;*&quot;</span><span class="hl opt">;</span>
+  <span class="hl kwa">function</span> <span class="hl str">&quot;/&quot;</span><span class="hl opt">(</span>Left <span class="hl opt">:</span> <span class="hl kwa">in</span> Meters<span class="hl opt">;</span> Right <span class="hl opt">:</span> <span class="hl kwa">in</span> Seconds<span class="hl opt">)</span>
+    <span class="hl kwa">return</span> Meters_Per_Second <span class="hl kwa">is</span>
+  <span class="hl kwa">begin</span>
+     <span class="hl kwa">return</span> Meters_Per_Second<span class="hl opt">(</span>Left<span class="hl opt">) /</span> Meters_Per_Second<span class="hl opt">(</span>Right<span class="hl opt">);</span>
+  <span class="hl kwa">end</span> <span class="hl str">&quot;/&quot;</span><span class="hl opt">;</span>
+</pre>
+The above program segment is an example of ...
+<ol>
+<li>
+<a href="javascript:adat_toggle('adat-type-a1');">derived types.</a>
+<div id="adat-type-a1" class="adat-a" style="display: none"><b>You're
+right!</b>&nbsp;  The reserved word <b>new</b> in the segment above tells us
+that we're defining derived types.</div>
+</li>
+<li>
+<a href="javascript:adat_toggle('adat-type-a2');">user-defined types.</a>
+<div id="adat-type-a2" class="adat-a" style="display: none">No, examples of
+user-defined types are
+<pre class="hl">   <span class="hl kwa">type</span> Counter <span class="hl kwa">is range</span> <span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">1_000_000</span><span class="hl opt">;</span>
+   <span class="hl kwa">type</span> Real    <span class="hl kwa">is digits</span> <span class="hl num">8</span><span class="hl opt">;</span>
+</pre>
+</div>
+</li>
+
+<li>
+<a href="javascript:adat_toggle('adat-type-a3');">subtypes.</a>
+<div id="adat-type-a3" class="adat-a" style="display: none">No, subtypes are
+usually created to provide range constraints.</div>
+</li>
+
+</ol>
+
+</div></p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

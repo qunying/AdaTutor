@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Records and Arrays' href='index.html' />
+<link rel='prev' title='Strings' href='string.html' />
+<link rel='next' title='Outside Assignment 3' href='../oa3/index.html' />
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, Array Operators">
+
+<title>AdaTutor - Array Operators</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="string.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="../oa3/index.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+
+<h2>Array Operators</h2>
+<p>The operator <b>&amp;</b> concatenates any two arrays of the same type,
+including two Strings.&nbsp;  It can also concatenate a single element with an
+array of that element type, or two single elements into an array of length
+two.&nbsp;  For example, every use of <b>&amp;</b> below is legal:
+<pre class="hl">    C<span class="hl opt">,</span> D <span class="hl opt">:</span> <span class="hl kwb">Character</span> <span class="hl opt">:=</span> <span class="hl str">'*'</span><span class="hl opt">;</span>
+    S2   <span class="hl opt">:</span> <span class="hl kwb">String</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">2</span><span class="hl opt">);</span>
+    S3   <span class="hl opt">:</span> <span class="hl kwb">String</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">3</span><span class="hl opt">) := (</span><span class="hl kwa">others</span> <span class="hl opt">=&gt;</span> <span class="hl str">' '</span><span class="hl opt">);</span>
+    S5   <span class="hl opt">:</span> <span class="hl kwb">String</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">5</span><span class="hl opt">);</span>
+
+    <span class="hl kwa">type</span> Vector <span class="hl kwa">is array</span><span class="hl opt">(</span><span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl opt">&lt;&gt;)</span> <span class="hl kwa">of</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+    F<span class="hl opt">,</span> G <span class="hl opt">:</span> <span class="hl kwb">Float</span> <span class="hl opt">:=</span> <span class="hl num">1.2</span><span class="hl opt">;</span>
+    V2   <span class="hl opt">:</span> Vector<span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">2</span><span class="hl opt">);</span>
+    V3   <span class="hl opt">:</span> Vector<span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">3</span><span class="hl opt">) := (</span><span class="hl kwa">others</span> <span class="hl opt">=&gt;</span> <span class="hl num">0.0</span><span class="hl opt">);</span>
+    V5   <span class="hl opt">:</span> Vector<span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">5</span><span class="hl opt">);</span>
+    <span class="hl opt">...</span>
+    S2 <span class="hl opt">:=</span> C <span class="hl opt">&amp;</span> D<span class="hl opt">;</span>  S5 <span class="hl opt">:=</span> S2 <span class="hl opt">&amp;</span> S3<span class="hl opt">;</span>  S3 <span class="hl opt">:=</span> C <span class="hl opt">&amp;</span> S2<span class="hl opt">;</span>  S3 <span class="hl opt">:=</span> S2 <span class="hl opt">&amp;</span> C<span class="hl opt">;</span>
+    V2 <span class="hl opt">:=</span> F <span class="hl opt">&amp;</span> G<span class="hl opt">;</span>  V5 <span class="hl opt">:=</span> V2 <span class="hl opt">&amp;</span> V3<span class="hl opt">;</span>  V3 <span class="hl opt">:=</span> F <span class="hl opt">&amp;</span> V2<span class="hl opt">;</span>  V3 <span class="hl opt">:=</span> V2 <span class="hl opt">&amp;</span> F<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>The operators <b>and</b>, <b>or</b>, <b>xor</b>, and <b>not</b>, defined for
+Booleans, are also defined for one-dimensional arrays of Boolean.&nbsp;  They
+operate element by element on the arrays.&nbsp;  Thus, we can simulate
+<b>sets</b> in Ada.&nbsp;  For example, if we write
+<pre class="hl">    <span class="hl kwa">type</span> Set_Of_Chars <span class="hl kwa">is array</span><span class="hl opt">(</span><span class="hl kwb">Character</span><span class="hl opt">)</span> <span class="hl kwa">of</span> <span class="hl kwb">Boolean</span><span class="hl opt">;</span>
+    S1 <span class="hl opt">:</span> Set_Of_Chars <span class="hl opt">:=</span> Set_Of_Chars'<span class="hl opt">(</span><span class="hl str">'*'</span> | <span class="hl str">'#'</span> <span class="hl opt">=&gt;</span> <span class="hl kwd">True</span><span class="hl opt">,</span>
+                                      <span class="hl kwa">others</span> <span class="hl opt">=&gt;</span> <span class="hl kwd">False</span><span class="hl opt">);</span>
+    S2 <span class="hl opt">:</span> Set_Of_Chars <span class="hl opt">:=</span> Set_Of_Chars'<span class="hl opt">(</span><span class="hl str">'*'</span> | <span class="hl str">'?'</span> <span class="hl opt">=&gt;</span> <span class="hl kwd">True</span><span class="hl opt">,</span>
+                                      <span class="hl kwa">others</span> <span class="hl opt">=&gt;</span> <span class="hl kwd">False</span><span class="hl opt">);</span>
+</pre>
+then <b>S1 or S2</b> is <b>Set_Of_Chars'('*' | '#' | '?' => True,
+others => False)</b>, and <b>S1 and S2</b> is <b>Set_Of_Chars'('*' => True,
+others => False)</b>.</p>
+
+<p>The operators <b>=</b> and <b>/=</b> can compare two records or two arrays
+of the same type.&nbsp; Records are equal if all of their corresponding fields
+are equal, arrays, if all of their corresponding elements are equal.&nbsp;
+Arrays of different lengths are always unequal.&nbsp;  The four remaining
+relational operators can compare two arrays of the same type.&nbsp;  They're
+compared element by element until a difference is found.&nbsp;  For example,
+if we have
+<pre class="hl">    S <span class="hl opt">:</span> <span class="hl kwb">String</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">6</span><span class="hl opt">) :=</span> <span class="hl str">&quot;to all&quot;</span><span class="hl opt">;</span>
+    T <span class="hl opt">:</span> <span class="hl kwb">String</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">7</span><span class="hl opt">) :=</span> <span class="hl str">&quot;to Bill&quot;</span><span class="hl opt">;</span>
+</pre>
+then <b>S &gt; T</b> because 'a' &gt; 'B' in Ada's definition of type
+Character.</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

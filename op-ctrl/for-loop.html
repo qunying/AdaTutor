@@ -1,0 +1,131 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Control Constructs' href='control.html' />
+<link rel='prev' title='WHILE Loops' href='while-loop.html' />
+<link rel='next' title='The EXIT Statement' href='exit.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor">
+
+<title>AdaTutor - "FOR" Loops</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="while-loop.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="control.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="exit.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h3>"FOR" Loops</h3>
+<pre class="hl">   <span class="hl kwa">for</span> Ix <span class="hl kwa">in</span> <span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">10</span> <span class="hl kwa">loop      for</span> Ix <span class="hl kwa">in reverse</span> <span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">10</span> <span class="hl kwa">loop</span>
+     <span class="hl slc">-----;                      -----;</span>
+     <span class="hl slc">-----;                      -----;</span>
+   <span class="hl kwa">end loop</span><span class="hl opt">;</span>                   <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+</pre>
+
+<p>Here are two sample <b>for</b> loops.&nbsp;  We need not declare the index
+(<b>Ix</b> in these examples) in the declarative region of the program; an index
+of a <b>for</b> loop declares itself.&nbsp;  In these examples, <b>Ix</b> comes
+into existence at the <b>for</b> statement and goes out of existence at
+<b>end loop;</b> the index isn't available outside the loop.&nbsp;  If the name
+<b>Ix</b> happens to appear in the declarative region, it's a different
+<b>Ix</b>.&nbsp;  Inside the loop <b>Ix</b> refers to the index; there the name
+<b>Ix</b> is said to <b>hide</b> any <b>Ix</b> that might be mentioned in the
+declarative region.</p>
+
+<p>The index variable may not be modified.&nbsp;  In these examples, <b>Ix</b>
+may not appear on the left side of an assignment statement, etc.</p>
+
+<p>In the first example above, the block of statements is executed ten times,
+with Ix equal to 1, then 2, then 3, etc., up to 10.&nbsp;  In the second
+example, Ix starts at 10 and counts down to 1.&nbsp;  Note that the range is
+still written <b>1 .. 10</b>, but the keyword <b>reverse</b> precedes the range.
+</p>
+
+<p>The index of a <b>for</b> loop can have any discrete type.&nbsp;  That means
+any integer or enumeration type.&nbsp;  It can't be of type Float.&nbsp;  For
+example, if we write
+<pre class="hl">   <span class="hl kwa">type</span> Rainbow_Color <span class="hl kwa">is</span> <span class="hl opt">(</span>Red<span class="hl opt">,</span> Orange<span class="hl opt">,</span> Yellow<span class="hl opt">,</span> Green<span class="hl opt">,</span> Blue<span class="hl opt">,</span>
+                          Indigo<span class="hl opt">,</span> Violet<span class="hl opt">);</span>
+   <span class="hl kwa">type</span> Traffic_Light_Color <span class="hl kwa">is</span> <span class="hl opt">(</span>Red<span class="hl opt">,</span> Amber<span class="hl opt">,</span> Green<span class="hl opt">);</span>
+</pre>
+then we can write <b>for Ix in Red .. Blue loop,</b>, and the compiler will know
+that <b>Ix</b> must be of type Rainbow_Color.&nbsp;  Similarly, the compiler
+will know that the type of <b>Ix</b> must be Traffic_Light_Color if we write
+<b>for IX in Red .. Amber loop</b>.&nbsp; But the compiler can't handle
+<b>for Ix in Red .. Green loop</b> because of the ambiguity.&nbsp;  In this case
+we must specify the type.&nbsp;  For example, we could write either of these:
+<pre class="hl">   <span class="hl kwa">for</span> Ix <span class="hl kwa">in</span> Rainbow_Color'(Red) .. Green <span class="hl kwa">loop</span>
+   <span class="hl kwa">for</span> Ix <span class="hl kwa">in</span> Rainbow_Color <span class="hl kwa">range</span> Red .. Green <span class="hl kwa">loop</span>
+</pre>
+</p>
+
+<p>Because the index can have any discrete type, there's no STEP clause in Ada,
+as there is in Basic.&nbsp;  One might increment an Integer index by 2, but we
+couldn't add 2 to Red.&nbsp;  For uniformity, no STEP clause is available, even
+if the index type is Integer.</p>
+
+<p>Ranges may contain expressions.&nbsp;  If A, B, C, and D are Integer
+variables, we can say <b>for I in A + B .. C + D loop</b> or <b>for I in
+reverse A + B .. C + D loop</b>.&nbsp; In both cases the range is null if C + D
+is less than A + B.&nbsp;  That won't cause an error; the loop is simply skipped
+when the range is null.</p>
+
+<p>
+<div class="adat-q">
+<h3>Question</h3>
+If we have
+<pre class="hl">   <span class="hl kwa">type</span> Rainbow_Color <span class="hl kwa">is</span> <span class="hl opt">(</span>Red<span class="hl opt">,</span> Orange<span class="hl opt">,</span> Yellow<span class="hl opt">,</span> Green<span class="hl opt">,</span> Blue<span class="hl opt">,</span>
+                          Indigo<span class="hl opt">,</span> Violet<span class="hl opt">);</span>
+   J <span class="hl opt">:</span> <span class="hl kwb">Integer</span> <span class="hl opt">:=</span> <span class="hl num">5</span><span class="hl opt">;</span> 
+</pre>
+which one of these statements is <b>illegal</b>?
+
+<ol>
+<li>
+<a href="javascript:adat_toggle('adat-c3a1');">for I in -J .. J loop</a>
+<div id="adat-c3a1" class="adat-a" style="display: none">No, number 1 is
+legal.&nbsp;  The expressions on both sides of <b>..</b> have the same
+type.&nbsp; <b>I</b> will be of type Integer and will take 11 values,
+from -5 to 5.</div>
+</li>
+
+<li>
+<a href="javascript:adat_toggle('adat-c3a2');">for I in J .. Violet loop</a>
+<div id="adat-c3a2" class="adat-a" style="display: none"><b>You're
+right!</b>&nbsp;  Number 2 is illegal because the expressions before and after
+the "<b>..</b>" must be of the same type.</div>
+</li>
+
+<li>
+<a href="javascript:adat_toggle('adat-c3a3');">for I in Violet .. Red loop</a>
+<div id="adat-c3a3" class="adat-a" style="display: none">No, number 3 is
+legal.&nbsp;  The expressions on both sides of <b>..</b> have the same
+type.&nbsp; The loop will be skipped because Red is less than Violet, giving a
+null range.&nbsp; But the syntax is legal.&nbsp;  To make <b>I</b> start at
+Violet and count down to Red, we would write
+<pre class="hl">   <span class="hl kwa">for</span> I <span class="hl kwa">in reverse</span> Red <span class="hl opt">..</span> Violet <span class="hl kwa">loop</span>
+</pre>
+</div>
+</li>
+</ol>
+</div>
+</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

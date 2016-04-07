@@ -1,0 +1,329 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='More Records and Types' href='index.html' />
+<link rel='prev' title='Record Discriminants and Record Variants' href='rec-dis.html' />
+<link rel='next' title='Abstract Types and Abstract Subprograms' href='abs-type.html' />
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor">
+
+<title>AdaTutor - Tagged Records and Dynamic Dispatching</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="rec-dis.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="abs-type.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Tagged Records and Dynamic Dispatching</h2>
+<p>In Ada 95, a record may be <b>tagged</b>.&nbsp;  This allows us later to
+derive a new type from the original and add fields.&nbsp;  For example, if
+Day_Of_Week_Type is suitably declared along with Day_Subtype and Month_Type, Ada
+95 lets us write
+<pre class="hl">   <span class="hl kwa">type</span> Date <span class="hl kwa">is tagged record</span>
+      Day   <span class="hl opt">:</span> Day_Subtype<span class="hl opt">;</span>
+      Month <span class="hl opt">:</span> Month_Type<span class="hl opt">;</span>
+      Year  <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+   <span class="hl kwa">end record</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">type</span> Complete_Date <span class="hl kwa">is new</span> Date <span class="hl kwa">with record</span>
+      Day_Of_Week <span class="hl opt">:</span> Day_Of_Week_Type<span class="hl opt">;</span>
+   <span class="hl kwa">end record</span><span class="hl opt">;</span>
+</pre>
+Now objects of type Date have three fields: Day, Month, and Year, but objects
+of type Complete_Date have four fields: Day, Month, Year, and Day_Of_Week.</p>
+
+<p>We can derive a new type without adding any fields by writing, for example,
+<pre class="hl">   <span class="hl kwa">type</span> New_Date <span class="hl kwa">is new</span> Date <span class="hl kwa">with null record</span><span class="hl opt">;</span>
+</pre></p>
+
+
+<p>If a tagged record is to be a private type, the declaration in the package
+specification contains the words <b>tagged private</b>, like this:
+<pre class="hl">   <span class="hl kwa">type</span> Date <span class="hl kwa">is tagged private</span><span class="hl opt">;</span>
+</pre></p>
+
+<p>The actual structure of the record is declared in the private part of the
+package specification exactly as any other tagged record:
+<pre class="hl">   <span class="hl kwa">private</span>
+      <span class="hl opt">...</span>
+      <span class="hl kwa">type</span> Date <span class="hl kwa">is tagged record</span>
+         Day   <span class="hl opt">:</span> Day_Subtype<span class="hl opt">;</span>
+         Month <span class="hl opt">:</span> Month_Type<span class="hl opt">;</span>
+         Year  <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      <span class="hl kwa">end record</span><span class="hl opt">;</span>
+</pre>
+This is called a <b>private tagged type</b>.</p>
+
+<p>Ada 95 also has <b>private extensions</b>.&nbsp;  With the package
+specification segment shown below, the structure of type Date, with the fields
+Day, Month, and Year, is available outside the package.&nbsp; However, the fact
+that a Complete_Date contains a Day_Of_Week field is not:
+<pre class="hl">      <span class="hl kwa">type</span> Date <span class="hl kwa">is tagged record</span>
+         Day   <span class="hl opt">:</span> Day_Subtype<span class="hl opt">;</span>
+         Month <span class="hl opt">:</span> Month_Type<span class="hl opt">;</span>
+         Year  <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      <span class="hl kwa">end record</span><span class="hl opt">;</span>
+      <span class="hl kwa">type</span> Complete_Date <span class="hl kwa">is new</span> Date <span class="hl kwa">with private</span><span class="hl opt">;</span>
+      <span class="hl opt">...</span>
+   <span class="hl kwa">private</span>
+      <span class="hl opt">...</span>
+      <span class="hl kwa">type</span> Complete_Date <span class="hl kwa">is new</span> Date <span class="hl kwa">with record</span>
+         Day_Of_Week <span class="hl opt">:</span> Day_Of_Week_Type<span class="hl opt">;</span>
+      <span class="hl kwa">end record</span><span class="hl opt">;</span>
+
+</pre>
+Ada 95 tagged types and Ada 95 hierarchical libraries both help support Object
+Oriented Design (OOD).
+</p>
+
+<p>We can convert objects of a derived type to the parent type.&nbsp;  For
+example, if we have <b>Cd : Complete_Date;</b> we can write
+<b>Date(Cd)</b>.&nbsp;  This is useful in making software reusable.&nbsp;  For
+example, suppose we have written a procedure to Display a Date:
+<pre class="hl">   <span class="hl kwa">procedure</span> Display<span class="hl opt">(</span>D <span class="hl opt">:</span> <span class="hl kwa">in</span> Date<span class="hl opt">);</span>
+</pre>
+
+If we now wish to write a procedure to Display a Complete_Date, we could call
+on the procedure we've already written.&nbsp;  If the above procedure and the
+associated types are defined in package P, we could write:
+<pre class="hl">   <span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">,</span> P<span class="hl opt">;</span> <span class="hl kwa">use</span> P<span class="hl opt">;</span>
+   <span class="hl kwa">procedure</span> Display<span class="hl opt">(</span>Cd <span class="hl opt">:</span> <span class="hl kwa">in</span> Complete_Date<span class="hl opt">)</span> <span class="hl kwa">is</span>
+      <span class="hl slc">-- Call previous procedure to display the first 3 fields.</span>
+      Display<span class="hl opt">(</span>Date<span class="hl opt">(</span>Cd<span class="hl opt">));</span>
+      <span class="hl slc">-- Now display the fourth field.</span>
+      Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">.</span>Put_Line<span class="hl opt">(</span>Day_Of_Week_Type<span class="hl kwd">'Image</span><span class="hl opt">(</span>Cd<span class="hl opt">.</span>Day_Of_Week<span class="hl opt">));</span>
+   <span class="hl kwa">end</span> Display<span class="hl opt">;</span>
+
+</pre>
+
+Thus the procedure to display a Date was reused when we wrote the procedure to
+display a Complete_Date.</p>
+
+<p>Although type Date and the types derived from it are all different types, we
+can refer to all the types collectively as <b>Date'Class</b>.&nbsp;  The
+attribute <b>'Class</b> can be applied to the name of any tagged type.&nbsp; If
+we declare an object to be of type <b>Date'Class</b>, we must initialize it so
+that the compiler will know the exact type of the object.&nbsp;  The type of
+this object can't change at run time.&nbsp; For example, if we write
+<b>D : Date'Class := Date'(12, Dec, 1815);</b> we can't later write
+<b>D := Complete_Date'(4, Jul, 1776, Thu);</b>.&nbsp;  This would change the
+type of the object D and make it grow larger by adding a new field,
+Day_Of_Week.&nbsp;  This isn't permitted.</p>
+
+<p>However, we can declare an access type to Date'Class without being specific
+about the exact type to be accessed:
+<pre class="hl"><span class="hl kwa">type</span> Ptr <span class="hl kwa">is access</span> Date<span class="hl kwd">'Class</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Now objects of type Ptr can access objects of type Date at one time and
+objects of type Complete_Date at another.&nbsp;  Also, we could build a linked
+list, with some of the links of type Date and some of type Complete_Date.&nbsp;
+This is called a <b>heterogeneous</b> linked list.</p>
+
+<p>Let's suppose that we declare, in the specification for a package P, type
+Date (a tagged record), type Complete_Date derived from Date with an extra
+field, and two overloaded procedures Display, one to display a Date and one to
+display a Complete_Date.&nbsp;  Suppose that the specification for P also
+includes the definition for type Ptr:
+<pre class="hl"><span class="hl kwa">type</span> Ptr <span class="hl kwa">is access</span> Date<span class="hl kwd">'Class</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Now suppose that our program, which <b>with</b>s and <b>use</b>s P, declares
+an array A of two elements of type Ptr.&nbsp;  Let A(1) access a Date and A(2)
+access a Complete_Date.&nbsp;  The program to follow shows how the system will
+decide at <b>run time</b> which of two overloaded versions of Display to call,
+depending on the type of A(I).all:
+<pre class="hl">   <span class="hl kwa">package</span> P <span class="hl kwa">is</span>
+      <span class="hl opt">...</span>
+      <span class="hl kwa">type</span> Date <span class="hl kwa">is tagged record</span> <span class="hl opt">...</span>
+      <span class="hl kwa">type</span> Complete_Date <span class="hl kwa">is new</span> Date <span class="hl kwa">with record</span> <span class="hl opt">...</span>
+      <span class="hl kwa">type</span> Ptr <span class="hl kwa">is access</span> Date<span class="hl kwd">'Class</span><span class="hl opt">;</span>
+      <span class="hl kwa">procedure</span> Display<span class="hl opt">(</span>D <span class="hl opt">:</span> <span class="hl kwa">in</span> Date<span class="hl opt">);</span>
+      <span class="hl kwa">procedure</span> Display<span class="hl opt">(</span>D <span class="hl opt">:</span> <span class="hl kwa">in</span> Complete_Date<span class="hl opt">);</span>
+   <span class="hl kwa">end</span> P<span class="hl opt">;</span>
+
+   <span class="hl kwa">with</span> P<span class="hl opt">;</span> <span class="hl kwa">use</span> P<span class="hl opt">;</span>
+   <span class="hl kwa">procedure</span> Dynamic_Dispatching_Demo <span class="hl kwa">is</span>
+      A <span class="hl opt">:</span> <span class="hl kwa">array</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">2</span><span class="hl opt">)</span> <span class="hl kwa">of</span> Ptr<span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      A<span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">) :=</span> <span class="hl kwa">new</span> Date<span class="hl opt">'(</span><span class="hl num">12</span><span class="hl opt">,</span> Dec<span class="hl opt">,</span> <span class="hl num">1815</span><span class="hl opt">);</span>
+      A<span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">) :=</span> <span class="hl kwa">new</span> Complete_Date<span class="hl opt">'(</span><span class="hl num">4</span><span class="hl opt">,</span> Jul<span class="hl opt">,</span> <span class="hl num">1776</span><span class="hl opt">,</span> Thu<span class="hl opt">);</span>
+      <span class="hl kwa">for</span> I <span class="hl kwa">in</span> A<span class="hl kwd">'Range</span> <span class="hl kwa">loop</span>
+         <span class="hl slc">-- Decides at run time which Display to call.</span>
+         Display<span class="hl opt">(</span>A<span class="hl opt">(</span>I<span class="hl opt">).</span><span class="hl kwa">all</span><span class="hl opt">);</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Dynamic_Dispatching_Demo<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>This is called <b>dynamic dispatching</b> or <b>tagged type dispatching</b>, and is available only in Ada 95, not in Ada 83, because Ada 83 doesn't have
+tagged records.</p>
+
+
+<p>In Ada 95, the attributes <b>'Class</b> and <b>'Tag</b> can be used in
+tests.&nbsp;  To illustrate this, we need a slightly more complicated example:
+<pre class="hl">   <span class="hl kwa">type</span> Employee <span class="hl kwa">is tagged record</span>
+      Name <span class="hl opt">:</span> <span class="hl kwb">String</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">5</span><span class="hl opt">);</span>
+   <span class="hl kwa">end record</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">type</span> Hourly_Employee <span class="hl kwa">is new</span> Employee <span class="hl kwa">with record</span>
+      Hours_Per_Week <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+   <span class="hl kwa">end record</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">type</span> Salaried_Employee <span class="hl kwa">is new</span> Employee <span class="hl kwa">with record</span>
+      Days_Vacation <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+   <span class="hl kwa">end record</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">type</span> Manager <span class="hl kwa">is new</span> Salaried_Employee <span class="hl kwa">with record</span>
+      Num_Supervised <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+   <span class="hl kwa">end record</span><span class="hl opt">;</span>
+</pre>
+
+Here we created a hierarchy of tagged types as follows:
+<pre class="hl">   <span class="hl kwa">type</span> Employee <span class="hl opt">...</span> 
+   <span class="hl kwa">type</span> Hourly_Employee <span class="hl kwa">is new</span> Employee <span class="hl opt">...</span>
+   <span class="hl kwa">type</span> Salaried_Employee <span class="hl kwa">is new</span> Employee <span class="hl opt">...</span>
+   <span class="hl kwa">type</span> Manager <span class="hl kwa">is new</span> Salaried_Employee <span class="hl opt">...</span>
+</pre>
+<pre>
+             Employee
+                /\
+               /  \
+              /    \
+ Hourly_Employee  Salaried_Employee
+                        |
+                        |
+                     Manager
+</pre>
+Note that <b>Employee'Class</b> includes all four types above, while
+<b>Salaried_Employee'Class</b>  includes only Salaried_Employee and
+Manager.&nbsp;  The attribute <b>'Class</b> means the type named and all the
+types below it in the hierarchy.
+</p>
+
+<p>Now let's declare an array of four elements that access objects of types in
+Employee'Class:
+
+<pre class="hl">   <span class="hl kwa">type</span> P <span class="hl kwa">is access</span> Employee<span class="hl kwd">'Class</span><span class="hl opt">;</span>
+   A <span class="hl opt">:</span> <span class="hl kwa">array</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">4</span><span class="hl opt">)</span> <span class="hl kwa">of</span> P<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Finally, let's let each element of our array access a different type in our
+hierarchy:
+<pre class="hl">A<span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">) :=</span> <span class="hl kwa">new</span> Employee<span class="hl opt">'(</span>Name <span class="hl opt">=&gt;</span> <span class="hl str">&quot;Alice&quot;</span><span class="hl opt">);</span>
+A<span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">) :=</span> <span class="hl kwa">new</span> Hourly_Employee<span class="hl opt">'(</span>Name <span class="hl opt">=&gt;</span> <span class="hl str">&quot;Bob  &quot;</span><span class="hl opt">,</span>
+                             Hours_Per_Week <span class="hl opt">=&gt;</span> <span class="hl num">40</span><span class="hl opt">);</span>
+A<span class="hl opt">(</span><span class="hl num">3</span><span class="hl opt">) :=</span> <span class="hl kwa">new</span> Salaried_Employee<span class="hl opt">'(</span>Name <span class="hl opt">=&gt;</span> <span class="hl str">&quot;Carol&quot;</span><span class="hl opt">,</span>
+                               Days_Vacation <span class="hl opt">=&gt;</span> <span class="hl num">10</span><span class="hl opt">);</span>
+A<span class="hl opt">(</span><span class="hl num">4</span><span class="hl opt">) :=</span> <span class="hl kwa">new</span> Manager<span class="hl opt">'(</span>Name <span class="hl opt">=&gt;</span> <span class="hl str">&quot;Dave &quot;</span><span class="hl opt">,</span> Days_Vacation <span class="hl opt">=&gt;</span> <span class="hl num">5</span><span class="hl opt">,</span>
+                     Num_Supervised <span class="hl opt">=&gt;</span> <span class="hl num">3</span><span class="hl opt">);</span>
+</pre></p>
+
+<p>Then the test <b>A(1).all'Tag = A(2).all'Tag</b> will be False, because
+<b>A(1).all</b> and <b>A(2).all</b> have different types.&nbsp;  The test
+<b>A(4).all in Salaried_Employee'Class</b> will be True, because type Manager is
+in Salaried_Employee'Class.&nbsp;  Finally, the test <b>A(4).all in
+Hourly_Employee'Class</b> will be False, because Hourly_Employee'Class contains
+only type Hourly_Employee, not type Manager.</p>
+
+<p>The test for tag equality or inequality (e.g., <b>A(1).all'Tag =
+A(2).all'Tag</b>) requires that we <b>with</b> and <b>use</b> Ada.Tags, a
+package that comes with Ada 95.</p>
+
+<p>In Ada 95, the formal parameters (&ldquo;dummy arguments&rdquo;) of a
+subprogram may also be of a class-wide type.&nbsp;  For example, in a package
+that has defined both of our Display procedures and the associated types, we can
+write:
+<pre class="hl">   <span class="hl kwa">procedure</span> Show<span class="hl opt">(</span>X <span class="hl opt">:</span> <span class="hl kwa">in</span> Date<span class="hl kwd">'Class</span><span class="hl opt">)</span> <span class="hl kwa">is</span>
+   <span class="hl kwa">begin</span>
+     Display<span class="hl opt">(</span>X<span class="hl opt">);</span>  <span class="hl slc">-- Decides at run time which Display to call.</span>
+   <span class="hl kwa">end</span> Show<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>It this case, the exact type of X is not known until run time, and can vary
+from one call of Show to the next.&nbsp; Therefore, the statement
+<b>Display(X);</b> will decide at run time which version of Display to call.</p>
+
+<p>Related to this are <b>access parameters</b> in Ada 95.&nbsp;  Instead of
+writing
+<pre class="hl">   <span class="hl kwa">procedure</span> Show<span class="hl opt">(</span>X <span class="hl opt">:</span> <span class="hl kwa">in</span> Date<span class="hl kwd">'Class</span><span class="hl opt">);</span>
+</pre>
+we can write
+<pre class="hl">   <span class="hl kwa">procedure</span> Show<span class="hl opt">(</span>X <span class="hl opt">:</span> <span class="hl kwa">access</span> Date<span class="hl kwd">'Class</span><span class="hl opt">);</span>
+</pre>
+</p>
+
+<p>In this case, Show is no longer called with an object belonging to Date'Class
+(that is, a Date or a Complete_Date), but rather with an object of any access
+type that accesses objects belonging to Date'Class.&nbsp;  For example, we could
+now call Show with an object of the type Ptr we defined earlier:
+<pre class="hl">   D <span class="hl opt">:</span> Ptr <span class="hl opt">:=</span> <span class="hl kwa">new</span> Complete_Date<span class="hl opt">(</span><span class="hl num">4</span><span class="hl opt">,</span> Jul<span class="hl opt">,</span> <span class="hl num">1776</span><span class="hl opt">,</span> Thu<span class="hl opt">);</span>
+   Show<span class="hl opt">(</span>D<span class="hl opt">);</span>
+</pre>
+</p>
+
+<p>Show again decides at run time which version of Display to call, but now Show
+must dereference the access value passed to it:
+<pre class="hl">   <span class="hl kwa">procedure</span> Show<span class="hl opt">(</span>X <span class="hl opt">:</span> <span class="hl kwa">access</span> Date<span class="hl kwd">'Class</span><span class="hl opt">)</span> <span class="hl kwa">is</span>
+   <span class="hl kwa">begin</span>
+      Display<span class="hl opt">(</span>X<span class="hl opt">.</span><span class="hl kwa">all</span><span class="hl opt">);</span>  <span class="hl slc">-- Decides at run time which Display to call.</span>
+   <span class="hl kwa">end</span> Show<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>The <b>accessibility check</b> which we discussed earlier when we talked
+about access types has to be performed at run time in the case of access
+parameters.&nbsp;  The Ada 95 compiler automatically generates code to do
+this.&nbsp;  For access types accessing named objects, discussed earlier, the
+accessibility check is performed at compile time.&nbsp;  In both cases the
+purpose of the accessibility check is to insure that no object of an access type
+can ever access an object that no longer exists.</p>
+
+<p>Here's our sample tagged type dispatching program, rewritten to make use of
+access parameters:
+<pre class="hl">   <span class="hl kwa">package</span> P <span class="hl kwa">is</span>
+      <span class="hl opt">...</span>
+      <span class="hl kwa">type</span> Date <span class="hl kwa">is tagged record</span> <span class="hl opt">...</span>
+      <span class="hl kwa">type</span> Complete_Date <span class="hl kwa">is new</span> Date <span class="hl kwa">with record</span> <span class="hl opt">...</span>
+      <span class="hl kwa">type</span> Ptr <span class="hl kwa">is access</span> Date<span class="hl kwd">'Class</span><span class="hl opt">;</span>
+      <span class="hl kwa">procedure</span> Display<span class="hl opt">(</span>D <span class="hl opt">:</span> <span class="hl kwa">in</span> Date<span class="hl opt">);</span>
+      <span class="hl kwa">procedure</span> Display<span class="hl opt">(</span>D <span class="hl opt">:</span> <span class="hl kwa">in</span> Complete_Date<span class="hl opt">);</span>
+      <span class="hl slc">-- Body calls Display(X.all);</span>
+      <span class="hl kwa">procedure</span> Show<span class="hl opt">(</span>X <span class="hl opt">:</span> <span class="hl kwa">access</span> Date<span class="hl kwd">'Class</span><span class="hl opt">);</span>
+   <span class="hl kwa">end</span> P<span class="hl opt">;</span>
+
+   <span class="hl kwa">with</span> P<span class="hl opt">;</span> <span class="hl kwa">use</span> P<span class="hl opt">;</span>
+   <span class="hl kwa">procedure</span> Dynamic_Dispatching_Demo <span class="hl kwa">is</span>
+      A <span class="hl opt">:</span> <span class="hl kwa">array</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">2</span><span class="hl opt">)</span> <span class="hl kwa">of</span> Ptr<span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      A<span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">) :=</span> <span class="hl kwa">new</span> Date<span class="hl str">'(12, Dec, 1815);</span>
+<span class="hl str">      A(2) := new Complete_Date'</span><span class="hl opt">(</span><span class="hl num">4</span><span class="hl opt">,</span> Jul<span class="hl opt">,</span> <span class="hl num">1776</span><span class="hl opt">,</span> Thu<span class="hl opt">);</span>
+      <span class="hl kwa">for</span> I <span class="hl kwa">in</span> A<span class="hl kwd">'Range</span> <span class="hl kwa">loop</span>
+         Show<span class="hl opt">(</span>A<span class="hl opt">(</span>I<span class="hl opt">));</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Dynamic_Dispatching_Demo<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Again, the <b>for</b> loop first displays a Date and then displays a
+Complete_Date.</p>
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

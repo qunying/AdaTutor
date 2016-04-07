@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='More Records and Types' href='index.html' />
+<link rel='prev' title='Abstract Types and Abstract Subprograms' href='abs-type.html' />
+<link rel='next' title='Fixed Point, Modular, and Universal Types' href='fixed-type.html' />
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, controlled type">
+
+<title>AdaTutor - Controlled Types</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="abs-type.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="fixed-type.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Controlled Types</h2>
+<p>Ada 95 has <b>Controlled Types</b>, which cause the program automatically to
+call special procedures whenever an object of a controlled type is created,
+assigned, or destroyed.&nbsp;  The Ada 95 package <b>Ada.Finalization</b>
+contains abstract tagged private types <b>Controlled</b> and
+<b>Limited_Controlled</b>.&nbsp;  We'll discuss type Controlled first.&nbsp;
+The package also contains procedures <b>Initialize</b>, <b>Adjust</b>, and
+<b>Finalize</b>, but they're null and do nothing.&nbsp;  We'll see shortly how
+we can override the null procedures with our own procedures when we need to.</p>
+
+<p>We can create our own controlled types by extending the type
+<b>Ada.Finalization.Controlled</b>.&nbsp;  Whenever an object of a controlled
+type is created, the procedure <b>Initialize</b> is automatically called, with
+the object as the single <b>in out</b> parameter of <b>Initialize</b>.&nbsp;
+Whenever an object of a controlled type is destroyed, <b>Finalize</b> is
+automatically called.&nbsp;  When an object of a controlled type is stored into,
+first <b>Finalize</b> is automatically called for the object stored into, then
+the assignment is done, and then <b>Adjust</b> is automatically called for the
+object stored into.</p>
+
+<p>Controlled types must be declared at the library level, so they're usually
+declared in a package specification.&nbsp;  In this example, we create a
+controlled type <b>Special</b> with a single field containing one Integer:
+<pre class="hl">   <span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Finalization<span class="hl opt">;</span> <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Finalization<span class="hl opt">;</span>
+   <span class="hl kwa">package</span> Demo_Controlled <span class="hl kwa">is</span>
+      <span class="hl kwa">type</span> Special <span class="hl kwa">is new</span> Controlled <span class="hl kwa">with record</span>
+         I <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      <span class="hl kwa">end record</span><span class="hl opt">;</span>
+      <span class="hl kwa">procedure</span> Initialize<span class="hl opt">(</span>Int <span class="hl opt">:</span> <span class="hl kwa">in out</span> Special<span class="hl opt">);</span>
+      <span class="hl kwa">procedure</span> Adjust<span class="hl opt">(</span>Int <span class="hl opt">:</span> <span class="hl kwa">in out</span> Special<span class="hl opt">);</span>
+      <span class="hl kwa">procedure</span> Finalize<span class="hl opt">(</span>Int <span class="hl opt">:</span> <span class="hl kwa">in out</span> Special<span class="hl opt">);</span>
+      <span class="hl kwa">procedure</span> Set<span class="hl opt">(</span>Target <span class="hl opt">:</span> <span class="hl kwa">out</span> Special<span class="hl opt">;</span> To <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">);</span>
+   <span class="hl kwa">end</span> Demo_Controlled<span class="hl opt">;</span>
+</pre></p>
+
+<p>We don't have to write our own versions of all three procedures,
+<b>Initialize</b>, <b>Adjust</b>, and <b>Finalize</b> if we don't need them; for
+any we don't write, the null procedures in Ada.Finalization will be
+called.&nbsp;  Here we chose to write all three as an example.&nbsp;  We also
+wrote a procedure <b>Set</b> to set an object of type Special to an Integer.</p>
+
+<p>In our example, <b>Initialize</b>, <b>Adjust</b>, and <b>Finalize</b> will
+merely print messages so we can see when they're called.&nbsp;  Here's the
+package body:
+<pre class="hl">   <span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span> <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>
+   <span class="hl kwa">package body</span> Demo_Controlled <span class="hl kwa">is</span>
+      <span class="hl kwa">procedure</span> Initialize<span class="hl opt">(</span>Int <span class="hl opt">:</span> <span class="hl kwa">in out</span> Special<span class="hl opt">)</span> <span class="hl kwa">is</span>
+      <span class="hl kwa">begin</span>
+         Put_Line<span class="hl opt">(</span><span class="hl str">&quot;Initialize was called.&quot;</span><span class="hl opt">);</span>
+      <span class="hl kwa">end</span> Initialize<span class="hl opt">;</span>
+     
+      <span class="hl kwa">procedure</span> Adjust<span class="hl opt">(</span>Int <span class="hl opt">:</span> <span class="hl kwa">in out</span> Special<span class="hl opt">)</span> <span class="hl kwa">is</span>
+      <span class="hl kwa">begin</span>
+         Put_Line<span class="hl opt">(</span><span class="hl str">&quot;Adjust was called.&quot;</span><span class="hl opt">);</span>
+      <span class="hl kwa">end</span> Adjust<span class="hl opt">;</span>
+
+      <span class="hl kwa">procedure</span> Finalize<span class="hl opt">(</span>Int <span class="hl opt">:</span> <span class="hl kwa">in out</span> Special<span class="hl opt">)</span> <span class="hl kwa">is</span>
+      <span class="hl kwa">begin</span>
+         Put_Line<span class="hl opt">(</span><span class="hl str">&quot;Finalize was called.&quot;</span><span class="hl opt">);</span>
+      <span class="hl kwa">end</span> Finalize<span class="hl opt">;</span>
+
+      <span class="hl kwa">procedure</span> Set<span class="hl opt">(</span>Target <span class="hl opt">:</span> <span class="hl kwa">out</span> Special<span class="hl opt">;</span> To <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span> <span class="hl kwa">is</span>
+      <span class="hl kwa">begin</span>
+         Target<span class="hl opt">.</span>I <span class="hl opt">:=</span> To<span class="hl opt">;</span>
+      <span class="hl kwa">end</span> Set<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Demo_Controlled<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>The main program below creates two objects of type Special, calls Set for
+one of them, and assigns one object of type Special to another.&nbsp;  Below the
+main program, we show the program output with some explanation:
+<pre class="hl">   <span class="hl kwa">with</span> Demo_Controlled<span class="hl opt">,</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>
+   <span class="hl kwa">use</span> Demo_Controlled<span class="hl opt">,</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>
+   <span class="hl kwa">procedure</span> Test <span class="hl kwa">is</span>
+      A<span class="hl opt">,</span> B <span class="hl opt">:</span> Special<span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      Put_Line<span class="hl opt">(</span><span class="hl str">&quot;I'm about to call Set.&quot;</span><span class="hl opt">);</span>
+      Set<span class="hl opt">(</span>Target <span class="hl opt">=&gt;</span> A<span class="hl opt">,</span> To <span class="hl opt">=&gt;</span> <span class="hl num">3</span><span class="hl opt">);</span>
+      Put_Line<span class="hl opt">(</span><span class="hl str">&quot;Set returned.&quot;</span><span class="hl opt">);</span>
+      B <span class="hl opt">:=</span> A<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Test<span class="hl opt">;</span>
+</pre>
+</p>
+
+<table>
+<tr><td>Initialize was called.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>&nbsp;\&nbsp;&nbsp;</td><td>A and B came into existence when the declarative</td></tr>
+<tr><td>Initialize was called.</td><td>&nbsp;/&nbsp;&nbsp;</td><td>region of the main program was elaborated.</td></tr>
+<tr><td>I'm about to call Set.</td><td>&nbsp;\&nbsp;&nbsp;</td><td>Set didn't create, assign, or destroy controlled</td></tr>
+<tr><td>Set returned.</td><td>&nbsp;/&nbsp;&nbsp;</td><td>objects, so nothing was called automatically.</td></tr>
+<tr><td>Finalize was called.</td><td>&nbsp;-&nbsp;&nbsp;</td><td>B was "finalized" before being overwritten.</td></tr>
+<tr><td>Adjust was called.</td><td>&nbsp;-&nbsp;&nbsp;</td><td>B was "adjusted" after receiving a new value.</td></tr>
+<tr><td>Finalize was called.</td><td>&nbsp;\&nbsp;&nbsp;</td><td>A and B went out of existence at</td></tr>
+<tr><td>Finalize was called.</td><td>&nbsp;/&nbsp;&nbsp;</td><td>the end of the main program.</td></tr>
+</table>
+
+<p>The type <b>Limited_Controlled</b> in Ada.Finalization is the same as the
+type <b>Controlled</b>, except that it's an abstract tagged <b>limited</b>
+private type.&nbsp;  Because we can't assign objects of a limited type, only
+procedures <b>Initialize</b> and <b>Finalize</b> are available for that
+type.&nbsp;  There's no procedure <b>Adjust</b> for type
+<b>Limited_Controlled</b>.</p>
+
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

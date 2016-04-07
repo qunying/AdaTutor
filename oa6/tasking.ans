@@ -1,0 +1,48 @@
+-- Our solution to Outside Assignment 6:
+-- (Written to work with Ada 83 and Ada 95):
+with text_io, calendar; use text_io, calendar;
+procedure tasking is
+  interval        : constant duration := 5.0;
+  total_intervals : constant positive := 9;
+  start_time      : constant time := clock;
+  quitting_time   : constant time := start_time +
+                                             total_intervals*interval;
+  next_time       : time := start_time;
+  task type tick is
+    ENTRY IDENTIFY(TASK_NUMBER : IN NATURAL);
+    entry shutdown;
+  end tick;
+  T               : ARRAY(1 .. 3) OF TICK;
+  PERIOD          : CONSTANT ARRAY(T'RANGE) OF POSITIVE := (2, 3, 4);
+  TIMER           : ARRAY(T'RANGE) OF NATURAL := (OTHERS => 0);
+  task body tick is
+    quit : boolean := false;
+  begin
+    while not quit loop
+      select
+        ACCEPT IDENTIFY(TASK_NUMBER : IN NATURAL) DO
+          PUT_LINE("Task number" & INTEGER'IMAGE(TASK_NUMBER) &
+               " is starting.");
+        END IDENTIFY;
+      or
+        accept shutdown;
+        quit := true;
+      end select;
+    end loop;
+  end tick;
+begin
+  while next_time < quitting_time loop
+    FOR I IN T'RANGE LOOP
+      IF TIMER(I) = 0 THEN
+        T(I).IDENTIFY(I);
+        TIMER(I) := PERIOD(I);
+      END IF;
+      TIMER(I) := TIMER(I) - 1;
+    END LOOP;
+    next_time := next_time + interval;
+    put_line("(5-second delay)"); delay next_time - clock;
+  end loop;
+  FOR I IN T'RANGE LOOP
+    T(I).SHUTDOWN;
+  END LOOP;
+end tasking;

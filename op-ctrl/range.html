@@ -1,0 +1,85 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Operators and Control Constructs' href='index.html' />
+<link rel='prev' title='Operators' href='operator.html' />
+<link rel='next' title='The Short Circuit Forms' href='short-circuit.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, range test">
+
+<title>AdaTutor - Range Tests</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+    <td><div class='nav-prev'><a href="operator.html">Prev</a></div></td>
+    <td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+    <td><div class="nav-next"><a href="short-circuit.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Range Tests</h2>
+<p>The reserved word <b>in</b> tests if something is inside a range, and
+returns a Boolean result.&nbsp;  For example, if Lower, Upper, and X are
+declared as Floats, we need not write
+<pre class="hl">    <span class="hl kwa">if</span> X <span class="hl opt">&gt;=</span> Lower <span class="hl kwa">and</span> X <span class="hl opt">&lt;=</span> Upper <span class="hl kwa">then</span> <span class="hl opt">...</span> <span class="hl kwa">end if</span><span class="hl opt">;</span>
+</pre>
+
+This can be expressed more clearly as
+<pre class="hl">    <span class="hl kwa">if</span> X <span class="hl kwa">in</span> Lower <span class="hl opt">..</span> Upper <span class="hl kwa">then</span> <span class="hl opt">...</span> <span class="hl kwa">end if</span><span class="hl opt">;</span>
+</pre></p>
+
+<p>We can also write <b>not in</b>.&nbsp;  Thus <b>X not in Lower .. Upper</b>
+is a clear way of expressing <b>X < Lower or X > Upper</b>.</p>
+
+<p>A subtype may be substituted for the range to the right of <b>in</b>.&nbsp;  If Day_Subtype is defined as a subtype of Integer, and I is an Integer, then we can write <b>I in Day_Subtype</b>.</p>
+
+<p>
+<div class="adat-q">
+<h2>Question</h2>
+If we have the following declarations:
+<pre class="hl">    B       <span class="hl opt">:</span> <span class="hl kwb">Boolean</span><span class="hl opt">;</span>
+    A<span class="hl opt">,</span> X<span class="hl opt">,</span> Y <span class="hl opt">:</span> <span class="hl kwb">Character</span><span class="hl opt">;</span>
+</pre>
+then which <b>one</b> of the following is <b>illegal</b>?
+<ol>
+<li><a href="javascript:adat_toggle('adat-opa1');">B := X &lt;&gt; Y;</a>
+<div id="adat-opa1" class="adat-a" style="display: none"><b>You're
+right!</b>&nbsp;  Number 1 is illegal because <b>&lt;&gt;</b> should be
+<b>/=</b>.</div></li>
+
+<li><a href="javascript:adat_toggle('adat-opa2');">B := A in X .. Y;</a>
+<div id="adat-opa2" class="adat-a" style="display: none">No, number 2 is
+legal.&nbsp; The reserved word <b>in</b> tests to see if A is within the
+range X to Y.&nbsp;  It returns a Boolean result, which is stored in B.
+</div></li>
+
+<li><a href="javascript:adat_toggle('adat-opa3');">B := A = X and X = Y;</a>
+<div id="adat-opa3" class="adat-a" style="display: none">No, number 3 is
+legal.&nbsp; Parentheses aren't necessary here, but it's the same as
+if we had written
+<pre class="hl">    B <span class="hl opt">:= (</span>A <span class="hl opt">=</span> X<span class="hl opt">)</span> <span class="hl kwa">and</span> <span class="hl opt">(</span>X <span class="hl opt">=</span> Y<span class="hl opt">);</span>
+</pre>
+In two places <b>=</b> returns a Boolean result.&nbsp;  Then <b>and</b> takes
+the two Boolean results and also returns a result of type Boolean.&nbsp;  That
+final result is then stored in B.
+</div></li>
+</ol>
+</div>
+</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

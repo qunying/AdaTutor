@@ -1,0 +1,176 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Outside Assignment 5' href='index.html' />
+<link rel='prev' title='Outside Assignment 5' href='index.html' />
+<link rel='next' title='' href='while-loop.html' />
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, outside assignment 5">
+
+<title>AdaTutor - Writing a Simple Line Editor</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="index.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="oa5ans.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Writing a Simple Line Editor</h2>
+<p>We're finally ready for the next Outside Assignment!&nbsp;  This assignment
+will give you a chance to write a program of greater complexity than the
+previous assignments.&nbsp;  By the time you've completed Outside Assignment 5,
+you should feel comfortable with Ada.&nbsp;  The full set of requirements for
+the line editor we want you to write are in your <a
+href='../adatutor/printme.txt'>printed course notes</a>, starting
+on page 20.&nbsp;  We'll discuss them briefly here.&nbsp;  No test driver is
+supplied, but after you've written the program, we'll give you some tests to
+perform manually on your line editor.&nbsp;  You've completed the assignment
+when your editor passes all the tests.</p>
+
+<p>A line editor edits only one line of a text file at a time, and is much
+simpler than a screen editor that lets you move a cursor wherever you
+want.&nbsp;  The line editor you'll write, called Ledit, will take almost no
+effort to learn how to use.&nbsp;  The only commands are LIST and EXIT!</p>
+
+<p>The user begins each line of text with a line number, similar to early
+versions of Basic.&nbsp;  Line numbers must be integers between 1 and
+29999.&nbsp;  Regardless of the order in which lines are entered, Ledit
+maintains a linked list of lines in order by number, so that it can List the
+text in order, or write it to a file.</p>
+
+<p>Line numbers need not be consecutive, and they may be preceded by any number
+of spaces.&nbsp;  For example, if we type
+<pre>
+40 -- This is a comment.
+   20 begin
+10 with Ada.Text_IO; use Ada.Text_IO;
+      30 end Add;
+</pre>
+and then type <b>LIST</b>, the editor displays
+<pre>
+   10 with Ada.Text_IO; use Ada.Text_IO;
+   20 begin
+   30 end Add;
+   40 -- This is a comment.
+</pre>
+</p>
+
+<p>To <b>insert</b> lines, we merely type lines with intermediate line
+numbers.&nbsp;  In our example, if we now type
+<pre>
+15 procedure Hello is
+LIST
+</pre>
+we'll see
+<pre>
+   10 with Ada.Text_IO; use Ada.Text_IO;
+   15 procedure Hello is
+   20 begin
+   30 end Add;
+   40 -- This is a comment.
+</pre>
+</p>
+
+<p>To <b>replace</b> a line, we simply retype the line with the same line number
+as the line to be replaced, and to <b>delete</b> a line, we type only the line
+number.  If we now type
+<pre>
+15 procedure Add is
+40
+LIST
+</pre>
+we'll see
+<pre>
+   10 with Ada.Text_IO; use Ada.Text_IO;
+   15 procedure Add is
+   20 begin
+   30 end Add;
+</pre>
+</p>
+
+<p>Thus the user can insert, replace, and delete lines by line numbers, without
+learning any commands!&nbsp;  If the user forgets the space after the line
+number, no harm is done; Ledit takes <b>20begin</b> the same as <b>20
+begin</b>.&nbsp;  However, the user can indent code by adding extra spaces after
+the line number.&nbsp;  The following example has two extra spaces after each
+line number (three spaces total):
+<pre>
+24   Put(2 + 2);
+26   New_Line;
+18   package My_Int_IO is new Integer_IO(Integer); use My_Int_IO;
+LIST
+
+   10 with Ada.Text_IO; use Ada.Text_IO;
+   15 procedure Add is
+   18   package My_Int_IO is new Integer_IO(Integer); use My_Int_IO;
+   20 begin
+   24   Put(2 + 2);
+   26   New_Line;
+   30 end Add;
+</pre></p>
+
+<p>When Listing, Ledit always allows exactly five spaces for the line number, so
+that the text lines up correctly:
+<pre>
+LIST
+
+    2 This is a sample listing,
+   20 showing how the text
+  200 lines up, even when
+ 2000 some line numbers are
+20000 longer than others.
+</pre>
+</p>
+
+<p>When we type <b>EXIT</b>, Ledit writes the output file <b>without</b> the
+line numbers.&nbsp;  The text above would all start in column 1 of the output
+file.</p>
+
+<p>For Ledit to be useful with files larger than a page, it must be possible to
+list a range of lines:
+<pre>
+LIST 20 - 30
+</pre>
+</p>
+
+<p>This is only a summary of the requirements for Ledit.&nbsp;  Please refer to
+pages 20-24 of your printed course notes for the actual requirements.&nbsp;  As
+a point of reference, our solution requires about 180 lines of Ada on four
+pages.</p>
+
+<p>Here are the steps to follow for Outside Assignment 5.&nbsp;  They can also
+be found in your printed course notes on page 25:
+<ol>
+<li>Carefully read the requirements starting on page 20 of your printed course
+    notes.&nbsp;  Take your time.</li>
+
+<Li>Write the Ada code, compile, and link.&nbsp;  Call the main program
+ Ledit.&nbsp;  If you have any questions about what Ledit should do, you can
+ compile and run our solution, which is in L_EDIT.ANS.</li>
+
+<li>Refer to pages 26-28 of your printed course notes for instructions on
+    testing your line editor.&nbsp;  If any tests are failed, go back to step 2.</li>
+
+<li>When all the tests are passed, you've completed the assignment and will
+    have a chance to compare your solution with ours.</li>
+</ol>
+
+Please stop reading AdaTutor temporarily, and try Outside Assignment 5.&nbsp;
+It will probably take several days.&nbsp;  Take your time; there's no
+deadline.&nbsp;  Good luck!</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Control Constructs' href='control.html' />
+<link rel='prev' title='Labels and GOTOs' href='label.html' />
+<link rel='next' title='Brief Overview of Functions' href='function.html' />
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, case">
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+<title>AdaTutor - The "CASE" Construct</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="label.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="control.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="function.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+
+<h3>The "CASE" Construct</h3>
+<pre class="hl">         <span class="hl kwa">case</span> C <span class="hl kwa">is</span>                        
+           <span class="hl kwa">when</span> <span class="hl str">'*'</span> <span class="hl opt">=&gt;</span>                    
+             <span class="hl slc">-----;                       </span>
+             <span class="hl slc">-----;                       </span>
+           <span class="hl kwa">when</span> <span class="hl str">'#'</span> | <span class="hl str">'$'</span> <span class="hl opt">=&gt;</span>              
+             <span class="hl slc">-----;                       </span>
+             <span class="hl slc">-----;                       </span>
+             <span class="hl slc">-----;                       </span>
+           <span class="hl kwa">when</span> <span class="hl str">'0'</span> <span class="hl opt">..</span> <span class="hl str">'9'</span> <span class="hl opt">=&gt;</span>             
+             <span class="hl slc">-----;                       </span>
+           <span class="hl kwa">when</span> <span class="hl str">'A'</span><span class="hl opt">..</span><span class="hl str">'Z'</span> | <span class="hl str">'a'</span><span class="hl opt">..</span><span class="hl str">'z'</span> <span class="hl opt">=&gt;</span>    
+             <span class="hl slc">-----;                       </span>
+             <span class="hl slc">-----;                       </span>
+             <span class="hl slc">-----;                       </span>
+           <span class="hl kwa">when others</span> <span class="hl opt">=&gt;</span>                 
+             <span class="hl slc">-----;                       </span>
+             <span class="hl slc">-----;                       </span>
+         <span class="hl kwa">end case</span><span class="hl opt">;</span>  
+</pre>
+
+<p>In this example, assume that <b>C</b> is of type Character.&nbsp;  The
+expression being tested (<b>C</b>), must have a discrete type: integer or
+enumeration type.&nbsp;  The <b>case</b> construct must handle all possible
+values, but <b>when others</b> is available.&nbsp;  If no action is desired for
+characters not mentioned, we can write <b>when others => null;</b>.&nbsp;  The
+Ada statement <b>null;</b> does nothing.&nbsp;  Note that the vertical bar can
+be used to apply several cases to one block of code, and that ranges can be
+used.&nbsp;  Here, if <b>C</b> is '*', the first block is executed; if it's
+'#' or '$', the second block is executed.&nbsp;  If it's a digit, the third
+block is executed, and if it's an unaccented letter A-Z (upper or lower case),
+the fourth block is executed.&nbsp;  If C is anything else, the fifth (last)
+block of code is executed.</p>
+
+<pre class="hl">      <span class="hl kwa">if</span> C <span class="hl opt">=</span> <span class="hl str">'*'</span> <span class="hl kwa">then</span>
+        <span class="hl slc">-----;</span>
+        <span class="hl slc">-----;</span>
+      <span class="hl kwa">elsif</span> C <span class="hl opt">=</span> <span class="hl str">'#'</span> <span class="hl kwa">or</span> C <span class="hl opt">=</span> <span class="hl str">'$'</span> <span class="hl kwa">then</span>
+        <span class="hl slc">-----;</span>
+        <span class="hl slc">-----;</span>
+        <span class="hl slc">-----;</span>
+      <span class="hl kwa">elsif</span> C <span class="hl kwa">in</span> <span class="hl str">'0'</span> <span class="hl opt">..</span> <span class="hl str">'9'</span> <span class="hl kwa">then</span>
+        <span class="hl slc">-----;</span>
+      <span class="hl kwa">elsif</span> C <span class="hl kwa">in</span> <span class="hl str">'A'</span><span class="hl opt">..</span><span class="hl str">'Z'</span> <span class="hl kwa">or</span> C <span class="hl kwa">in</span> <span class="hl str">'a'</span><span class="hl opt">..</span><span class="hl str">'z'</span> <span class="hl kwa">then</span>
+        <span class="hl slc">-----;</span>
+        <span class="hl slc">-----;</span>
+        <span class="hl slc">-----;</span>
+      <span class="hl kwa">else</span>
+        <span class="hl slc">-----;</span>
+        <span class="hl slc">-----;</span>
+      <span class="hl kwa">end if</span><span class="hl opt">;</span>
+</pre>
+
+<p>
+The two examples above are equivalent.&nbsp;  In both cases only one block of
+code will be executed.&nbsp;  By the way, the symbol <b>=&gt;</b> is read
+"choose" (or sometimes "arrow"), and may not contain a space.</p>
+
+<div class="adat-q">
+<h3>Question</h3>
+If we have
+<pre class="hl">   <span class="hl kwa">type</span> Rainbow_Color <span class="hl kwa">is</span> <span class="hl opt">(</span>Red<span class="hl opt">,</span> Orange<span class="hl opt">,</span> Yellow<span class="hl opt">,</span> Green<span class="hl opt">,</span> Blue<span class="hl opt">,</span> Indigo<span class="hl opt">,</span>
+                          Violet<span class="hl opt">);</span>
+   <span class="hl kwa">type</span> Traffic_Light_Color <span class="hl kwa">is</span> <span class="hl opt">(</span>Red<span class="hl opt">,</span> Amber<span class="hl opt">,</span> Green<span class="hl opt">);</span>
+   F <span class="hl opt">:</span> <span class="hl kwb">Float</span> <span class="hl kwa">range</span> <span class="hl num">0.0</span> <span class="hl opt">..</span> <span class="hl num">2.0</span><span class="hl opt">;</span>
+   R <span class="hl opt">:</span> Rainbow_Color<span class="hl opt">;</span>
+   T <span class="hl opt">:</span> Traffic_Light_Color<span class="hl opt">;</span>
+</pre>
+then which <b>one</b> of the following program segments is <b>legal</b>?
+
+<ol>
+<li>&nbsp;<a href="javascript:adat_toggle('adat-c6a1');"><table><tr><td><pre class="hl">  <span class="hl kwa">case</span> R <span class="hl kwa">is</span>
+    <span class="hl kwa">when</span> Red | Green <span class="hl opt">=&gt;</span>
+      <span class="hl slc">-----;</span>
+    <span class="hl kwa">when</span> Blue <span class="hl opt">..</span> Violet <span class="hl opt">=&gt;</span>   
+      <span class="hl slc">-----;</span>
+  <span class="hl kwa">end case</span><span class="hl opt">;</span>
+</pre></td></tr></table>
+</a>
+<div id="adat-c6a1" class="adat-a" style="display: none">No, number 1 is
+illegal because it doesn't account for all the possible values of
+<b>R</b>.</div>
+</li>
+
+<li>&nbsp;
+<a href="javascript:adat_toggle('adat-c6a2');"><table><tr><td><pre class="hl">   <span class="hl kwa">case</span> F <span class="hl kwa">is</span>             
+     <span class="hl kwa">when</span> <span class="hl num">0.0</span> <span class="hl opt">..</span> <span class="hl num">1.0</span> <span class="hl opt">=&gt;</span>  
+       <span class="hl slc">-----;            </span>
+     <span class="hl kwa">when others</span> <span class="hl opt">=&gt;</span>      
+       <span class="hl slc">-----;             </span>
+   <span class="hl kwa">end case</span><span class="hl opt">;</span>              
+</pre></td></tr></table>
+</a>
+<div id="adat-c6a2" class="adat-a" style="display: none">No, number 2 is
+illegal because <b>F</b> doesn't have a discrete type.</div>
+</li>
+
+<li>&nbsp;
+<a href="javascript:adat_toggle('adat-c6a3');"><table><tr><td><pre class="hl">   <span class="hl kwa">case</span> T <span class="hl kwa">is</span>
+     <span class="hl kwa">when</span> Red <span class="hl opt">=&gt;</span>
+       <span class="hl slc">-----;</span>
+     <span class="hl kwa">when others</span> <span class="hl opt">=&gt;</span>   
+       <span class="hl slc">-----;</span>
+   <span class="hl kwa">end case</span><span class="hl opt">;</span>
+</pre>
+</td></tr></table>
+</a>
+<div id="adat-c6a3" class="adat-a" style="display: none"><b>You're
+right!</b>&nbsp;  Number 1 is illegal because it doesn't account for all
+possible values of <b>R</b>, and number 2 is illegal because <b>F</b> doesn't
+have a discrete type.</div>
+</li>
+
+</ol>
+
+</div>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

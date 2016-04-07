@@ -1,0 +1,2049 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                             Welcome  to
+                           A d a T u t o r
+                      The Interactive Ada Tutor
+                       by John J. Herro, Ph.D.
+                   Software Innovations Technology
+
+                 These are your printed course notes.
+
+                        Ver. 4.01, 2001-SEP-10
+
+
+
+
+
+
+
+
+
+                  Copyright 1988-2001 John J. Herro
+
+                   SOFTWARE INNOVATIONS TECHNOLOGY
+                         1083 MANDARIN DR NE
+                        PALM BAY FL 32905-4706
+                            (321)951-0233
+
+                           www.adatutor.com
+
+                          john@adatutor.com
+
+                 You may make copies of these notes,
+                 in printed or machine-readable form.
+
+               You may also copy the computer program.
+                    Please see page 1 for details.
+
+
+                                                               Page  i
+
+                          TABLE OF CONTENTS
+
+
+Contents . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   i
+Acknowledgments  . . . . . . . . . . . . . . . . . . . . . . . . .  ii
+Introduction . . . . . . . . . . . . . . . . . . . . . . . . . . .   1
+Registration and Licenses - What is Shareware? . . . . . . . . . .   2
+Special Offer to Companies, Schools, Etc.  . . . . . . . . . . . .   3
+Note to Compiler Companies . . . . . . . . . . . . . . . . . . . .   5
+Some Useful Ada WWW Sites  . . . . . . . . . . . . . . . . . . . .   6
+The Ada Reserved Words . . . . . . . . . . . . . . . . . . . . . .   7
+Steps for Outside Assignment 1, Preparing to Run Ada . . . . . . .   8
+Listings of HELLO.ADA and ADD.ADA  . . . . . . . . . . . . . . . .   9
+Listing of TRI_TEST.ADA  . . . . . . . . . . . . . . . . . . . . .  10
+Steps for Outside Assignment 2, Exercise in Enumeration Types  . .  12
+Listing of NEXTDATE.ADA  . . . . . . . . . . . . . . . . . . . . .  13
+Steps for Outside Assignment 3, Exercise in Records  . . . . . . .  14
+Listing of FIBTEST.ADA . . . . . . . . . . . . . . . . . . . . . .  15
+Steps for Outside Assignment 4, Exercise in Recursion  . . . . . .  16
+Simplified Specification for ADA.TEXT_IO . . . . . . . . . . . . .  17
+Listings of Procedure FILECOPY and Function EXISTS . . . . . . . .  19
+Requirements for the Program LEDIT . . . . . . . . . . . . . . . .  20
+Steps for Outside Assignment 5, Writing a Simple Line Editor . . .  25
+How to Test LEDIT  . . . . . . . . . . . . . . . . . . . . . . . .  26
+Listing of L_EDIT.ANS  . . . . . . . . . . . . . . . . . . . . . .  29
+Listing of TASKING.DUM . . . . . . . . . . . . . . . . . . . . . .  33
+Steps for Outside Assignment 6, Exercise in Tasking  . . . . . . .  34
+Output from TASKING.EXE After Modification of TASKING.ADA  . . . .  35
+Listing of TASKING.ANS . . . . . . . . . . . . . . . . . . . . . .  36
+
+Appendix A:  Running Book to Print All the Screens . . . . . . . .  37
+Appendix B:  Free and Low-Cost Ada Compilers . . . . . . . . . . .  38
+Appendix C:  Sample Multi-User Software License  . . . . . . . . .  39
+Appendix D:  Installing AdaTutor on Other Computers  . . . . . . .  41
+Appendix E:  We Listen!  New Features of AdaTutor  . . . . . . . .  46
+Appendix F:  Disclaimer of Warranty  . . . . . . . . . . . . . . .  47
+
+                                                               Page ii
+
+                           ACKNOWLEDGMENTS
+
+The following trademarks are used in these notes and in the
+accompanying files:
+
+        DOS              Microsoft Corp.
+        IBM              International Business Machines Corp.
+        Janus/Ada        R.R. Software, Inc.
+        Open Ada         Meridian Software Systems, Inc.
+        UNIX             AT & T
+        VAX              Digital Equipment Corporation
+        VMS              Digital Equipment Corporation
+        Windows          Microsoft Corp.
+
+The file ONECHAR.C was sent to us by Mr. David Hill, 7549 Wynford
+Street, Salt Lake City, UT 84121, and the file ALTCHAR.C was sent to
+us by Mr. Richard Conn, 22 Hunt Court, Tinton Falls, NJ 07753.  We're
+very grateful to Mr. Hill and to Mr. Conn for giving us permission to
+include these files in AdaTutor.  When used with UNIX.ADA, these files
+provide two ways to run the Tutor on UNIX based machines without
+having to strike Enter after each response.  See pages 41-45.
+
+The programs in this version of AdaTutor were compiled with the
+Meridian Open Ada Compiler, v4.1, and optimized with the Meridian
+IFORM Optimizer, v1.0.  The .EXE files contain Meridian's runtime.
+The Meriaian Open Ada compiler is now sold by D.C. Heath Co.,
+Indianapolis, IN.
+
+                                                               Page  1
+
+                             INTRODUCTION
+
+     AdaTutor, the Interactive Ada Tutor, will make you an excellent
+Ada programmer in minimum time.  You'll learn good Ada program design
+techniques, not just Ada syntax.  AdaTutor runs on PCs as well as
+workstations and mainframes.  Under DOS (or in a DOS partition under
+any version of Windows), an Ada compiler is helpful, but not required.
+The PC can have any screen resolution and any amount of memory.
+     These printed notes aren't meant to be a complete course, or even
+a summary, of Ada.  They merely accompany the program AdaTutor, which
+is a complete course.  You can't "study" these printed notes alone.
+For now, just read pages 1 and 2.
+     AdaTutor lets you learn at your own pace.  So that you don't feel
+pressured, AdaTutor doesn't keep track of the number of right and
+wrong answers.  It simply tells you whether your answers are correct,
+and why.  Also, there's no time limit for answering the questions or
+completing the Outside Assignments.
+     Because I want every programmer to have a chance to learn the
+best programming language, I made AdaTutor available very economically
+as shareware.  Shareware isn't free, but you may TRY this program for
+free, and register or buy a license only if you use it.  Please see
+pages 2-3 for details.
+     Whether or not you use AdaTutor and register (or buy a license),
+please make unmodified copies of the program and distribute them on
+bulletin boards, at clubs, and give them to companies, schools, etc.
+You may charge a small fee to copy the program, provided you make it
+clear that the fee is only for the copy, and doesn't pay for the
+shareware registration.  Web sites and computer bulletin boards may
+carry AdaTutor even if they charge for access, and you may include
+AdaTutor on CD-ROMs.  Please contact us for permission to include
+AdaTutor with other commercial products, such as Ada compilers (please
+see page 5).  You may add your own files to AdaTutor if you want.
+(The files included with AdaTutor are briefly described in FILES.TXT.)
+If you register, you can earn substantial money distributing AdaTutor;
+please see page 2 for details.
+     Ada is a superior general-purpose programming language, because
+Ada catches errors at compile time that other languages catch only at
+run time, or not at all.  Also, Ada programs tend to be easier to
+read, and much easier to modify a month or a year later.  Although
+learning Ada takes real effort, you'll be able to write software
+that's much more reliable than programs written in other languages.
+     New features of this version of AdaTutor are described on pages
+47-48.  Please send me your comments and suggestions.  I wish you
+success using AdaTutor!
+
+John J. Herro, Ph.D.                   SOFTWARE INNOVATIONS TECHNOLOGY
+john@adatutor.com                      1083 MANDARIN DR NE
+                                       PALM BAY FL 32905-4706
+www.adatutor.com                       (321) 951-0233
+
+                                                               Page  2
+
+            REGISTRATION AND LICENSES - WHAT IS SHAREWARE?
+
+     Shareware is a way of marketing a program.  It lets you try the
+program before spending money for it.  If you decide to use the
+program, you send a small payment to register your copy or buy a
+license.  We give you several incentives to do so, explained below.
+You're on your honor; you know whether you're "using" AdaTutor or
+only "trying" it.
+     To use AdaTutor, individuals register as described below.
+Companies, schools, and other organizations can register each
+individual who uses the program, or buy a Multi-User License as
+described on the next page.
+
+                             INDIVIDUALS:
+     Register your copy for only $25.  When you register, please give
+us the serial number from the AdaTutor opening screen.  We'll assign
+you a new serial number.  Then run ChangeSN to put your new number
+into the program, and give copies to individuals, schools, companies,
+clubs, computer bulletin boards, etc.
+     We'll send you a commission of $5 for each individual who
+registers from one of your copies, and a commission of TEN PERCENT for
+each Multi-User License sold from one of your copies!  As you can see
+from the next page, you can earn up to $240 per license sold!
+Commissions are paid quarterly.  If you like, print the file AD.TXT
+and use copies as an advertisement.
+     Registration includes the right to use AdaTutor as long as you
+like, and it includes technical support for one year.  While you have
+technical support, we'll inform you of any important updates to
+AdaTutor, and send you updated copies for only $10 each (free if you
+send us a formatted diskette with a stamped diskette mailer).  We've
+recently updated the Ada 95 material in AdaTutor, and plan to continue
+to update the tutorial.  You can renew technical support for only $10
+a year.  Even if you don't renew, you'll continue to receive
+commissions.
+     When you register, you may order a copy of the current version of
+AdaTutor, with your serial number.  The price is $10, or free with
+your formatted diskette and a stamped diskette mailer.  If you would
+like an order form or a price list, please print the file INVOICE.TXT.
+     We offer a Customization Kit that lets you edit, add, and delete
+AdaTutor screens, questions, etc. (even whole topics), producing a new
+ADATUTOR.DAT file.  See the last paragraph on page 4.  Note that the
+Customization Kit is not shareware.
+     We sell anywhere in the Free World.  We're sorry, but we don't
+yet accept credit cards.  Outside the U.S., please remit in U.S. funds
+and contact us about extra postal charges on diskettes.
+
+             COMPANIES, SCHOOLS, AND OTHER ORGANIZATIONS:
+     Please see our special offer for Multi-User Licenses on the next
+page.
+
+                                                               Page  3
+
+              SPECIAL OFFER TO COMPANIES, SCHOOLS, ETC.
+
+     AdaTutor can be of great benefit to your company, school, or
+other organization.  We encourage you to try AdaTutor before paying
+for it, and you may install AdaTutor not only on your PCs, but also on
+any of your other computers (e.g., workstations and mainframes)!
+Instructions for installing AdaTutor on other computers are on page 41
+of these printed notes.
+     If you decide to use AdaTutor, you could register each individual
+user, as described on page 2.  But if you have more than 10 users, you
+can save money by buying a Multi-User License, as described here.
+You're on your honor; you know whether you're "using" AdaTutor or only
+"trying" it.  Multi-User Licenses are very reasonably priced, as
+follows:
+
+    Number of Users:   Price of License:            Note:
+
+       Up to   25         only  $250
+       Up to   50         only  $350       A license may always be
+       Up to  100         only  $450       upgraded for only the
+       Up to  500         only  $725       difference in price.
+       Up to 2000         only  $950
+       Unlimited          only $2400
+
+     Add $10 to the above prices if you need a copy of the latest
+version of AdaTutor on a diskette.
+     A sample Multi-User license appears on pages 39-40.  A Multi-User
+License gives the specified number of people the right to use AdaTutor
+as long as you like, on all your computers (from small PCs to large
+mainframes), at all your locations.  We use the term Multi-User
+License rather than Site License because there are no geographic
+restrictions.  (Note: If 50 people use AdaTutor now and 50 others use
+it later, that counts as 100 users, not 50.)  Sales commissions are
+NOT paid to Multi-User Licensees.
+     A Multi-User License includes one year of technical support,
+which can be renewed for only 10% of the price of the license per
+year.  While you have technical support, we'll inform you of any
+important updates to AdaTutor, and send you an updated copy for only
+$10.  The update is free if you send a formatted diskette and a
+stamped diskette mailer.  We've recently updated the Ada 95 material
+in AdaTutor, and plan to continue to update the tutorial.
+     Even if you don't renew your Technical Support, you'll still have
+the right to use AdaTutor as long as you like.
+     Please print the file INVOICE.TXT, or use your own form.  (When
+ordering, please give us the serial number from the opening screen of
+your copy of AdaTutor, if you have one.)
+     We accept Purchase Orders.  Our Federal tax ID number is
+360-40-8382, and we qualify as a Small Business.  We sell anywhere in
+the Free World.  We're sorry, but we don't yet accept credit cards.
+Outside the U.S., please remit in U.S. funds and contact us about
+extra postal charges on diskettes.
+
+                                                               Page  4
+
+     With shareware, you never have to worry about software piracy,
+because your people are ENCOURAGED to copy and distribute the program!
+If you prefer, however, a non-shareware version of AdaTutor is
+available at the same prices.
+     If you buy a license, we'll be happy to do minor customization of
+AdaTutor for you at no charge.  For example, we can add your company
+name to the opening screen.  If you'd like major customization,
+contact us for terms, or buy our Customization Kit for $195.  Using
+any text editor on a PC, workstation, or mainframe, the Customization
+Kit lets you edit, add, and delete screens, questions, etc. (even
+whole topics), producing a new ADATUTOR.DAT file.  The Customization
+Kit isn't shareware, but you may copy it for use throughout your
+organization as required.
+
+                                                               Page  5
+
+                      NOTE TO COMPILER COMPANIES
+
+     A special version of AdaTutor is available, without the shareware
+notices and without the list of Ada compilers.  It can be customized
+for your company, and can run on almost any Ada platform, including
+workstations and mainframes, because Ada source code is included.
+AdaTutor can greatly increase the sales appeal of your compilers and
+your Ada tools, whether you sell it separately or bundle it with your
+products.  Please contact us.
+     If you're a prospective contractor or subcontractor, the
+shareware or special version of AdaTutor may be the best and most
+economical way for you to supply your customer's Ada educational
+needs.  Please contact us before writing your proposal.
+
+                                                               Page  6
+
+                      SOME USEFUL ADA WWW SITES
+
+     The Home of the Brave Ada Programmers is a World Wide Web site
+containing a wealth of information related to Ada.  You can find it at
+http://www.adahome.com.
+     Among many other things, this site has a list of available Ada
+compilers by vendor, and links to free and low-cost Ada compilers, at
+http://www.adahome.com/Resources/Compilers.  In addition, it has the
+complete Ada 95 Reference Manual at http://www.adahome.com/rm95.
+     Beginners should also check out Ada Resources for Educators and
+Students at http://www.acm.org/sigada/education.  This site has many
+useful links, organized into categories.
+
+
+                                                               Page  7
+
+                        THE ADA RESERVED WORDS
+
+     The reserved words are listed in the Language Reference Manual in
+section 2.9, and are repeated here for convenience.
+
+  abort         declare        generic      of             select
+  abs           delay          goto         or             separate
+  abstract *    delta                       others         subtype
+  accept        digits                      out
+  access        do             if
+  aliased *                    in                          tagged *
+  all                          is           package        task
+  and                                       pragma         terminate
+  array                                     private        then
+  at                                        procedure      type
+                else           limited      protected *
+                elsif          loop
+                end                                        until *
+                entry                                      use
+  begin         exception                   raise
+  body          exit           mod          range
+                                            record         when
+                                            rem            while
+                                            renames        with
+                               new          requeue *
+  case          for            not          return
+  constant      function       null         reverse        xor
+
+
+
+
+
+
+* Ada 95 only.
+
+                                                               Page  8
+
+         STEPS FOR OUTSIDE ASSIGNMENT 1, PREPARING TO RUN ADA
+
+     For the first Outside Assignment, learn enough about your Ada
+compiler to compile and run the two simple programs HELLO.ADA and
+ADD.ADA.  Obviously, you have to do this before you can do the
+remaining Outside Assignments.
+
+1.  Compile HELLO.ADA.  On most systems, after the Ada compiler is
+installed and your library is created, if necessary, this only
+involves typing ADA HELLO or ADA HELLO.ADA.  On some systems, the
+compiler is invoked from a menu.
+
+2.  Link, giving the name of the main program, HELLO.  This usually
+involves typing LINK HELLO or BIND HELLO, perhaps with some options,
+but other commands are used on different systems.
+
+3.  Run the program.  If your Ada compiler produces native code on a
+PC, it created a file HELLO.EXE (or HELLO.COM), and this step simply
+involves typing HELLO.  On other systems, the command RUN HELLO is
+appropriate.  On some systems, you have to invoke an interpreter to
+run the program.
+
+4.  Now compile, link, and run ADD.ADA.
+
+     If your compiler implements a subset of Ada, you may have to
+modify the programs in this and later Outside Assignments to get them
+to compile.  Some subset Ada compilers don't allow "separate"
+compilation (used in later assignments), and you'll have to include
+the "separate" subprograms inside the main program and compile them as
+one.  Some subset compilers don't allow generic instantiation, and
+have another way of displaying integers.  In that case, you'll have to
+modify ADD.ADA.  If you're using a validated compiler, you won't have
+to worry about any of this, because all of the Outside Assignments are
+written in standard Ada.
+
+                                                               Page  9
+
+HELLO.ADA (Written to work with Ada 83 and Ada 95)
+---------
+
+with Text_IO; use Text_IO;
+procedure Hello is
+begin
+  Put_Line("Hello!");
+end Hello;
+
+
+
+ADD.ADA (Written to work with Ada 83 and Ada 95)
+-------
+
+with Text_IO; use Text_IO;
+procedure Add is
+  package My_Int_IO is new Integer_IO(Integer); use My_Int_IO;
+begin
+  Put(2 + 2);
+  New_Line;
+end Add;
+
+                                                               Page 10
+TRI_TEST.ADA (Written to work with Ada 83 and Ada 95)
+------------
+with Text_IO; use Text_IO;
+procedure Tritest is
+  Passed : Boolean := True;
+  type Triangle is (Equilateral, Isosceles, Scalene, Not_A_Triangle);
+  function Tritype(Len1, Len2, Len3 : in Integer) return Triangle
+                                                          is separate;
+  procedure Compare(A, B, C: in Integer; Right_Answer : in Triangle)
+                                                          is separate;
+begin
+  Compare( 3,  4,  5, Scalene);
+  Compare( 6,  3,  4, Scalene);
+  Compare( 4,  3,  6, Scalene);
+  Compare( 3,  3,  3, Equilateral);
+  Compare( 3,  3,  4, Isosceles);
+  Compare( 3,  4,  3, Isosceles);
+  Compare( 4,  3,  3, Isosceles);
+  Compare( 7,  7,  4, Isosceles);
+  Compare( 7,  4,  7, Isosceles);
+  Compare( 4,  7,  7, Isosceles);
+  Compare( 1,  1,  1, Equilateral);
+  Compare( 0,  4,  4, Not_A_Triangle);
+  Compare( 4,  0,  4, Not_A_Triangle);
+  Compare( 4,  4,  0, Not_A_Triangle);
+  Compare( 0,  4,  3, Not_A_Triangle);
+  Compare( 3,  0,  4, Not_A_Triangle);
+  Compare( 4,  3,  0, Not_A_Triangle);
+  Compare(-1,  4,  4, Not_A_Triangle);
+  Compare( 4, -1,  4, Not_A_Triangle);
+  Compare( 4,  4, -1, Not_A_Triangle);
+  Compare(-1,  4,  3, Not_A_Triangle);
+  Compare( 3, -1,  4, Not_A_Triangle);
+  Compare( 4,  3, -1, Not_A_Triangle);
+  Compare( 2,  4,  6, Not_A_Triangle);
+  Compare( 1,  3,  2, Not_A_Triangle);
+  Compare( 3,  1,  2, Not_A_Triangle);
+  Compare( 1,  2,  4, Not_A_Triangle);
+  Compare( 1,  4,  2, Not_A_Triangle);
+  Compare( 4,  1,  2, Not_A_Triangle);
+  Compare( 0,  0,  0, Not_A_Triangle);
+  Compare( 0,  0,  4, Not_A_Triangle);
+  Compare( 0,  4,  0, Not_A_Triangle);
+  Compare( 4,  0,  0, Not_A_Triangle);
+  Compare( 3,  3,  7, Not_A_Triangle);
+  Compare( 3,  7,  3, Not_A_Triangle);
+  Compare( 6,  3,  3, Not_A_Triangle);
+  Compare(-3, -4, -5, Not_A_Triangle);
+  if Passed then
+    Put_Line("Congratulations, you completed the assignment!");
+  end if;
+end Tritest;
+                           -- continued --
+
+                                                               Page 11
+
+separate (Tritest)
+procedure Compare(A, B, C: in Integer; Right_Answer : in Triangle) is
+  package Int_IO is new Integer_IO(Integer); use Int_IO;
+  package Tri_IO is new Enumeration_IO(Triangle); use Tri_IO;
+  My_Answer : Triangle := Tritype(A, B, C);
+begin
+  if My_Answer /= Right_Answer then
+    Put("Sides:");
+    Put(A, Width => 3);
+    Put(B, Width => 3);
+    Put(C, Width => 3);
+    Put("   My answer: ");
+    Put(My_Answer, Width => 14);
+    Put("   Right answer: ");
+    Put(Right_Answer);
+    New_Line;
+    Passed := False;
+  end if;
+end Compare;
+
+                                                               Page 12
+
+    STEPS FOR OUTSIDE ASSIGNMENT 2, EXERCISE IN ENUMERATION TYPES
+
+1.  Copy TRITYPE.DUM to TRITYPE.ADA to make a copy of the dummy
+    solution.  Also, compile the text driver TRI_TEST.ADA.  You need
+    do this step only once.
+
+2.  Edit TRITYPE.ADA to become your real solution.  You can skip this
+    step the first time through, to see error messages from the test
+    driver.
+
+3.  Compile your solution TRITYPE.ADA.  If the compiler finds errors,
+    go back to step 2.
+
+4.  Link with the name of the main program TRITEST.  Then execute.  If
+    the test driver displays error messages, go back to step 2.
+
+5.  When the message "Congratulations, you completed the assignment!"
+    is displayed, you'll have a chance to compare your solution with
+    ours.
+
+                                                               Page 13
+NEXTDATE.ADA (Written to work with Ada 83 and Ada 95)
+------------
+with Text_IO; use Text_IO;
+procedure Nextdate is
+  type Month_Type is
+         (Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec);
+  subtype Day_Subtype is Integer range 1 .. 31;
+  type Date is
+    record
+      Day   : Day_Subtype;
+      Month : Month_Type;
+      Year  : Positive;
+    end record;
+  Passed : Boolean := True;
+  function Tomorrow(Today : in Date) return Date is separate;
+
+  procedure Display (S : in String; D : in Date) is
+    package Int_IO is new Integer_IO(Integer); use Int_IO;
+  begin
+    Put(S);
+    Put(D.Day, Width => 3);
+    Put(" " & Month_Type'Image(D.Month));
+    Put(D.Year, Width => 5);
+    New_Line;
+  end Display;
+  procedure Compare(Today, Right_Answer : in Date) is
+    My_Answer : Date := Tomorrow(Today);
+  begin
+    if My_Answer /= Right_Answer then
+      Display("Today:       ", Today);
+      Display("My answer:   ", My_Answer);
+      Display("Right answer:", Right_Answer);
+      New_Line;
+      Passed := False;
+    end if;
+  end Compare;
+begin
+  Compare((12,Dec,1815), (13,Dec,1815)); -- ordinary date
+  Compare(( 3,Feb,1986), ( 4,Feb,1986)); -- ordinary date in Feb.
+  Compare((30,Jun,1981), ( 1,Jul,1981)); -- last day of 30-day month
+  Compare((30,Sep,3999), ( 1,Oct,3999)); -- last day of 30-day month
+  Compare((31,Mar,1876), ( 1,Apr,1876)); -- last day of 31-day month
+  Compare((31,Aug,1984), ( 1,Sep,1984)); -- last day of 31-day month
+  Compare((31,Dec,1966), ( 1,Jan,1967)); -- last day of year
+  Compare((28,Feb,1980), (29,Feb,1980)); -- leap year
+  Compare((28,Feb,1600), (29,Feb,1600)); -- century leap year
+  Compare((28,Feb,2200), ( 1,Mar,2200)); -- century non-leap year
+  Compare((28,Feb,1982), ( 1,Mar,1982)); -- non-leap year
+  Compare((29,Feb,1980), ( 1,Mar,1980)); -- leap day in leap year
+  if Passed then
+    Put_Line("Congratulations, you completed the assignment!");
+  end if;
+end Nextdate;
+
+                                                               Page 14
+
+         STEPS FOR OUTSIDE ASSIGNMENT 3, EXERCISE IN RECORDS
+
+1.  Copy TOMORROW.DUM to TOMORROW.ADA to make a copy of the dummy
+    solution.  Also, compile the test driver NEXTDATE.ADA.  You need
+    do this step only once.
+
+2.  Edit TOMORROW.ADA to become your real solution.  You can skip this
+    step the first time through, to see error messages from the test
+    driver.
+
+3.  Compile TOMORROW.ADA.  If the compiler finds errors, go back to
+    step 2.
+
+4.  Link with the name of the main program NEXTDATE.  Then execute.
+    If the test driver displays error messages, go back to step 2.
+
+5.  When the message "Congratulations, you completed the assignment!"
+    is displayed, you'll have a chance to compare your solution with
+    ours.
+
+                                                               Page 15
+
+FIBTEST.ADA (Written to work with Ada 83 and Ada 95)
+-----------
+
+with Text_IO; use Text_IO;
+procedure Fibtest is
+  Passed : Boolean := True;
+  function Fib(N : in Positive) return Positive is separate;
+  procedure Compare (N : in Positive; Right_Answer : in Positive) is
+    package Int_IO is new Integer_IO(Integer); use Int_IO;
+    My_Answer : Positive := Fib(N);
+  begin
+    if My_Answer /= Right_Answer then
+      Put("N:");  Put(N);
+      Put("          My answer:");  Put(My_Answer);
+      Put("          Right answer:");  Put(Right_Answer);
+      New_Line;
+      Passed := False;
+    end if;
+  end Compare;
+begin
+  Compare(1, 1);
+  Compare(2, 1);
+  Compare(3, 2);
+  Compare(4, 3);
+  Compare(5, 5);
+  Compare(6, 8);
+  Compare(7, 13);
+  Compare(10, 55);
+  Compare(15, 610);
+  Compare(20, 6765);
+  if Passed then
+    Put_Line("Congratulations, you completed the assignment!");
+  end if;
+end Fibtest;
+
+                                                               Page 16
+
+        STEPS FOR OUTSIDE ASSIGNMENT 4, EXERCISE IN RECURSION
+
+1.  Copy FIB.DUM to FIB.ADA to make a copy of the dummy solution.
+    Also, compile the test driver FIBTEST.ADA.  You need do this step
+    only once.
+
+2.  Edit FIB.ADA to become your real solution.  You can skip this step
+    the first time through, to see error messages from the test
+    driver.
+
+3.  Compile FIB.ADA.  If the compiler finds errors, go back to step 2.
+
+4.  Link with the name of the main program FIBTEST.  Then execute.  If
+    the test driver displays error messages, go back to step 2.
+
+5.  When the message "Congratulations, you completed the assignment!"
+    is displayed, you'll have a chance to compare your solution with
+    ours.
+
+                                                               Page 17
+SIMPLIFIED SPECIFICATION FOR ADA.TEXT_IO
+----------------------------------------
+package Ada.Text_IO is
+  type File_Type is limited private;
+
+  type File_Mode is (In_File, Out_File, Append_File);
+                                        --  Append_File not in Ada 83.
+  type Count is ... (a user-defined type similar to Integer);
+  Status_Error, Mode_Error, Name_Error, End_Error : exception;
+
+  procedure Create      (File : in out File_Type;
+                         Mode : in File_Mode := Out_File;
+                         Name : in String);
+
+  procedure Open        (File : in out File_Type;
+                         Mode : in File_Mode;
+                         Name : in String);
+
+  procedure Close       (File : in out File_Type);
+  procedure Delete      (File : in out File_Type);
+  procedure New_Line    (Spacing : in Count := 1);
+  procedure New_Line    (File : in File_Type;
+                         Spacing : in Count := 1);
+  procedure Skip_Line   (Spacing : in Count := 1);
+  procedure Skip_Line   (File : in File_Type;
+                         Spacing : in Count := 1);
+  function  End_Of_File (File : in File_Type) return Boolean;
+  procedure Put         (Item : in Character);
+  procedure Put         (File : in File_Type; Item : in Character);
+  procedure Get         (Item : out Character);
+  procedure Get         (File : in File_Type; Item : out Character);
+  procedure Put         (Item : in String);
+  procedure Put         (File : in File_Type; Item : in String);
+  procedure Put_Line    (Item : in String);
+  procedure Put_Line    (File : in File_Type; Item : in String);
+  procedure Get_Line    (Item : out String; Last : out Natural);
+  procedure Get_Line    (File : in File_Type;
+                         Item : out String;
+                         Last : out Natural);
+  generic
+    type Num is range <>;
+  package Integer_IO is
+    procedure Get (Item : out Num);
+    procedure Get (File : in File_Type; Item : out Num);
+    procedure Put (Item  : in Num;
+                   Width : in Integer := ...;
+                   Base  : in Integer := 10);
+    procedure Put (File  : in File_Type;
+                   Item  : in Num;
+                   Width : in Integer := ...;
+                   Base  : in Integer := 10);
+  end Integer_IO;
+                           -- continued --
+
+                                                               Page 18
+
+  generic
+    type Num is digits <>;
+  package Float_IO is
+    procedure Get (Item : out Num);
+    procedure Get (File : in File_Type; Item : out Num);
+    procedure Put (Item : in Num;
+                   Fore : in Integer := 2;
+                   Aft  : in Integer := ...;
+                   Exp  : in Integer := 3);
+    procedure Put (File : in File_Type;
+                   Item : in Num;
+                   Fore : in Integer := 2;
+                   Aft  : in Integer := ...;
+                   Exp  : in Integer := 3);
+  end Float_IO;
+
+  generic
+    type Enum is (<>);
+  package Enumeration_IO is
+    procedure Get (Item : out Enum);
+    procedure Get (File : in File_Type; Item : out Enum);
+    procedure Put (Item : in Enum; Width : in Integer := 0);
+    procedure PUT (File : in File_Type;
+                   Item : in Enum; Width : in Integer := 0);
+  end Enumeration_IO;
+
+private
+
+  type File_Type is ... (implementation dependent);
+
+end Text_IO;
+
+                                                               Page 19
+
+Program to copy a simple text file:
+-----------------------------------
+
+with Ada.Text_IO; use Ada.Text_IO;  -- For Ada 83, say simply Text_IO.
+procedure Filecopy Is
+  F1, F2 : File_Type;
+  S      : String(1 .. 80);
+  Len    : Integer;
+begin
+  Put("Input file: ");
+  Get_Line(S, Len);
+  Open(File => F1, Mode => In_File, Name => S(1 .. Len));
+  Put("Output file: ");
+  Get_Line(S, Len);
+  Create(File => F2, Mode => Out_File, Name => S(1 .. Len));
+  while not End_Of_File(F1) loop
+    Get_Line(F1, S, Len);
+    Put_Line(F2, S(1 .. Len));
+  end loop;
+  Close(F1);
+  Close(F2);
+end Filecopy;
+
+
+
+Function to test if a text file exists:
+---------------------------------------
+
+with Ada.Text_IO; use Ada.Text_IO;  -- For Ada 83, say simply Text_IO.
+function Exists(File_Name : in String) return Boolean Is
+  F      : File_Type;
+  Answer : Boolean := True;
+begin
+  begin
+    Open(F, In_File, File_Name);
+    Close(F);
+  exception
+    when Name_Error => Answer := False;
+  end;
+  return Answer;
+end Exists;
+
+                                                               Page 20
+
+                  REQUIREMENTS FOR THE PROGRAM LEDIT
+
+     This assignment will give you practice in writing a program of
+greater complexity than the previous programs you've written.  A line
+editor is a text editor that edits only one line of a text file at a
+time.  It is much simpler than a screen editor that lets you move a
+cursor wherever you want.  The line editor you'll write, called LEDIT,
+will take almost no effort to learn how to use.  The only commands are
+LIST and EXIT!  LEDIT edits by means of line numbers, similar to early
+versions of Basic.
+     The user begins each typed line of text with a line number from 1
+to 29999.  Line numbers must be integers, and may be preceded by any
+number of spaces.  We chose the upper limit 29999 so that you could
+use the simple type Integer - in any implementation of Ada.
+Regardless of the order in which lines are typed, LEDIT maintains a
+linked list of lines in order by number.  For example, if the user
+types
+
+40 -- This is a comment.
+   20 begin
+10 with Ada.Text_IO; use Ada.Text_IO;
+      30 end Add;
+
+and then types LIST, the editor will type
+
+   10 with Ada.Text_IO; use Ada.Text_IO;
+   20 begin
+   30 end Add;
+   40 -- This is a comment.
+
+     To INSERT lines, the user merely types lines with intermediate
+line numbers.  For example, if the user now types
+
+15 procedure Hello is
+
+and then types LIST, LEDIT will type
+
+   10 with Ada.Text_IO; use Ada.Text_IO;
+   15 procedure Hello is
+   20 begin
+   30 end Add;
+   40 -- This is a comment.
+
+     To REPLACE an existing line, the user merely types a line with
+the same line number as the line to be replaced.  For example, if the
+user then types
+
+15 procedure Add is
+LIST
+
+                           -- continued --
+
+                                                               Page 21
+
+LEDIT will show
+
+   10 with Ada.Text_IO; use Ada.Text_IO;
+   15 procedure Add is
+   20 begin
+   30 end Add;
+   40 -- This is a comment.
+
+     Finally, to DELETE a line, the user merely types the number of
+the line to be deleted, followed immediately by Enter.  Typing
+
+40
+LIST
+
+would then produce
+
+   10 with Ada.Text_IO; use Ada.Text_IO;
+   15 procedure Add is
+   20 begin
+   30 end Add;
+
+     Thus the user can INSERT, REPLACE, and DELETE lines, all by line
+numbers, without learning any commands.  Note that this simple editor
+has no "cursor" and no "current line."
+     The space is not required after the line number.  These two lines
+have exactly the same effect:
+
+20 begin
+20begin
+
+Of course, if the text of the line begins with a digit, a space will
+be required to separate it from the line number.  In any event, LEDIT
+always leaves one blank space after the line number when LISTing, for
+readability.  It always allows exactly five spaces for the line number
+itself.
+     However, any EXTRA spaces typed after the line number are
+significant.  The three lines below each contain two EXTRA spaces
+after the line number, for a total of three spaces:
+
+24   Put(2 + 2);
+26   New_Line;
+18   package My_Int_IO is new Integer_IO(Integer); use My_Int_IO;
+
+They have the effect of indenting the text three spaces.  LIST now
+shows
+
+
+                           -- continued --
+
+                                                               Page 22
+
+   10 with Ada.Text_IO; use Ada.Text_IO;
+   15 procedure Add is
+   18   package My_Int_IO is new Integer_IO(Integer); use My_Int_IO;
+   20 begin
+   24   Put(2 + 2);
+   26   New_Line;
+   30 end Add;
+
+     Although typing a line number followed immediately by Enter
+deletes a line (if there is a line by that number), typing a line
+number followed by a single space causes an empty line to be
+introduced into the file.  For example, typing 12 followed by a single
+space and Enter would then cause LIST to type
+
+   10 with Ada.Text_IO; use Ada.Text_IO;
+   12
+   15 procedure Add is
+   18   package My_Int_IO is new Integer_IO(Integer); use My_Int_IO;
+   20 begin
+   24   Put(2 + 2);
+   26   New_Line;
+   30 end Add;
+
+     When LEDIT is run, it prompts for the names of the input and
+output files.  If the input file exists, LEDIT displays "File found"
+and reads the file into its linked list, assigning line numbers
+starting with 10 and incrementing by 10.  If the file does not exist,
+LEDIT displays "File not found," and the linked list is initially
+empty.  In any event, LEDIT creates an output file.  When the EXIT
+command is given, LEDIT writes the contents of the linked list to the
+output file, removing the line numbers and the first blank after each
+line number.  In the example above, let's assume that the user typed
+ADD.ADA for an output file name.  When the user types EXIT, the new
+file ADD.ADA created by LEDIT will contain:
+
+with Ada.Text_IO; use Ada.Text_IO;
+
+procedure Add is
+  package My_Int_IO is new Integer_IO(Integer); use My_Int_IO;
+begin
+  Put(2 + 2);
+  New_Line;
+end Add;
+
+(Note that the file contains one empty line.)  LEDIT may not add any
+trailing blanks of its own in the output file.  If the user again runs
+LEDIT and specifies ADD.ADA as the input file, the editor will type
+"File found" and read the file.  LIST will then show
+
+
+                           -- continued --
+
+                                                               Page 23
+
+   10 with Ada.Text_IO; use Ada.Text_IO;
+   20
+   30 procedure Add is
+   40   package My_Int_IO is new Integer_IO(Integer); use My_Int_IO;
+   50 begin
+   60   Put(2 + 2);
+   70   New_Line;
+   80 end Add;
+
+When the user EXITs after editing, the new file will contain modified
+text.  The old file will still be present until it is deleted.
+     The two commands LIST and EXIT must be accepted in either upper
+or lower case, but for simplicity, they need not be accepted in a
+mixture of cases.  They may be preceded by any number of spaces.  The
+LIST command must be accepted in any of the following forms:
+
+LIST            (Lists all lines, if any, otherwise does nothing.)
+list 30         (Lists line 30, if it exists.)
+list 25 - 35    (Lists all lines between 25 and 35 inclusive, if any.)
+LIST - 35       (Lists all lines numbered 35 or less, if any.)
+list 25 -       (Lists all lines numbered 25 or more, if any.)
+
+Furthermore, all spaces are optional in the LIST command provided that
+LIST is written solid, so that LIST25-35 is equivalent to the third
+example above.  Any other forms of LIST should be flagged as an error.
+In particular, all of these should give error messages:
+
+LIST -
+list 2A
+LIST 30 - 50 -
+list 30 - -50
+list 30-A
+LIST XYZ
+
+     The EXIT command must stand alone; unlike LIST, EXIT is never
+followed by anything.  Except for the LIST and EXIT commands, every
+line typed must begin with a number between 1 and 29999.  (Of course,
+the user should be able simply to hit Enter with no effect.)  LEDIT
+should check that line numbers are in range when adding or replacing
+lines.  The LIST command need not check the range of the line numbers,
+because it should be impossible to create lines with improper numbers.
+Your program need not handle input files that are so long that 29999
+would be exceeded when it assigns line numbers starting at 10 with an
+increment of 10.
+     Your LEDIT must prompt for input and output file names at the
+start, and it may display a prompt for each line that the user types.
+You may assume some maximum length for an input line (e.g., 80), and
+assume that no file will have lines longer than the maximum.  You may
+also assume that no file will have special characters like form feeds.
+
+
+                           -- continued --
+
+                                                               Page 24
+
+     For simplicity, there's no way to edit a line except by retyping
+it.  Also, there's no way to copy or move a line or a block of lines,
+and no way to delete a block of lines except one line at a time.
+There's no RENUMBER command.  The user can renumber the entire file
+starting at 10 with an increment of 10 by EXITing and then rerunning
+LEDIT.  There's no AUTO command to make the editor type the line
+numbers automatically while text is being typed by the user, and
+LEDIT doesn't automatically save work to recover from a system crash
+that occurs during an edit.  Additionally, there's no way to search
+for a string, or replace one string with another.  These features
+would all be desirable, but we feel that Outside Assignment 5 is
+challenging as it stands.
+     You're encouraged to use Ada's "separate" compilation feature, so
+that you don't have to recompile the entire program when developing a
+module.
+     As a point of reference, our solution to this assignment consists
+of about 180 lines of code on four pages.  If you have any questions
+about what LEDIT should do, you can compile and run our solution,
+which is in L_EDIT.ANS.
+     The following declarations are offered by way of suggestion only,
+and you should use them only if you feel comfortable with them:
+
+     Max_Length : constant Integer := 80;
+     type Text is
+       record
+         Len : Integer range 0 .. Max_Length := 0;
+         Val : String(1 .. Max_Length);
+       end record;
+
+     type Link;
+     type P is access Link;
+     type Link is
+       record
+         Num  : Positive;
+         Line : Text;
+         Next : P;
+       end record;
+
+     function Str(T : in Text) return String;
+
+     In our solution, we used type Text as above.  However, we didn't
+write a Text_Handler package, because it didn't seem to be needed.  We
+used a one-page main program with several "separate" subprograms.
+
+                                                               Page 25
+
+     STEPS FOR OUTSIDE ASSIGNMENT 5, WRITING A SIMPLE LINE EDITOR
+
+1.  Carefully read the requirements starting on page 20 of these
+    notes.  Take your time.
+
+2.  Write the Ada code, compile, and link.  Call the main program
+    LEDIT.  If you have any questions about what LEDIT should do, you
+    can compile and run our solution, which is in L_EDIT.ANS.
+
+3.  Refer to pages 26-28 of these notes for instructions on testing
+    your line editor.  If any tests are failed, go back to step 2.
+
+4.  When all the tests are passed, you've completed the assignment and
+    will have a chance to compare your solution with ours.
+
+                                                               Page 26
+                          HOW TO TEST LEDIT
+
+1.  Run LEDIT and give the name of an input file that doesn't exist.
+LEDIT should say "File not found."  Give another name of a file that
+doesn't exist for an output file.
+
+2.  Type "LIST" (without the quotes, and followed by Enter, of course)
+to make sure that LEDIT can handle the LIST command when no text has
+been entered.
+
+3.  Type "EXI".  The program should NOT exit.  If it exits, it's
+probably because the "T" was left in the input buffer from the LIST
+command.  Your program is checking the first four characters of the
+input buffer without checking the length of the typed command.
+
+4.  Type "ABC".  The program should display a message about an illegal
+or unrecognized command, or syntax error.
+
+5.  Type "0X" (zero followed by X).  The program should reject this
+line, displaying a message about an invalid line number.  Type "0 X".
+The same thing should happen.  Try "30000X", then "30000 X", and then
+"3000000000 X".  The program should reject these, as well.
+
+6.  Type "-1 X" and "-1X".  The program should reject these lines,
+displaying a message either about an unrecognized command (or syntax
+error), or an invalid line number.
+
+7.  Hit Enter.  There should be no effect, except for any prompt being
+repeated.
+
+8.  Type the following exactly as shown.  Note that lines 1000 and 100
+each contain three spaces:
+
+30 X
+1 The
+29999 ZZZZZZZZ
+1000   used
+100   is
+10000 to test
+   30file --
+1 This
+    29999 LEDIT.
+
+9.  Type "list".  You should see the following, lined up exactly as
+shown.  There should be exactly five spaces for the line numbers.
+
+    1 This
+   30 file --
+  100   is
+ 1000   used
+10000 to test
+29999 LEDIT.
+                           -- continued --
+
+                                                               Page 27
+
+10.  Try a line of text beginning with a number: "20000 123 45".  Then
+type "   LIST" with three leading spaces.  You should see
+
+    1 This
+   30 file --
+  100   is
+ 1000   used
+10000 to test
+20000 123 45
+29999 LEDIT.
+
+11.  Insert an empty line by typing "15000 " (note the space).  Then
+type "LIST".  You should see
+
+    1 This
+   30 file --
+  100   is
+ 1000   used
+10000 to test
+15000
+20000 123 45
+29999 LEDIT.
+
+12.  Type "EXIT ABC".  LEDIT should display a error message and NOT
+exit.  The requirements say that the EXIT command must stand alone.
+
+13.  Type "   exit".  LEDIT should exit, and you should have a new
+file with the output file name you gave in step 1.  Type the file with
+the TYPE command.  You should see exactly this, starting in column 1:
+
+This
+file --
+  is
+  used
+to test
+
+123 45
+LEDIT.
+
+14.  Run LEDIT again.  For the input file name, type the name of the
+OUTPUT file you used in step 1.  LEDIT should say "File found."
+Choose yet another name for the output file and type "list".  You
+should see:
+
+   10 This
+   20 file --
+   30   is
+   40   used
+   50 to test
+   60
+   70 123 45
+   80 LEDIT.
+                           -- continued --
+
+                                                               Page 28
+
+15.  Type "  LIST 30".  You should see only line 30.  Type
+"list25-45".  You should see only lines 30 and 40.  Type "LIST  - 40".
+You should see lines 10 through 40.  Type "list35 -".  You should see
+lines 40 through 80.  Type "list 15".  The program should either do
+nothing or display a message that line 15 doesn't exist.  Try
+"list 30000" and "list 3000000000".  Again, the program should either
+do nothing or display an error message.  Now type "list" and check
+that the result is the same as in step 14.
+
+16.  LEDIT should display an error message for each of the following:
+
+LIST -
+list 2A
+list 30 - 50 -
+list 30 - -50
+   list 30-A
+LIST XYZ
+
+17.  Type "70" to delete line 70.  Type "LIST".  You should see
+
+   10 This
+   20 file --
+   30   is
+   40   used
+   50 to test
+   60
+   80 LEDIT.
+
+18.  Delete line 60, but do not list.  Now delete line 80 and list.
+You should see
+
+   10 This
+   20 file --
+   30   is
+   40   used
+   50 to test
+
+19.  Delete line 10 and list.  You should see lines 20 through 50
+above.  Delete line 50 and list.  You should see lines 20 through 40.
+Delete line 30 and list.  You should see lines 20 and 40.  Delete line
+40 and list.  You should see only line 20.  Delete line 20 and list.
+The result should be the same as in step 2.  Type "EXIT".
+
+20.  If your program passed all these tests, sincere congratulations!
+You've completed a difficult assignment.  We hope that you feel
+comfortable with Ada now.  If you like, you can compare your solution
+with ours, starting on page 29 of these notes.  When you go back to
+AdaTutor, you'll learn to write your own generic packages, procedures,
+and functions.
+
+                                                               Page 29
+L_EDIT.ANS
+----------
+
+-- Our solution to Outside Assignment 5 (Written for Ada 83 and Ada 95):
+with Text_IO; use Text_IO;
+procedure Ledit is
+  Max_Length      : constant := 80;
+  Max_Line_Number : constant := 29_999;
+  type Text is
+    record
+      Len : Integer range 0 .. Max_Length := 0;
+      Val : String(1 .. Max_Length);
+    end record;
+  type Link;
+  type P is access Link;
+  type Link is
+    record
+      Num  : Positive;
+      Line : Text;
+      Next : P;
+    end record;
+  Head            : P := new Link;
+  Temp            : P;
+  Input_File      : File_Type;
+  Output_File     : File_Type;
+  Input           : Text;
+  Finished        : Boolean := False;
+  Line_Num        : Natural := 10;
+
+  function  Str(T : in Text) return String is separate;
+  procedure Read_Input_File is separate;
+  procedure Do_Command is separate;
+begin
+  Put("Input file: ");  Get_Line(Input.Val, Input.Len);
+  Read_Input_File;
+  Put("Output file: ");  Get_Line(Input.Val, Input.Len);
+  Create(Output_File, Name => Str(Input));
+
+  -- Get and process commands.
+  while not Finished loop
+     Put("> ");  Get_Line(Input.Val, Input.Len);
+     Do_Command;
+  end loop;
+
+  -- Write the output file.
+  Temp := Head.Next;      -- Skip unused link at start of linked list.
+  while Temp /= null loop
+     Put_Line(Output_File, Str(Temp.Line));     -- Write line of text.
+     Temp := Temp.Next;                              -- Get next link.
+  end loop;
+  Close(Output_File);
+end Ledit;
+                           -- continued --
+
+                                                               Page 30
+separate (Ledit)
+function Str(T : in Text) return String is
+begin
+  return T.Val(1 .. T.Len);
+end Str;
+
+separate (Ledit)
+procedure Read_Input_File is
+begin   -- If the input file exists, display a message and read it in.
+  Open(Input_File, In_File, Str(Input));
+  Put_Line("File found.");
+  Temp := Head;
+  while not End_Of_File(Input_File) loop
+    Get_Line(Input_File, Input.Val, Input.Len);        -- Read a line.
+    Temp.Next := new Link'(Line_Num, Input, null);     -- Add to list.
+    Temp := Temp.Next;                        -- Advance to next link.
+    Line_Num := Line_Num + 10;
+  end loop;
+  Close(Input_File);
+exception  -- If the input file doesn't exist, just display a message.
+  when Name_Error => Put_Line("File not found.");
+end Read_Input_File;
+
+separate (Ledit)
+procedure Do_Command is
+  procedure Delete_First_Character(T : in out Text) is separate;
+  procedure Get_Leading_Integer(N : out Natural) is separate;
+  procedure Strip_Leading_Spaces_From_Input is separate;
+  procedure Add_Delete_Replace_Line is separate;
+  procedure List is separate;
+begin
+  Strip_Leading_Spaces_From_Input;
+  if Str(Input) = "exit" or Str(Input) = "EXIT" then
+    Finished := True;
+  elsif Input.Len >= 4 and (Input.Val(1 .. 4) = "list" or
+                            Input.Val(1 .. 4) = "LIST") then
+    List;
+  elsif Input.Len > 0 and Input.Val(1) not in '0' .. '9' then
+    Put_Line("Unrecognized command.");
+  elsif Input.Len > 0 then
+    Get_Leading_Integer(Line_Num);
+    if Line_Num not in 1 .. Max_Line_Number then
+      Put_Line("Illegal line number.");
+    else
+      Add_Delete_Replace_Line;
+    end if;
+  end if;
+exception
+  when Numeric_Error | Constraint_Error =>
+    Put_Line("Line number too large.");
+end Do_Command;
+
+                           -- continued --
+
+                                                               Page 31
+
+separate (Ledit.Do_Command)
+procedure Add_Delete_Replace_Line is
+  Inp : Text := Input;
+begin
+  if Inp.Len > 0 and Inp.Val(1) = ' ' then   -- Treat "9x" like "9 x".
+    Delete_First_Character(Inp);
+  end if;
+  Temp := Head;      -- Find where this number belongs in linked list.
+  while Temp /= null and then Temp.Next /= null and then
+                              Temp.Next.Num <= Line_Num loop
+    if Temp.Next.Num = Line_Num then
+      Temp.Next := Temp.Next.Next;                     -- Delete line.
+    else
+      Temp := Temp.Next;              -- Advance to next link in list.
+    end if;
+  end loop;
+  if Input.Len > 0 then                                   -- Add line.
+    Temp.Next := new Link'(Line_Num, Inp, Temp.Next);
+  end if;
+end Add_Delete_Replace_Line;
+
+separate (Ledit.Do_Command)
+procedure Delete_First_Character(T : in out Text) is
+begin
+  T.Val(1 .. T.Len - 1) := T.Val(2 .. T.Len);
+  T.Len := T.Len - 1;
+end Delete_First_Character;
+
+separate (Ledit.Do_Command)
+procedure Get_Leading_Integer(N : out Natural) is
+  Ans: Integer := 0;
+begin
+  while Input.Len > 0 and Input.Val(1) in '0' .. '9' loop
+    Ans := Ans*10 + Character'Pos(Input.Val(1)) - Character'Pos('0');
+    Delete_First_Character(Input);
+  end loop;
+  N := Ans;
+end Get_Leading_Integer;
+
+separate (Ledit.Do_Command)
+procedure Strip_Leading_Spaces_From_Input is
+begin
+  while Input.Len > 0 and Input.Val(1) = ' ' loop
+    Delete_First_Character(Input);
+  end loop;
+end Strip_Leading_Spaces_From_Input;
+
+
+                           -- continued --
+
+                                                               Page 32
+
+separate (Ledit.Do_Command)
+procedure List is
+  package IIO is new Integer_IO(Integer); use IIO;
+  Start, Finish : Natural;
+  Valid         : Boolean := True;
+begin
+  Input.Len := Input.Len - 4;       -- Delete the name of the command.
+  Input.Val(1 .. Input.Len) := Input.Val(5 .. Input.Len + 4);
+  Strip_Leading_Spaces_From_Input;
+  if Input.Len = 0 then           -- For "LIST" alone, list all lines.
+    Start := 0;
+    Finish := Max_Line_Number + 1;
+  else
+    Get_Leading_Integer(Start);            -- Get number after "LIST".
+    Strip_Leading_Spaces_From_Input;
+    if Input.Len = 0 then           -- For "LIST n", list only line n.
+      Finish := Start;
+    elsif Input.Val(1) /= '-' then          -- Else "-" must follow n.
+      Valid := False;
+    else
+      Delete_First_Character(Input);                -- Delete the "-".
+      Strip_Leading_Spaces_From_Input;
+      Get_Leading_Integer(Finish);            -- Get number after "-".
+      Strip_Leading_Spaces_From_Input;
+      if Finish = 0 and Start = 0 then        -- "LIST -" isn't valid.
+        Valid := False;
+      elsif Finish = 0 then     -- For "LIST n -", list n through end.
+        Finish := Max_Line_Number + 1;
+      end if;
+      Valid := Valid  and  Input.Len = 0;      -- No trailing garbage.
+    end if;
+  end if;
+  if not Valid then
+    Put_Line("Illegal syntax for LIST.");
+  else
+    Temp := Head.Next;    -- Skip unused link at start of linked list.
+    while Temp /= null and then Temp.Num <= Finish loop
+      if Temp.Num >= Start then
+        Put(Temp.Num, Width => 5);         -- Display line #, width 5.
+        Put_Line(' ' & Str(Temp.Line));       -- Display text of line.
+      end if;
+      Temp := Temp.Next;                             -- Get next link.
+    end loop;
+  end if;
+exception
+  when Numeric_Error | Constraint_Error =>
+    Put_Line("Line number too large in List.");
+end List;
+
+                                                               Page 33
+
+TASKING.DUM (Written to work with Ada 83 and Ada 95)
+-----------
+
+with text_io, calendar; use text_io, calendar;
+procedure tasking is
+  interval        : constant duration := 5.0;
+  total_intervals : constant positive := 9;
+  start_time      : constant time := clock;
+  quitting_time   : constant time := start_time +
+                                             total_intervals*interval;
+  next_time       : time := start_time;
+  task type tick is
+    entry make_noise;
+    entry shutdown;
+  end tick;
+  t               : tick;
+  task body tick is
+    quit : boolean := false;
+  begin
+    while not quit loop
+      select
+        accept make_noise do
+          put_line("Tick!");
+        end make_noise;
+      or
+        accept shutdown;
+        quit := true;
+      end select;
+    end loop;
+  end tick;
+begin
+  while next_time < quitting_time loop
+    t.make_noise;
+    next_time := next_time + interval;
+    put_line("(5-second delay)"); delay next_time - clock;
+  end loop;
+  t.shutdown;
+end tasking;
+
+                                                               Page 34
+
+         STEPS FOR OUTSIDE ASSIGNMENT 6, EXERCISE IN TASKING
+
+1.  Copy the file TASKING.DUM to TASKING.ADA.  Compile, link, and
+    execute the program to make sure it displays "Tick!" nine times,
+    with a 5-second delay after each "Tick."
+
+2.  Edit TASKING.ADA to become your solution.  Make your changes in
+    upper case.
+
+3.  Compile TASKING.ADA, link, and execute.
+
+4.  Compare your output with page 35 of these notes.  If there are any
+    errors, go back to step 2.
+
+5.  When your output agrees with these notes, you've finished the
+    assignment and will have a chance to compare your solution with
+    ours.
+
+                                                               Page 35
+
+      OUTPUT FROM TASKING.EXE AFTER MODIFICATION OF TASKING.ADA
+
+Task number 1 is starting.
+Task number 2 is starting.
+Task number 3 is starting.
+(5-second delay)
+(5-second delay)
+Task number 1 is starting.
+(5-second delay)
+Task number 2 is starting.
+(5-second delay)
+Task number 1 is starting.
+Task number 3 is starting.
+(5-second delay)
+(5-second delay)
+Task number 1 is starting.
+Task number 2 is starting.
+(5-second delay)
+(5-second delay)
+Task number 1 is starting.
+Task number 3 is starting.
+(5-second delay)
+
+                                                               Page 36
+
+TASKING.ANS
+-----------
+
+-- Our solution to Outside Assignment 6
+-- (Written to work with Ada 83 and Ada 95):
+with text_io, calendar; use text_io, calendar;
+procedure tasking is
+  interval        : constant duration := 5.0;
+  total_intervals : constant positive := 9;
+  start_time      : constant time := clock;
+  quitting_time   : constant time := start_time +
+                                             total_intervals*interval;
+  next_time       : time := start_time;
+  task type tick is
+    ENTRY IDENTIFY(TASK_NUMBER : IN NATURAL);
+    entry shutdown;
+  end tick;
+  T               : ARRAY(1 .. 3) OF TICK;
+  PERIOD          : CONSTANT ARRAY(T'RANGE) OF POSITIVE := (2, 3, 4);
+  TIMER           : ARRAY(T'RANGE) OF NATURAL := (OTHERS => 0);
+  task body tick is
+    quit : boolean := false;
+  begin
+    while not quit loop
+      select
+        ACCEPT IDENTIFY(TASK_NUMBER : IN NATURAL) DO
+          PUT_LINE("Task number" & INTEGER'IMAGE(TASK_NUMBER) &
+               " is starting.");
+        END IDENTIFY;
+      or
+        accept shutdown;
+        quit := true;
+      end select;
+    end loop;
+  end tick;
+begin
+  while next_time < quitting_time loop
+    FOR I IN T'RANGE LOOP
+      IF TIMER(I) = 0 THEN
+        T(I).IDENTIFY(I);
+        TIMER(I) := PERIOD(I);
+      END IF;
+      TIMER(I) := TIMER(I) - 1;
+    END LOOP;
+    next_time := next_time + interval;
+    put_line("(5-second delay)"); delay next_time - clock;
+  end loop;
+  FOR I IN T'RANGE LOOP
+    T(I).SHUTDOWN;
+  END LOOP;
+end tasking;
+
+                                                               Page 37
+
+          APPENDIX A:  RUNNING BOOK TO PRINT ALL THE SCREENS
+
+     If you're running AdaTutor on a PC, you can always print the
+screen that's currently being displayed by holding a Shift key while
+pressing the PrtSc key.
+     However, several users wanted to be able to print ALL the screens
+in the entire course, as one large book.  So, starting with version
+2.0 of AdaTutor, we added the program Book.  This program reads the
+file ADATUTOR.DAT and produces two large output files, which can then
+be printed.  Be prepared to print more than 500 pages!
+     Simply type BOOK to run the program.
+
+
+     Book creates plain ASCII files, double spaced the way this
+                                     -------------
+paragraph is double spaced.  It emphasizes text by placing hyphens
+             -------------      ----------                 -------
+below the lines like this.
+                ---------
+
+
+     Book asks you for the name of the output file for the first half
+of the tutorial.  After that file is written, Book asks for the name
+of the output file for the second half of the tutorial.  You can then
+print the output files.
+     You can optionally specify the name PRN for both output files, to
+have the output of Book go directly to the printer.
+     Begin reading your printed output with screen 104.  Note that, at
+the bottom of each page, there's a list of possible user responses
+with screen numbers.  For example, at the bottom of Screen 104 you'll
+see
+
+  'Y' 107  'N' 122
+
+This means that, if the user presses Y, screen 107 will be shown next,
+and if the user presses N, screen 122 will be next.  Pressing X always
+takes the user to screen 103.  The special "screen numbers" 098
+through 100 appearing at the bottom of screens 107 and 108 are
+explained in the introductory comments in ADATU401.ADA.
+     Book, like AdaTutor, will run on a PC or on any Ada-speaking
+computer.
+
+                                                               Page 38
+
+             APPENDIX B:  FREE AND LOW-COST ADA COMPILERS
+
+     You can find pointers to free and low-cost Ada compilers at
+http://www.adahome.com/Resources/Compilers/.  This Web site also has a
+list of Ada compilers available, by vendor.
+
+                                                               Page 39
+
+           APPENDIX C:  SAMPLE MULTI-USER SOFTWARE LICENSE
+
+     Software Innovations Technology believes in a plain-English
+software license that people can understand.  A sample license appears
+on the next page.  However, if your company's lawyers would prefer a
+differently worded license, simply contact us.  We'll be happy to
+accommodate you.
+     As you can see, the terms of our license are very generous.  We
+allow you to make as many copies of AdaTutor as you like, and to
+install it on as many computers as you like, regardless of the
+computer type (laptop, desktop, workstation, mainframe, etc.)  Also,
+you may use AdaTutor at all your geographical locations, which is why
+we use the term Multi-User License rather than Site License.  The only
+thing we limit is the total number of people who may use AdaTutor
+(except in the case of an unlimited license).  Please remember that if
+50 people use AdaTutor now and 50 others use it later, that counts as
+100 users, not 50.
+     In the sample license on the next page, comments appear in
+brackets.  These comments are not part of the actual license.
+
+                                                               Page 40
+
+                 [SAMPLE] MULTI-USER SOFTWARE LICENSE
+
+                   Software Innovations Technology
+                        1083 Mandarin Drive NE
+                       Palm Bay, FL  32905-4706
+                            (321) 951-0233
+
+   This license conveys to XYZ Company the right to use the comput-
+   er program  AdaTutor, the Interactive Ada Tutor,  under the fol-
+   lowing conditions:
+
+   1.  The program shall remain  the property of  Software  Innova-
+   tions Technology.
+
+   2.  The program may be freely copied and installed on any or all
+   computers of  XYZ Company,  regardless of geographical location.
+   Copies of the program may be distributed outside XYZ Company for
+   others to evaluate on a trial basis.
+
+   3.  This license is perpetual.
+
+   4.  The number of  XYZ Company  personnel [or "students and per-
+   sonnel of XYZ University"] who may use the program is unlimited.
+                             [*** OR ***]
+   4.  The total number of XYZ Company personnel  [or "students and
+   personnel of  XYZ  University"]  who use the program,  excluding
+   those who only briefly evaluate it, shall not exceed  two  thou-
+   sand (2000) [or 500, 100, 50, or 25].  In calculating the number
+   of users,  XYZ Company must always add the number of people cur-
+   rently using the program  to the number who have used it  in the
+   past.
+
+   5.  [This paragraph is omitted in unlimited licenses.]  Software
+   Innovations Technology  sells  licenses  for  larger  numbers of
+   users.  XYZ Company may, at any time, upgrade this license for a
+   larger number of users by paying,  to Software Innovations Tech-
+   nology, the difference in price between the two licenses.
+
+   6.  This license is not transferable.
+
+   7.  The Disclaimer of Warranty, included in the program documen-
+   tation, applies as if included in this license.
+
+   8.  [This paragraph is  omitted  if the order is prepaid.]  This
+   license shall be  void  if the invoice is not paid within thirty
+   (30) days of the date of this license.
+
+
+   (Signed)________________________________  Date _________________
+
+           John J. Herro, President
+           Software Innovations Technology
+
+                                                               Page 41
+
+         APPENDIX D:  INSTALLING AdaTutor ON OTHER COMPUTERS
+
+     Because source code is included with AdaTutor, you can install
+AdaTutor on almost any computer that has an Ada 83 or Ada 95 compiler,
+from compact units to large mainframes.  AdaTutor is written in Ada
+(of course!), and Ada programs tend to be very portable.
+     The screen should have at least 24 rows of 80 characters each,
+and should support the ANSI escape sequences for highlighting, reverse
+video, cursor positioning, etc.  Almost all computers qualify.
+     You need a way to send text files from your PC to the other
+computer.  Files are usually sent to large mainframes with the program
+KERMIT, which is in the public domain.  One version of KERMIT runs on
+the PC, another on the mainframe.  The two communicate with each
+other.  Sometimes XMODEM, ZMODEM, or another protocol is used instead
+of KERMIT.
+     If a communications program is available on the PC but not on the
+other computer, you can still send text files, but not as efficiently.
+Connect your PC as a terminal and tell the other computer to copy the
+keyboard to a new file.  For example, on a VAX computer running VMS,
+the command is "COPY TT: filename.ext" (without the quotes).  Then
+tell your communications program to send (or "upload") the file, using
+ASCII protocol, and stripping line feeds.  After the file is sent,
+type the appropriate end-of-file character for the other computer.  On
+a VAX running VMS, you would type Control-Z.  Since this method of
+file transfer doesn't do error checking, you may have to send each
+file twice using two different names, and compare the two files with
+each other on the other computer.  It's far better to use a
+communications program on the other computer, if one is available.
+     OK, you have some means of sending text files.  You won't have to
+send other kinds of files.  To install AdaTutor on the other computer,
+just follow these steps:
+
+1.  Type DAT2TXT on the PC.  This will read the file ADATUTOR.DAT,
+which is not a text file, and create a new text file TUTOR.TXT, which
+can be sent to the other computer.  Don't try to bypass this step even
+if you're able to send non-text files.  It's important that you send
+TUTOR.TXT and not ADATUTOR.DAT, because the PC version of ADATUTOR.DAT
+doesn't work on some systems.
+
+2.  Decide where AdaTutor will reside on the other computer, so that
+it will be available to all users.  For example, on a VAX computer
+running VMS, the tutor is usually placed in SYS$INSTRUCTION.  It could
+also be placed in SYS$MANAGER, etc.
+
+                           -- continued --
+
+                                                               Page 42
+
+3.  Send to the other computer all the files that come with AdaTutor,
+except ADATUTOR.DAT and the files ending in .EXE.  Be sure to send
+TUTOR.TXT, created in step 1.  Don't try to send ADATUTOR.DAT and the
+.EXE files, because they're not text files.  If our file names are
+illegal on the other system, you'll have to rename them as they're
+sent.  (We haven't seen a system where our file names are illegal.)
+
+4.  If any of the file names ADATUTOR.DAT, TUTOR.TXT, or USERDATA.TXT
+are illegal on your system, edit the files ADATU401.ADA, BOOK401.ADA,
+CHANGESN.ADA, and TXT2DAT.ADA to show new, legal file names.  Search
+for the old file names and replace them with the new ones.
+
+5.  Note that each user will probably run AdaTutor from his or her own
+file directory.  There will be a file USERDATA.TXT in each user's
+directory, but all the other files will reside in a common area, such
+as SYS$INSTRUCTION, etc.  Therefore, edit the files ADATU401.ADA,
+BOOK401.ADA, CHANGESN.ADA, and TXT2DAT.ADA to show the full path name
+of the file ADATUTOR.DAT.  On a VAX system, for example, you might
+search for the name ADATUTOR.DAT and replace it with
+SYS$INSTRUCTION:ADATUTOR.DAT.
+
+6.  On one system we encountered, Ada source file names must end in .a
+rather than .ADA.  If that's the case on your system, rename all the
+.ADA files.
+
+7.  On the other computer, compile, link, and run TXT2DAT.ADA.  Some
+systems call the linking step "binding."  This program will read
+TUTOR.TXT and create ADATUTOR.DAT on the other system.  If you wish,
+you may then delete TUTOR.TXT.
+
+8.  If you're using any Ada 95 compiler, skip the rest of this step
+and go now to the top of the next page.  Otherwise, you must be using
+an Ada 83 compiler.  In that case, if you're using VAX Ada, skip to
+page 44.  If you're using a UNIX based system that has a C compiler
+with the ability to link into Ada programs, skip to page 45.
+Otherwise, continue with the next page.  If you're not certain,
+continue with the next page.
+
+                           -- continued --
+
+                                                               Page 43
+
+
+9.  If you're using an Ada 95 compiler, compile ADA95.ADA, otherwise,
+compile VANILLA.ADA.  Don't try to link or run either file.  ADA95.ADA
+will work with any standard Ada 95 compiler, and the "plain vanilla"
+file VANILLA.ADA will work with any standard Ada 83 or Ada 95
+compiler.  If you have Ada 95, it's better to compile ADA95.ADA than
+VANILLA.ADA.
+
+10.  Compile ADATU401.ADA.
+
+11.  Link, giving the name of the main program, ADATUTOR.  This will
+produce an executable file, which on most systems will be called
+ADATUTOR.EXE.  However, on a few systems the executable file will have
+a strange name, so rename the executable file if necessary.
+
+12.  Run AdaTutor.  The command is usually ADATUTOR or RUN ADATUTOR.
+If you compiled VANILLA.ADA, note that, on some systems, you'll have
+to strike Enter (or RETURN or NEW-LINE) after each response, even
+though the program says, "You need not hit Enter."  The reason is that
+some Ada 83 systems require you to strike Enter when they read the
+keyboard through Text_IO.  Also note that some of the tutorial text
+refers to commands that are meant for a PC, such as COPY.  These
+commands may have to be varied slightly to work on your system.
+
+13.  Define a command so that each user will be able to run AdaTutor
+easily.
+
+
+We'll be happy to help you install AdaTutor and get it running, even
+if you haven't registered or bought a license.  We want you to try
+AdaTutor before paying for it.
+
+                                                               Page 44
+
+                 SPECIAL INSTRUCTIONS FOR VAX Ada 83
+
+9.  If you're using a VAX Ada 83 compiler, compile VAX.ADA, but don't
+try to link or run it.  The file VANILLA.ADA would work, but VAX.ADA
+makes it unnecessary to strike RETURN after each response.  The reason
+is that VAX.ADA gets characters from the keyboard by calling the
+System Service routines, without going through Text_IO.
+
+10.  Compile ADATU401.ADA.
+
+11.  Link, giving the name of the main program, ADATUTOR.  The command
+is ACS LINK ADATUTOR.  This will produce an executable file,
+ADATUTOR.EXE.
+
+12.  Run AdaTutor by typing RUN ADATUTOR.  Note that some of the
+tutorial text refers to commands that are meant for a PC, such as
+COPY.  These commands may have to be varied slightly to work on your
+system.  For example, when the text says to type
+COPY TRITYPE.DUM TRITYPE.ADA, your users might have to type
+COPY SYS$INSTRUCTION:TRITYPE.DUM TRITYPE.ADA.
+
+13.  Define a command so that each user will be able to run AdaTutor
+easily.  For example, you might add the following line to SYLOGIN.COM:
+
+            $ TEACHADA :== "RUN SYS$INSTRUCTION:ADATUTOR"
+
+
+We'll be happy to help you install AdaTutor and get it running, even
+if you haven't registered or bought a license.  We want you to try
+AdaTutor before paying for it.
+
+                                                               Page 45
+
+    SPECIAL INSTRUCTIONS FOR UNIX BASED SYSTEMS WITH C AND Ada 83
+
+9.  If you're using a UNIX based system with a C compiler, and your
+Ada 83 compiler can link with modules produced by C, compile
+ONECHAR.C with the C compiler.  If you can't compile ONECHAR.C because
+your system doesn't have the include file TERMIO.H, then compile
+ALTCHAR.C instead.  However, if you compile ALTCHAR.C, you'll have to
+invoke AdaTutor between two calls to stty, in a script file.  For
+example:
+                     stty raw
+                     /usr/local/adatutor/adatutor
+                     stty -raw
+
+10.  Compile UNIX.ADA, but don't try to link or run it.  The file
+VANILLA.ADA would work, but UNIX.ADA, when used with ONECHAR.C or
+ALTCHAR.C, makes it unnecessary to strike RETURN after each response.
+The reason is that ONECHAR.C and ALTCHAR.C get characters directly
+from the keyboard, without going through Text_IO.
+
+11.  Compile ADATU401.ADA.
+
+12.  Link, giving the name of the main program, ADATUTOR.  Include the
+object file from the C compiler in the link.  This will create an
+executable file, called ADATUTOR on most systems.  (On one system we
+encountered, the file created was named a.out.)  If necessary, rename
+the executable file to an appropriate name, such as adatutor or
+ADATUTOR or ADATUTOR.EXE.
+
+
+Here are sample steps 9 through 12 for two UNIX based systems:
+
+       ON A UNISYS 5000/80:             ON A HARRIS HCX:
+
+       cc -c onechar.c                  cc -c onechar.c
+       ada unix.ada adatu401.ada        ada unix.a adatu401.a
+       ald -p'onechar' adatutor         a.ld adatutor onechar.o
+                                        mv a.out adatutor
+
+
+13.  Run AdaTutor.  Usually this is done by typing adatutor.  Note
+that some of the tutorial text refers to commands that are meant for a
+PC, such as COPY.  These commands may have to be varied slightly to
+work on your system.
+
+14.  Define a command so that each user will be able to run AdaTutor
+easily.
+
+
+We'll be happy to help you install AdaTutor and get it running, even
+if you haven't registered or bought a license.  We want you to try
+AdaTutor before paying for it.
+
+                                                               Page 46
+
+          APPENDIX E:  WE LISTEN!  NEW FEATURES OF AdaTutor
+
+     Almost all of the features added to AdaTutor were done as a
+result of your comments and suggestions.  Thank you very much, and
+please continue to send them!  We want you to have the very best Ada
+Tutor possible.  Here's a history of revisions to AdaTutor.  In
+addition to the changes shown here, we're constantly making minor
+improvements in the tutorial text.
+
+VERSION 4.01:
+     Changed our Web site to www.adatutor.com and our E-address to
+     john@adatutor.com.
+
+VERSION 4.00:
+     Changed the tutorial text to center around Ada 95, with
+references to Ada 83, instead of the other way around.
+     Added a large amount of new Ada 95 material.
+     Changed the name of the program from ADA-TUTR to AdaTutor.
+     Changed the program to show the current screen number in the
+lower left-hand corner of the screen.
+     Changed the program so that ANSI.SYS is no longer required.
+     Changed file names to reduce the possibility of confusion when
+using the GNATCHOP utility in the GNAT Ada compiler.
+     Added the file ADA95.ADA to simplify installation on other
+computers when an Ada 95 compiler is available.
+     Dropped the list of available Ada compilers for the PC, which
+changes rapidly, and added the information that an up-to-date list is
+available at http://www.adahome.com/Resources/Compilers.
+     Changed the program to store the user data in a text file,
+USERDATA.TXT, rather than the binary file ADA_TUTR.USR.
+
+VERSION 3.11:
+     Added our Web site and e-mail addresses.
+
+VERSION 3.10:
+     Changed all Ada 9X references Ada 95.
+     Added comparisons of Ada with C and C++.
+
+VERSION 3.00:
+     Added much new material to cover Ada 9X, and changed the
+capitalization style of all Ada code from that of the Ada 83 RM to
+that of the Ada 9X RM.
+     Removed references to PC-Write, because recent versions of DOS
+include a screen editor.
+     Replaced JANUS.ADA with JANUS16.PKG and JANUS32.PKG.
+
+VERSION 2.02:
+     Added the files DESC.SDI and FILE_ID.DIZ, briefly describing
+ADA-TUTR.
+
+VERSION 2.01:
+     Added the file JANUS.ADA.
+
+                                                               Page 47
+
+VERSION 2.00:
+     Changed the ADA_TUTR.DAT file to a more compact format.
+     Added the Book program to print all of the tutorial screens as a
+large book (page 37).
+     Updated Outside Assignment 6 to make it easier to see where the
+5-second intervals occur.
+     Added the sample Multi-User License (pages 39-40).
+
+VERSION 1.22:
+     Added ALTCHAR.C for UNIX based systems that don't have the file
+TERMIO.H.  (Thank you, Mr. Richard Conn, 22 Hunt Court, Tinton Falls,
+NJ 07753.)
+
+VERSION 1.21:
+     Added ONECHAR.C so users of UNIX based systems wouldn't have to
+strike Enter after each response.  (Thank you, Mr. David Hill, 7549
+Wynford Street, Salt Lake City, UT 84121.)
+     Changed all hyphens in file names to underlines, at the request
+of PC-SIG, so that ADA-TUTR would be compatible with High Sierra
+Format CD-ROMs.
+
+VERSION 1.20:
+     Added the ability to select background, foreground, and border
+colors on a PC without sacrificing compatibility with mainframe
+computers and monochrome PCs.
+     Made ADA-TUTR automatically remember where you leave off when you
+exit the program, so that you don't have to write down the screen
+number.  Also made ADA-TUTR remember your color choices.
+     Made ADA-TUTR tell you the current screen number and the
+approximate percentage through the course when you strike X, and added
+the ability to go back to the last question or to the last Outside
+Assignment.
+     Added a special screen at the start of each major section,
+showing an outline of the course.
+     Updated the tutorial text to reflect the government's new policy
+regarding expiration of Validation Certificates.
+     Updated the tutorial text to show that the newest Ada compilers
+now raise CONSTRAINT_ERROR where NUMERIC_ERROR was once raised.
+     Added the offer for customized versions of ADA-TUTR, and for the
+Customization Kit (page 4).
+     Recompiled ADA-TUTR using a validated compiler from Meridian
+Software Systems, Inc., instead of an older unvalidated compiler from
+Artek, Inc.
+
+VERSION 1.01:
+     Fixed minor typographical errors in Version 1.00.
+
+                                                               Page 48
+
+                 APPENDIX F:  DISCLAIMER OF WARRANTY
+
+We hate legal mumbo jumbo, but we have to say the following to protect
+ourselves:
+
+Software Innovations Technology makes no warranty of any kind,
+expressed or implied, including any warranties of merchantability or
+fitness for a particular purpose.  We shall not be liable for any
+damages, whether direct, indirect, incidental, special, or
+consequential, arising from a failure of this program to operate in a
+manner desired by the user.  We shall not be liable for any damage to
+data or property which may be caused directly or indirectly by use of
+this program.  IN NO EVENT SHALL SOFTWARE INNOVATIONS TECHNOLOGY BE
+LIABLE FOR ANY DAMAGES, INCLUDING ANY LOST PROFITS, LOST SAVINGS, OR
+OTHER INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR
+INABILITY TO USE THIS PROGRAM, OR FOR ANY CLAIM BY ANY OTHER PARTY.

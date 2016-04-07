@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Outside Assignment 2' href='index.html' />
+<link rel='prev' title='Exercise in Enumeration Types' href='ex-enum.html' />
+<link rel='next' title='Records and Arrays' href='../rec-array/index.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor">
+
+<title>AdaTutor - Congratulations on Completing Outside Assignment 2!</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="ex-enum.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="../rec-array/index.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Congratulations on Completing Outside Assignment 2!</h2>
+
+<a href="javascript:adat_toggle('adat-oa2a0');">Click to view our solution:</a>
+
+<div id="adat-oa2a0" style="display: none">
+<p>
+Our solution is in <a href='tritype.ans'>TRITYPE.ANS</a>:
+<pre class="hl">   <span class="hl slc">-- Our solution to Outside Assignment 2:</span>
+   <span class="hl kwa">separate</span> <span class="hl opt">(</span>Tritest<span class="hl opt">)</span>
+   <span class="hl kwa">function</span> Tritype<span class="hl opt">(</span>Len1<span class="hl opt">,</span> Len2<span class="hl opt">,</span> Len3 <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span>
+     <span class="hl kwa">return</span> Triangle <span class="hl kwa">is</span>
+      Answer <span class="hl opt">:</span> Triangle<span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">if</span> Len1 <span class="hl opt">+</span> Len2 <span class="hl opt">&lt;=</span> Len3  <span class="hl kwa">or</span> Len1 <span class="hl opt">+</span> Len3 <span class="hl opt">&lt;=</span> Len2
+         <span class="hl kwa">or</span> Len2 <span class="hl opt">+</span> Len3 <span class="hl opt">&lt;=</span> Len1  <span class="hl kwa">then</span>
+         Answer <span class="hl opt">:=</span> Not_A_Triangle<span class="hl opt">;</span>
+      <span class="hl kwa">elsif</span>  Len1 <span class="hl opt">=</span> Len2  <span class="hl kwa">and</span>  Len2 <span class="hl opt">=</span> Len3  <span class="hl kwa">then</span>
+         Answer <span class="hl opt">:=</span> Equilateral<span class="hl opt">;</span>
+      <span class="hl kwa">elsif</span>  Len1 <span class="hl opt">=</span> Len2  <span class="hl kwa">or</span>  Len2 <span class="hl opt">=</span> Len3
+         <span class="hl kwa">or</span>  Len1 <span class="hl opt">=</span> Len3  <span class="hl kwa">then</span>
+         Answer <span class="hl opt">:=</span> Isosceles<span class="hl opt">;</span>
+      <span class="hl kwa">else</span>
+         Answer <span class="hl opt">:=</span> Scalene<span class="hl opt">;</span>
+      <span class="hl kwa">end if</span><span class="hl opt">;</span>
+      <span class="hl kwa">return</span> Answer<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Tritype<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Note that it isn't necessary to include tests for sides &lt;= 0, because if
+any side &lt;= 0, one of the three tests in the following would have to catch
+that:
+<pre class="hl">   <span class="hl kwa">if</span> Len1 <span class="hl opt">+</span> Len2 <span class="hl opt">&lt;=</span> Len3  <span class="hl kwa">or</span> Len1 <span class="hl opt">+</span> Len3 <span class="hl opt">&lt;=</span> Len2
+      <span class="hl kwa">or</span> Len2 <span class="hl opt">+</span> Len3 <span class="hl opt">&lt;=</span> Len1  <span class="hl kwa">then</span>
+      Answer <span class="hl opt">:=</span> Not_A_Triangle<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>However, most students include tests for sides &lt;= 0, so if you did, don't
+feel bad.&nbsp;  It doesn't do any harm.</p>
+
+<p>You must have realized by now that it's impossible to draw a triangle with
+sides 1, 2, and 3.&nbsp;  The sum of any two sides must be greater than the
+third.</p>
+
+<p>There are many correct ways to solve this problem.&nbsp;  Some students make
+copies of the three sides and sort the copies first.&nbsp;  Some initialize
+Answer to Scalene in the declarative region and omit the code
+<pre class="hl">      <span class="hl kwa">else</span>
+         Answer <span class="hl opt">:=</span> Scalene<span class="hl opt">;</span>
+</pre></p>
+
+<p>If you saw the message "Congratulations, you completed the assignment!" you
+may consider your solution correct.&nbsp;  Let's go on to discuss Records and
+Arrays.</p>
+</div>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

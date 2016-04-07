@@ -1,0 +1,187 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Subprograms and Packages' href='index.html' />
+<link rel='prev' title='Packages' href='package.html' />
+<link rel='next' title='Functions with Infix Notation' href='private-type.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, fucntion, infix notation">
+
+<title>AdaTutor - </title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="package.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="private-type.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Functions with Infix Notation</h2>
+<pre><b>            +   -   *   /   **   &   =   &lt;   &gt;   &lt;=   &gt;=
+
+               and   or   xor   abs   not   mod   rem
+</b></pre>
+<p>Ada allows us to overload any of the above operators by enclosing the
+operator in quotes following the word <b>function</b>.&nbsp;  For example,
+having defined type Date, we may want to define what it means for one date to be
+&ldquo;less than&rdquo; another.&nbsp;  We could write <b>function
+&quot;&lt;&quot;(Left, Right : in Date) return Boolean;</b>.&nbsp;  Then, our
+program could declare <b>D1, D2 : Date;</b> and test <b>D1 &lt; D2</b>.&nbsp;
+This test would call our function "&lt;", because <b>&lt;</b> is used between
+two objects of type Date.&nbsp; Similarly, we can overload "*" to give the dot
+product of two vectors:
+<pre class="hl">   <span class="hl kwa">type</span> Vector <span class="hl kwa">is array</span><span class="hl opt">(</span><span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl opt">&lt;&gt;)</span> <span class="hl kwa">of</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+   V1<span class="hl opt">,</span> V2 <span class="hl opt">:</span> Vector<span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">100</span><span class="hl opt">);</span>
+   X <span class="hl opt">:</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+   <span class="hl kwa">function</span> <span class="hl str">&quot;*&quot;</span><span class="hl opt">(</span>Left<span class="hl opt">,</span> Right <span class="hl opt">:</span> <span class="hl kwa">in</span> Vector<span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Float</span> <span class="hl kwa">is</span>
+      <span class="hl opt">...</span>
+   <span class="hl kwa">end</span> <span class="hl str">&quot;*&quot;</span><span class="hl opt">;</span>
+   <span class="hl opt">...</span>
+   X <span class="hl opt">:=</span> V1 <span class="hl opt">*</span> V2<span class="hl opt">;</span>  <span class="hl slc">-- This calls our function &quot;*&quot;.</span>
+</pre>
+</p>
+
+<p>There are some restrictions when using infix notation.&nbsp;  First, all of
+the operators above (except <b>abs</b>, <b>not</b>, <b>+</b>, and <b>-</b>) must
+be used between two expressions, and thus the function specification must have
+exactly two parameters.&nbsp;  Traditionally, the two parameters are called
+Left and Right.&nbsp;  The operators <b>abs</b> and <b>not</b> must have just
+one expression on the right, and <b>+</b> and <b>-</b> may have one expression
+on the right, or come between two expressions.&nbsp;  These restrictions come
+from the way the compiler handles operators.&nbsp;  For example, the compiler
+can handle <b>X := - X;</b>, but it's not designed to handle
+<b>X := * X;</b>.</p>
+
+<p>Second, in Ada 83 the function "=" must return type Boolean, its two
+parameters must be of the same type, and that type must be a limited private
+type, to be discussed later.&nbsp; For all the types discussed so far, function
+"=" is <b>already defined</b> by Ada.&nbsp; Two records are equal if all of
+their corresponding fields are equal, and two arrays are equal if they have the
+same length and all of their corresponding elements are equal.</p>
+
+<p>Note that in Ada 83 we can't redefine function "/=".&nbsp;  However, if we
+redefine "=" for some limited private type, we can use <b>/=</b>.&nbsp;  Ada
+will call our function "=" and negate the result.&nbsp;  For example,
+<pre class="hl">   <span class="hl kwa">type</span> Text <span class="hl kwa">is limited private</span><span class="hl opt">;</span>  <span class="hl slc">-- to be discussed later</span>
+   T1<span class="hl opt">,</span> T2 <span class="hl opt">:</span> Text<span class="hl opt">;</span>
+   <span class="hl kwa">function</span> <span class="hl str">&quot;=&quot;</span><span class="hl opt">(</span>Left<span class="hl opt">,</span> Right <span class="hl opt">:</span> <span class="hl kwa">in</span> Text<span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Boolean</span> <span class="hl kwa">is</span>
+      <span class="hl opt">...</span>
+   <span class="hl kwa">end</span> <span class="hl str">&quot;=&quot;</span><span class="hl opt">;</span>
+   <span class="hl opt">...</span>
+   <span class="hl kwa">if</span> T1 <span class="hl opt">/=</span> T2 <span class="hl kwa">then</span>  <span class="hl slc">-- Calls our &quot;=&quot; and reverses the result.</span>
+      <span class="hl opt">...</span>
+   <span class="hl kwa">end if</span><span class="hl opt">;</span>
+</pre></p>
+
+<p>Also, in Ada 83 and Ada 95, we can't redefine <b>in</b>, <b>not in</b>,
+<b>and then</b>, <b>or else</b>, or <b>:=</b>.&nbsp;  Technically, these aren't
+operators.</p>
+
+
+<p>In Ada 95, we may redefine <b>=</b> to return any type, not just
+Boolean.&nbsp;  However, if we do redefine <b>=</b> to return type Boolean,
+then we have automatically also redefined <b>/=</b> to call our <b>=</b> and
+reverse the result.</p>
+
+<p>If, on the other hand, we redefine <b>=</b> to return some type other than
+Boolean, then <b>/=</b> is <b>not</b> automatically redefined.&mnsp;  However,
+in this case Ada 95 lets us separately redefine <b>/=</b> if we want to, and it
+may return any type.</p>
+
+<p>Functions using infix notation can't be compiled directly into the
+library.&nbsp; They must either be declared locally inside a procedure or
+function, or placed inside a package.&nbsp;  This is done because many
+implementations of Ada create files with names based on the name of th
+function, procedure, or package being compiled.&nbsp;  Since many of the
+operators are punctuation marks, they would create file names that are illegal
+on most systems.</p>
+
+<p>For the same reason, two functions or procedures with the same name can't be
+compiled directly into the library; on many systems that would attempt to give
+the same name to two different files.&nbsp;  For example, the package
+specification below is legal.&nbsp;  However, the package body can't declare
+both Display's separate, and it can't declare either "*" <b>separate</b>.
+<pre class="hl">   <span class="hl kwa">package</span> P <span class="hl kwa">is</span>
+      <span class="hl kwa">type</span> Complex <span class="hl kwa">is</span> <span class="hl opt">...</span>
+      <span class="hl kwa">type</span> Vector <span class="hl kwa">is</span> <span class="hl opt">...</span>
+      <span class="hl kwa">procedure</span> Display<span class="hl opt">(</span>C <span class="hl opt">:</span> <span class="hl kwa">in</span> Complex<span class="hl opt">);</span>
+      <span class="hl kwa">procedure</span> Display<span class="hl opt">(</span>V <span class="hl opt">:</span> <span class="hl kwa">in</span> Vector<span class="hl opt">);</span>
+      <span class="hl kwa">function</span>  <span class="hl str">&quot;*&quot;</span><span class="hl opt">(</span>Left<span class="hl opt">,</span> Right <span class="hl opt">:</span> <span class="hl kwa">in</span> Complex<span class="hl opt">)</span> <span class="hl kwa">return</span> Complex<span class="hl opt">;</span>
+      <span class="hl kwa">function</span>  <span class="hl str">&quot;*&quot;</span><span class="hl opt">(</span>Left<span class="hl opt">,</span> Right <span class="hl opt">:</span> <span class="hl kwa">in</span> Vector<span class="hl opt">)</span>  <span class="hl kwa">return</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> P<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p><div class="adat-q">
+<h2>Question</h2>
+<pre class="hl">   <span class="hl kwa">package</span> K <span class="hl kwa">is</span>
+      <span class="hl kwa">type</span> Complex <span class="hl kwa">is record</span>
+         Re<span class="hl opt">,</span> Im <span class="hl opt">:</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+      <span class="hl kwa">end record</span><span class="hl opt">;</span>
+      <span class="hl kwa">type</span> Vector <span class="hl kwa">is array</span><span class="hl opt">(</span><span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl opt">&lt;&gt;)</span> <span class="hl kwa">of</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+      <span class="hl kwa">function</span>  <span class="hl str">&quot;+&quot;</span><span class="hl opt">(</span>Left<span class="hl opt">,</span> Right <span class="hl opt">:</span> <span class="hl kwa">in</span> Complex<span class="hl opt">)</span> <span class="hl kwa">return</span> Complex<span class="hl opt">;</span>
+      <span class="hl kwa">function</span>  <span class="hl str">&quot;*&quot;</span><span class="hl opt">(</span>Left<span class="hl opt">,</span> Right <span class="hl opt">:</span> <span class="hl kwa">in</span> Complex<span class="hl opt">)</span> <span class="hl kwa">return</span> Complex<span class="hl opt">;</span>
+      <span class="hl kwa">function</span>  <span class="hl str">&quot;*&quot;</span><span class="hl opt">(</span>Left<span class="hl opt">,</span> Right <span class="hl opt">:</span> <span class="hl kwa">in</span> Vector<span class="hl opt">)</span>  <span class="hl kwa">return</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+      <span class="hl kwa">function</span>  Conjugate<span class="hl opt">(</span>C <span class="hl opt">:</span> <span class="hl kwa">in</span> Complex<span class="hl opt">)</span> <span class="hl kwa">return</span> Complex<span class="hl opt">;</span>
+      <span class="hl kwa">procedure</span> Display<span class="hl opt">(</span>C <span class="hl opt">:</span> <span class="hl kwa">in</span> Complex<span class="hl opt">);</span>
+      <span class="hl kwa">procedure</span> Display<span class="hl opt">(</span>V <span class="hl opt">:</span> <span class="hl kwa">in</span> Vector<span class="hl opt">);</span>
+   <span class="hl kwa">end</span> K<span class="hl opt">;</span>
+</pre>
+The above is a package specification.&nbsp;  In the package body, how many
+subprograms could be made <b>separate</b>:
+ <a href="javascript:adat_toggle('adat-funcin-a0', 'adat-funcin-a1', 'adat-funcin-a2', 'adat-funcin-a3', 'adat-funcin-a4', 'adat-funcin-a5', 'adat-funcin-a6');">0</a>,
+<a href="javascript:adat_toggle('adat-funcin-a1', 'adat-funcin-a0', 'adat-funcin-a2', 'adat-funcin-a3', 'adat-funcin-a4', 'adat-funcin-a5', 'adat-funcin-a6');">1</a>,
+<a href="javascript:adat_toggle('adat-funcin-a2', 'adat-funcin-a1', 'adat-funcin-a0', 'adat-funcin-a3', 'adat-funcin-a4', 'adat-funcin-a5', 'adat-funcin-a6');">2</a>,
+<a href="javascript:adat_toggle('adat-funcin-a3', 'adat-funcin-a1', 'adat-funcin-a2', 'adat-funcin-a0', 'adat-funcin-a4', 'adat-funcin-a5', 'adat-funcin-a6');">3</a>,
+<a href="javascript:adat_toggle('adat-funcin-a4', 'adat-funcin-a1', 'adat-funcin-a2', 'adat-funcin-a3', 'adat-funcin-a0', 'adat-funcin-a5', 'adat-funcin-a6');">4</a>,
+<a href="javascript:adat_toggle('adat-funcin-a5', 'adat-funcin-a1', 'adat-funcin-a2', 'adat-funcin-a3', 'adat-funcin-a4', 'adat-funcin-a0', 'adat-funcin-a6');">5</a>, or
+<a href="javascript:adat_toggle('adat-funcin-a6', 'adat-funcin-a1', 'adat-funcin-a2', 'adat-funcin-a3', 'adat-funcin-a4', 'adat-funcin-a5', 'adat-funcin-a0');">6</a>?
+<div id="adat-funcin-a0" class="adat-a" style="display: none">0 - No, the
+function Conjugate can be made <b>separate</b>, because its name isn't
+overloaded and it doesn't use infix notation.&nbsp;  Also, one, but not both,
+Display procedures can be made <b>separate</b>.
+</div>
+<div id="adat-funcin-a1" class="adat-a" style="display: none">1 - No, the
+function Conjugate can be made <b>separate</b>, because its name isn't
+overloaded and it doesn't use infix notation.&nbsp;  Also, one, but not both,
+Display procedures can be made <b>separate</b></div>
+<div id="adat-funcin-a2" class="adat-a" style="display: none">2 - <b>You're
+right!</b>&nbsp;  Only function Conjugate and at most one Display can be made
+<b>separate</b>.&nbsp;  Functions using infix notation can't be made
+<b>separate</b>, and the name Display is overloaded. </div>
+<div id="adat-funcin-a3" class="adat-a" style="display: none">3 - No, the
+function Conjugate can be made <b>separate</b>, because its name isn't
+overloaded and it doesn't use infix notation.&nbsp;  Also, one, but not both,
+Display procedures can be made <b>separate</b></div>
+<div id="adat-funcin-a4" class="adat-a" style="display: none">4 - No, the
+function Conjugate can be made <b>separate</b>, because its name isn't
+overloaded and it doesn't use infix notation.&nbsp;  Also, one, but not both,
+Display procedures can be made <b>separate</b></div>
+<div id="adat-funcin-a5" class="adat-a" style="display: none">5 - No, the
+function Conjugate can be made <b>separate</b>, because its name isn't
+overloaded and it doesn't use infix notation.&nbsp;  Also, one, but not both,
+Display procedures can be made <b>separate</b></div>
+<div id="adat-funcin-a6" class="adat-a" style="display: none">6 - No, the
+function Conjugate can be made <b>separate</b>, because its name isn't
+overloaded and it doesn't use infix notation.&nbsp;  Also, one, but not both,
+Display procedures can be made <b>separate</b></div>
+</div>
+</p>
+
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

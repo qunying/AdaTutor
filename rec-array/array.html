@@ -1,0 +1,298 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Records and Arrays' href='index.html' />
+<link rel='prev' title='Records' href='record.html' />
+<link rel='next' title='Multidimensional Arrays' href='mul-array.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, arrays">
+
+<title>AdaTutor - Arrays</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="record.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="mul-array.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+
+<h2>Arrays</h2>
+<p>To declare an array in Ada, we specify the <b>type and range of the
+subscript</b>, followed by the <b>type of the elements</b> of the array.&nbsp;
+The subscript can have any discrete type (integer or enumeration), and the
+elements of the array can be of any type at all, including records and other
+arrays.&nbsp;  There are three ways to declare an array in Ada.&nbsp;  Here are
+three examples of the most direct, but least flexible, way (types Rainbow_Color
+and Date must be defined earlier):
+<pre class="hl"> A <span class="hl opt">:</span> <span class="hl kwa">array</span><span class="hl opt">(</span>Rainbow_Color <span class="hl kwa">range</span> Orange <span class="hl opt">..</span> Blue<span class="hl opt">)</span> <span class="hl kwa">of</span> Date<span class="hl opt">;</span>
+    <span class="hl slc">-- A four-element array, each element of which is a record</span>
+    <span class="hl slc">-- with three parts.  The allowable subscripts are Orange,</span>
+    <span class="hl slc">-- Yellow, Green, and Blue.  Here A(Yellow) is of type Date,</span>
+    <span class="hl slc">-- and A(Yellow).Year is of type Integer.</span>
+ B <span class="hl opt">:</span> <span class="hl kwa">array</span><span class="hl opt">(</span><span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl opt">-</span><span class="hl num">10</span> <span class="hl opt">..</span> <span class="hl num">10</span><span class="hl opt">)</span> <span class="hl kwa">of</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+    <span class="hl slc">-- An array of 21 Integers, with Integer subscripts.</span>
+ C <span class="hl opt">:</span> <span class="hl kwa">array</span><span class="hl opt">(</span><span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">30</span><span class="hl opt">)</span> <span class="hl kwa">of</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+    <span class="hl slc">-- Here (0 .. 30) is understood to mean</span>
+    <span class="hl slc">-- (Integer range 0 .. 30), and we have an array of 31</span>
+    <span class="hl slc">-- Floats, with Integer subscripts.</span>
+</pre>
+</p>
+
+<p>A subscript can be an expression; if I is an Integer, we can write
+<b>C(2*I).</b>&nbsp;  If a subscript is out-of-range (for example,
+<b>A(Red)</b> or <b>C(-32)</b>), the program will raise a Constraint_Error.</p>
+
+<p>This direct method of declaring arrays is usually used to create single
+arrays for table lookup, etc., where there's no need to have several arrays of
+the same type.&nbsp;  A better way to declare an array is to specify a type
+name for the array itself.&nbsp;  Then several objects can be declared to have
+that same type.&nbsp; For example,
+<pre class="hl">      <span class="hl kwa">type</span> Vector100 <span class="hl kwa">is array</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">100</span><span class="hl opt">)</span> <span class="hl kwa">of</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+      <span class="hl kwa">type</span> Vector300 <span class="hl kwa">is array</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">300</span><span class="hl opt">)</span> <span class="hl kwa">of</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+      D<span class="hl opt">,</span> E<span class="hl opt">,</span> F <span class="hl opt">:</span> Vector100<span class="hl opt">;</span>
+      G<span class="hl opt">,</span> H    <span class="hl opt">:</span> Vector300<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Here D, E, and F are all of type <b>Vector100</b>, so we can write
+<b>D := E;</b>  and assign the entire array with one statement.&nbsp; Similarly,
+we can write <b>G := H;</b>, but not <b>G := F;</b>, because <b>G</b> and
+<b>F</b> have different types.</p>
+
+<p>An even more flexible way to declare arrays is to leave the range of the
+subscript unspecified with the <b>box</b> symbol, <b>&lt;&gt;</b>, specifying
+the range when declaring the objects.&nbsp;  For example,
+<pre class="hl">      <span class="hl kwa">type</span> Vector <span class="hl kwa">is array</span><span class="hl opt">(</span><span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl opt">&lt;&gt;)</span> <span class="hl kwa">of</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+      D<span class="hl opt">,</span> E<span class="hl opt">,</span> F <span class="hl opt">:</span> Vector<span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">100</span><span class="hl opt">);</span>
+      G<span class="hl opt">,</span> H    <span class="hl opt">:</span> Vector<span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">300</span><span class="hl opt">);</span>
+</pre>
+</p>
+
+<p>There are two errors to avoid when declaring arrays in this way.&nbsp;  One
+is to declare a type with the box symbol for the range of the subscript, and
+then fail to specify the range when declaring a variable:
+
+<pre class="hl">      <span class="hl kwa">type</span> Vector <span class="hl kwa">is array</span><span class="hl opt">(</span><span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl opt">&lt;&gt;)</span> <span class="hl kwa">of</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+      D1 <span class="hl opt">:</span> Vector<span class="hl opt">;</span> <span class="hl slc">-- illegal</span>
+</pre>
+</p>
+
+<p>This error is called <b>unconstrained array</b>.&nbsp;  Unconstrained arrays
+are legal in formal parameters (&ldquo;dummy arguments&rdquo;) of procedures and
+functions, and a function can <b>return</b> an unconstrained array type.&nbsp;
+(We'll learn about these things later.)&nbsp;  But an unconstrained array is
+illegal when declaring a variable, because the compiler needs to know the range
+of the subscript.</p>
+
+<p>In Ada 95, we may constrain the variable array by initializing it:
+<pre class="hl">      D1 <span class="hl opt">:</span> Vector <span class="hl opt">:= (</span><span class="hl num">2.3</span><span class="hl opt">,</span> <span class="hl num">4.5</span><span class="hl opt">,</span> <span class="hl num">4.0</span><span class="hl opt">);</span> <span class="hl slc">-- legal in Ada 95 only</span>
+</pre>
+</p>
+
+<p>Here the compiler assumes the range of the subscript to be 1 .. 3.  In Ada
+83, however, we must specify the subscript range of a variable explicitly:
+<pre class="hl">      D1 <span class="hl opt">:</span> Vector<span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">3</span><span class="hl opt">) := (</span><span class="hl num">2.3</span><span class="hl opt">,</span> <span class="hl num">4.5</span><span class="hl opt">,</span> <span class="hl num">4.0</span><span class="hl opt">);</span> <span class="hl slc">-- legal</span>
+</pre>
+</p>
+
+<p>In both Ada 83 and Ada 95, a <b>constant</b> array, which must be
+initialized, is automatically constrained.&nbsp;  Therefore, the following is
+legal in both Ada 83 and Ada 95, and the compiler will assume the subscript
+range to be 1 .. 3:
+<pre class="hl">     D1 <span class="hl opt">:</span> <span class="hl kwa">constant</span> Vector <span class="hl opt">:= (</span><span class="hl num">2.3</span><span class="hl opt">,</span> <span class="hl num">4.5</span><span class="hl opt">,</span> <span class="hl num">4.0</span><span class="hl opt">);</span> <span class="hl slc">-- legal</span> 
+</pre>
+</p>
+
+<p>The other error to avoid when declaring arrays in this way is to specify the
+range of the subscript twice: once when declaring the type and once when
+declaring the object:
+<pre class="hl">      <span class="hl kwa">type</span> Vector100 <span class="hl kwa">is array</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">100</span><span class="hl opt">)</span> <span class="hl kwa">of</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+      D2 <span class="hl opt">:</span> Vector100<span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">100</span><span class="hl opt">);</span>  <span class="hl slc">-- illegal</span>
+</pre>
+</p>
+
+<p>Even if the two ranges agree, this is illegal and is called <b>doubly
+constrained array</b>.</p>
+
+<p>Arrays may be initialized and assigned with aggregates, and both positional
+and named notation may be used.  For example, arrays <b>A</b> and <b>B</b> are
+equal here:
+<pre class="hl">    <span class="hl kwa">type</span> Vector5 <span class="hl kwa">is array</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">5</span><span class="hl opt">)</span> <span class="hl kwa">of</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+    A <span class="hl opt">:</span> <span class="hl kwa">constant</span> Vector5 <span class="hl opt">:= (</span><span class="hl num">2.0</span><span class="hl opt">,</span> <span class="hl num">4.0</span><span class="hl opt">,</span> <span class="hl num">8.0</span><span class="hl opt">,</span> <span class="hl num">16.0</span><span class="hl opt">,</span> <span class="hl num">32.0</span><span class="hl opt">);</span>
+    B <span class="hl opt">:</span> <span class="hl kwa">constant</span> Vector5 <span class="hl opt">:= (</span><span class="hl num">1</span> <span class="hl opt">=&gt;</span> <span class="hl num">2.0</span><span class="hl opt">,</span> <span class="hl num">2</span> <span class="hl opt">=&gt;</span> <span class="hl num">4.0</span><span class="hl opt">,</span> <span class="hl num">3</span> <span class="hl opt">=&gt;</span> <span class="hl num">8.0</span><span class="hl opt">,</span>
+                             <span class="hl num">4</span> <span class="hl opt">=&gt;</span> <span class="hl num">16.0</span><span class="hl opt">,</span> <span class="hl num">5</span> <span class="hl opt">=&gt;</span> <span class="hl num">32.0</span><span class="hl opt">);</span>
+</pre>
+</p>
+
+<p>The aggregate must fill the whole array, but the reserved word others is
+available.&nbsp;  Here's an array of 500 Float variables, all initialized to
+0.0:
+<pre class="hl">    <span class="hl kwa">type</span> Vector500 <span class="hl kwa">is array</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">500</span><span class="hl opt">)</span> <span class="hl kwa">of</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+    V1 <span class="hl opt">:</span> Vector500 <span class="hl opt">:= (</span><span class="hl kwa">others</span> <span class="hl opt">=&gt;</span> <span class="hl num">0.0</span><span class="hl opt">);</span>
+</pre>
+</p>
+
+<p>If <b>others</b> follows named notation, it's best to qualify the aggregate
+with the type name.&nbsp;  Here W(10) = 1.3, W(15) = -30.7, and the rest of the
+array is 0.0:
+<pre class="hl">    W <span class="hl opt">:</span> Vector500 <span class="hl opt">:=</span> Vector500'(<span class="hl num">10</span> =&gt; <span class="hl num">1.3</span>,  <span class="hl num">15</span> =&gt; <span class="hl num">-30.7</span>,
+                                <span class="hl kwa">others</span> =&gt; <span class="hl num">0.0</span>);
+</pre>
+</p>
+
+<p>Sometimes we <b>must</b> qualify an aggregate when <b>others</b> is used
+with named notation; at other times it's optional.&nbsp;  The rules
+(<a href='http://www.adahome.com/rm95/rm9x-04-03-03.html'>Ada 95 RM
+section 4.3.3</a>, paragraphs 10-15) are complicated.&nbsp;  It's easiest
+always to qualify an aggregate when <b>others</b> follows named notation, as
+shown above.</p>
+
+<p>In array aggregates, multiple choices can be denoted with the vertical bar
+(|), shift-backslash on PC keyboards.&nbsp;  In this array, the elements with
+odd subscripts are True, while the elements with even subscripts are False:
+<pre class="hl">    <span class="hl kwa">type</span> Decade <span class="hl kwa">is array</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">10</span><span class="hl opt">)</span> <span class="hl kwa">of</span> <span class="hl kwb">Boolean</span><span class="hl opt">;</span>
+    D1 <span class="hl opt">:</span> Decade<span class="hl opt">;</span>
+    <span class="hl opt">...</span>
+    D1 <span class="hl opt">:=</span> Decade'(<span class="hl num">1</span> | <span class="hl num">3</span> | <span class="hl num">5</span> | <span class="hl num">7</span> | <span class="hl num">9</span> =&gt; True,  <span class="hl kwa">others</span> =&gt; False);
+</pre>
+</p>
+
+<p>Here we assigned to D1 with an executable statement for variety; we could
+also have initialized D1 in the declarative region with the same
+aggregate.&nbsp;  Some people read the vertical bar as &ldquo;and,&rdquo; others
+as &ldquo;or.&rdquo;&nbsp;  One can say, &ldquo;Elements 1, <b>and</b> 3, and 5,
+and 7, and 9 are True,&rdquo; or one can say, &ldquo;If the subscript is 1,
+<b>or</b> 3, or 5, or 7, or 9, the array element is True.&rdquo;</p>
+
+<p>
+<div class="adat-q">
+<h2>Question</h2>
+<pre class="hl"> <span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">,</span> Ada<span class="hl opt">.</span>Integer_Text_IO<span class="hl opt">;</span>
+ <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">,</span> Ada<span class="hl opt">.</span>Integer_Text_IO<span class="hl opt">;</span>
+ <span class="hl kwa">procedure</span> Array_Quiz <span class="hl kwa">is</span>
+   <span class="hl kwa">subtype</span> Unaccented_Cap_Letter <span class="hl kwa">is</span> <span class="hl kwb">Character</span> <span class="hl kwa">range</span> <span class="hl str">'A'</span> <span class="hl opt">..</span> <span class="hl str">'Z'</span><span class="hl opt">;</span>
+   <span class="hl kwa">type</span> Set_Of_Unaccented_Letters <span class="hl kwa">is</span>
+      <span class="hl kwa">array</span><span class="hl opt">(</span>Unaccented_Cap_Letter<span class="hl opt">)</span> <span class="hl kwa">of</span> <span class="hl kwb">Boolean</span><span class="hl opt">;</span>
+   Vowels <span class="hl opt">:</span> Set_Of_Unaccented_Letters <span class="hl opt">:=</span>
+       Set_Of_Unaccented_Letters'<span class="hl opt">(</span><span class="hl str">'A'</span>|<span class="hl str">'E'</span>|<span class="hl str">'I'</span>|<span class="hl str">'O'</span>|<span class="hl str">'U'</span> <span class="hl opt">=&gt;</span> <span class="hl kwd">True</span><span class="hl opt">,</span>
+                                  <span class="hl kwa">others</span> <span class="hl opt">=&gt;</span> <span class="hl kwd">False</span><span class="hl opt">);</span>
+   Letter <span class="hl opt">:</span> Unaccented_Cap_Letter<span class="hl opt">;</span>
+ <span class="hl kwa">begin</span>
+   Letter <span class="hl opt">:=</span> <span class="hl str">'E'</span><span class="hl opt">;</span>
+   Put<span class="hl opt">(</span><span class="hl kwb">Boolean</span><span class="hl kwd">'Pos</span><span class="hl opt">(</span>Vowels<span class="hl opt">(</span>Letter<span class="hl opt">)));</span>
+ <span class="hl kwa">end</span> Array_Quiz<span class="hl opt">;</span>
+</pre>
+What will this program display?
+<ol>
+<li>
+<a href="javascript:adat_toggle('adat-rec1a1');">The program will display 1.</a>
+<div id="adat-rec1a1" class="adat-a" style="display: none"><b>You're
+right!</b>&bsp;  Vowels has 26 elements, with subscripts 'A' through 'Z'.&nbsp;
+Vowels(Letter) is Vowels('E'), which is True, and since Ada defines
+
+<pre class="hl">    <span class="hl kwa">type</span> <span class="hl kwb">Boolean</span> <span class="hl kwa">is</span> <span class="hl opt">(</span><span class="hl kwd">False</span><span class="hl opt">,</span> <span class="hl kwd">True</span><span class="hl opt">);</span>   
+</pre>
+and the positions are numbered starting from 0, Boolean'Pos(True) is 1.</div>
+</li>
+
+<li>
+<a href="javascript:adat_toggle('adat-rec1a2');">The program will display 2.</a>
+<div id="adat-rec1a2" class="adat-a" style="display: none">No.&nbsp;  Recall
+that Ada defines
+<pre class="hl">    <span class="hl kwa">type</span> <span class="hl kwb">Boolean</span> <span class="hl kwa">is</span> <span class="hl opt">(</span><span class="hl kwd">False</span><span class="hl opt">,</span> <span class="hl kwd">True</span><span class="hl opt">);</span>   
+</pre>
+and that the positions are numbered starting with 0 for the <b>'Pos></b>
+attribute.
+</div>
+</li>
+
+<li>
+<a href="javascript:adat_toggle('adat-rec1a3');">The program will display
+TRUE.</a>
+<div id="adat-rec1a3" class="adat-a" style="display: none">No.&nbsp;  Indeed
+Vowels(Letter) is Vowels('E'), which is True, but the program takes
+the Boolean'Pos of Vowels(Letter).&nbsp;  Recall that the attribute <b>'Pos</b> 
+converts from a discrete type (in this case, Boolean) to an integer.</div>
+</li>
+
+<li>
+<a href="javascript:adat_toggle('adat-rec1a4');">The program will display E.</a>
+<div id="adat-rec1a4" class="adat-a" style="display: none">No.&nbsp;  While
+Letter is 'E', and Letter appears inside the Put statement, the parameter of
+Put is the Boolean'Pos of one element of array Vowels (specifically, the
+element whose subscript is 'E').&nbsp;  Recall that the <b>'Pos</b> attribute
+always returns an integer.</div>
+</li>
+</ol>
+</div>
+</p>
+
+<p>In an array declaration or an array type declaration, we may totally omit the
+range of the subscript (not even supplying a box), if the type or subtype of the
+subscript has a reasonable number of possible values.&nbsp;  (We did that in the
+declaration of type Set_Of_Unaccented_Letters in the last question.)&nbsp;  For
+example, in
+<pre class="hl">  <span class="hl kwa">type</span> Rainbow_Color <span class="hl kwa">is</span> <span class="hl opt">(</span>Red<span class="hl opt">,</span> Orange<span class="hl opt">,</span> Yellow<span class="hl opt">,</span> Green<span class="hl opt">,</span> Blue<span class="hl opt">,</span> Indigo<span class="hl opt">,</span> Violet<span class="hl opt">);</span>
+  R <span class="hl opt">:</span> <span class="hl kwa">array</span><span class="hl opt">(</span>Rainbow_Color<span class="hl opt">)</span> <span class="hl kwa">of</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>we have an array of seven Floats, because there are seven possible values of
+type Rainbow_Color.&nbsp;  Similarly,
+<pre class="hl">    V <span class="hl opt">:</span> <span class="hl kwa">array</span><span class="hl opt">(</span><span class="hl kwb">Character</span><span class="hl opt">)</span> <span class="hl kwa">of</span> <span class="hl kwb">Boolean</span><span class="hl opt">;</span>
+</pre>
+creates an array of 256 Booleans (128 in Ada 83).&nbsp;  However,
+<b>J : array(Integer) of Float;</b> is an attempt to declare a very large array
+indeed!&nbsp;  In a case like this, we can use a subtype in the subscript
+declaration.&nbsp;  The following creates an array of 31 Floats:
+<pre class="hl">    <span class="hl kwa">subtype</span> Day_Subtype <span class="hl kwa">is</span> <span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">31</span><span class="hl opt">;</span>
+    J <span class="hl opt">:</span> <span class="hl kwa">array</span><span class="hl opt">(</span>Day_Subtype<span class="hl opt">)</span> <span class="hl kwa">of</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>The attributes <b>'First</b> and <b>'Last</b>, which we've seen with discrete
+types, can also be used with array types and with the array names
+themselves.&nbsp;  For example,
+<pre class="hl">    <span class="hl kwa">type</span> My_Vector <span class="hl kwa">is array</span><span class="hl opt">(</span><span class="hl num">30</span> <span class="hl opt">..</span> <span class="hl num">33</span><span class="hl opt">)</span> <span class="hl kwa">of</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+    Mv <span class="hl opt">:</span> My_Vector<span class="hl opt">;</span>
+    <span class="hl opt">...</span>
+    Mv<span class="hl opt">(</span><span class="hl num">30</span><span class="hl opt">) :=</span> <span class="hl num">1000</span><span class="hl opt">;</span>
+    Mv<span class="hl opt">(</span><span class="hl num">31</span><span class="hl opt">) :=</span> <span class="hl num">20</span><span class="hl opt">;</span>
+    Mv<span class="hl opt">(</span><span class="hl num">32</span><span class="hl opt">) := -</span><span class="hl num">70</span><span class="hl opt">;</span>
+    Mv<span class="hl opt">(</span><span class="hl num">33</span><span class="hl opt">) := -</span><span class="hl num">500</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Here <b>Mv'First</b> and <b>My_Vector'First</b> are both 30.&nbsp;
+<b>Mv'Last</b> and <b>My_Vector'Last</b> are both 33.&nbsp;  Note that
+<b>'First</b> and <b>'Last</b> refer to the subscripts, not to the values of the
+array elements.&nbsp;  Thus <b>Mv'First</b> is <b>not</b> 1000.&nbsp;  To obtain
+the value of the first element, we would use <b>Mv'First</b> as a
+<b>subscript</b>.&nbsp;  <b>Mv(Mv'First)</b> is 1000.</p>
+
+<p>The attribute <b>'Range</b> is an abbreviation for <b>'First ..
+'Last</b>.&nbsp;  It can be used with array types and array names, and (in Ada
+95 only), with scalar types.&nbsp; Thus <b>Mv'Range</b> and
+<b>My_Vector'Range</b> both mean <b>30 .. 33</b>.&nbsp;  In Ada 95, we can write
+<b>Integer'Range</b> as an abbreviation for
+<b>Integer'First .. Integer'Last</b>.&nbsp;  The attribute <b>'Length</b> is
+also available: <b>Mv'Length</b> and <b>My_Vector'Length</b> are both 4.</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

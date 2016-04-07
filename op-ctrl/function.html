@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Control Constructs' href='control.html' />
+<link rel='prev' title='The CASE Construct' href='case.html' />
+<link rel='next' title='Outside Assignment 2' href='../oa2/index.html' />
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, function">
+
+<title>AdaTutor - Brief Overview of Functions</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="case.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="control.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="../oa2/index.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Brief Overview of Functions</h2>
+<pre class="hl">   <span class="hl kwa">procedure</span> Funct_Demo <span class="hl kwa">is</span>
+     X <span class="hl opt">:</span> <span class="hl kwb">Float</span> <span class="hl opt">:=</span> <span class="hl num">1.2</span><span class="hl opt">;</span>
+     Y <span class="hl opt">:</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+     <span class="hl kwa">function</span> Twice<span class="hl opt">(</span>Dummy <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Float</span><span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Float</span> <span class="hl kwa">is</span>
+       Answer <span class="hl opt">:</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+     <span class="hl kwa">begin</span>
+       Answer <span class="hl opt">:=</span> Dummy <span class="hl opt">*</span> <span class="hl num">2.0</span><span class="hl opt">;</span>
+       <span class="hl kwa">return</span> Answer<span class="hl opt">;</span>
+     <span class="hl kwa">end</span> Twice<span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+     Y <span class="hl opt">:=</span> Twice<span class="hl opt">(</span>X<span class="hl opt">);</span>
+   <span class="hl kwa">end</span> Funct_Demo<span class="hl opt">;</span>
+</pre>
+
+<p>Let's look briefly at functions so we can do Outside Assignment 2; later, in
+the section on Subprograms and Packages, we'll cover functions and procedures
+in detail.&nbsp;  Here procedure Funct_Demo locally declares a function
+Twice.&nbsp;  Twice can be called only from within Funct_Demo; here the call is
+<b>Y := Twice(X);</b>.</p>
+
+<p>The function specification gives the name (Dummy), mode (in), and type
+(Float) of any formal parameters, or &ldquo;dummy arguments.&rdquo;&nbsp;  The
+mode can be omitted, in which case the compiler will assume the mode to be
+<b>in</b>.&nbsp; The function specification also gives the type being
+<b>return</b>ed, in this case Float.</p>
+
+<p>In the case of functions (as opposed to procedures), the mode of all
+parameters <b>must</b> be <b>in</b>, never <b>out</b> or <b>in out</b>.&nbsp;
+For this reason, many programmers omit the mode of function parameters, but we
+think it's a good idea always to show the mode explicitly.</p>
+
+<p>The function body must have <b>return</b> followed by an expression of the
+right type.&nbsp; This is usually the last statement before <b>end</b>.&nbsp;
+We don't return a value by placing the name of the function in an assignment
+statement, as in Fortran.&nbsp;  Of course, function Twice could be written
+more simply as
+<pre class="hl">   <span class="hl kwa">function</span> Twice<span class="hl opt">(</span>Dummy <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Float</span><span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Float</span> <span class="hl kwa">is</span>
+   <span class="hl kwa">begin</span>
+     <span class="hl kwa">return</span> Dummy <span class="hl opt">*</span> <span class="hl num">2.0</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Twice<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>It's even better to place the function in a separate file and compile it
+later.
+<pre class="hl">   <span class="hl kwa">procedure</span> Funct_Demo <span class="hl kwa">is</span>
+     X <span class="hl opt">:</span> <span class="hl kwb">Float</span> <span class="hl opt">:=</span> <span class="hl num">1.2</span><span class="hl opt">;</span>
+     Y <span class="hl opt">:</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+     <span class="hl kwa">function</span> Twice<span class="hl opt">(</span>Dummy <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Float</span><span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Float</span> <span class="hl kwa">is separate</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+     Y <span class="hl opt">:=</span> Twice<span class="hl opt">(</span>X<span class="hl opt">);</span>
+   <span class="hl kwa">end</span> Funct_Demo<span class="hl opt">;</span>
+
+   <span class="hl kwa">separate</span> <span class="hl opt">(</span>Funct_Demo<span class="hl opt">)</span>
+   <span class="hl kwa">function</span> Twice<span class="hl opt">(</span>Dummy <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Float</span><span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Float</span> <span class="hl kwa">is</span>
+   <span class="hl kwa">begin</span>
+     <span class="hl kwa">return</span> Dummy <span class="hl opt">*</span> <span class="hl num">2.0</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Twice<span class="hl opt">;</span>
+</pre>
+With most compilers the calling program can then be compiled once, and later
+the function can be edited and recompiled as often as desired.&nbsp;
+<b>Twice</b> is still local to <b>Funct_Demo</b>.&nbsp;  The phrase <b>separate
+(Funct_Demo)</b> tells Ada that this subprogram is part of the previously
+compiled unit <b>Funct_Demo</b>.&nbsp;  It's as if the function were cut out
+and "pasted" where the calling program says <b>function Twice ... is
+separate;</b>.&nbsp;  Ada can still compile the call <b>Y := Twice(X);</b>
+because the calling program contains the specification of the function.
+</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

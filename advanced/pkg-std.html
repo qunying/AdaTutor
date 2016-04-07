@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Advanced Topics' href='index.html' />
+<link rel='prev' title='Advanced Topics' href='index.html' />
+<link rel='next' title='An Alternative to Infix Notation, and Use Type'
+href='alt-n.html' />
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor">
+
+<title>AdaTutor - Packages Standard and Ada.Characters.Latin_1</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="index.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="alt-n.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Packages Standard and Ada.Characters.Latin_1</h2>
+<p>Ada comes with a package Standard.&nbsp;  However, unlike all the other
+packages, Standard is needed by <b>every</b> Ada compilation unit.&nbsp;
+Therefore, Standard is automatically <b>with</b>ed and <b>use</b>d in every
+compilation.&nbsp;  It need not be mentioned in a context clause.&nbsp;
+Standard contains the definitions built into the Ada language, such as <b>type
+Boolean is (False, True);</b>.&nbsp;  A listing of the package specification is
+in <a href='http://www.adahome.com/rm95/rm9x-A-01.html'>Annex A.1</a> of the
+Ada 95 RM.&nbsp;  Thus, the full name for the type Boolean is Standard.Boolean,
+the full name for Integer is Standard.Integer, etc.&nbsp;  Naturally, this
+normally need not concern the programmer.&nbsp;  The dot notation is automatic
+because Standard is automatically used in every compilation.</p>
+
+<p>Ada 95 has a package Ada.Characters.Latin_1, defined in
+<a href='http://www.adahome.com/rm95/rm9x-A-03-03.html'>Annex A.3.3</a> of the
+Ada 95 RM.&nbsp;  This package gives names to all of the unprintable 8-bit
+characters, and some of the printable ones.&nbsp;  For example, the unprintable
+&ldquo;bell*rdquo; character is named BEL.&nbsp;  If our program <b>with</b>s
+and <b>use</b>s this package and Ada.Text_IO, then <b>Put(BEL);</b> will beep
+the terminal.</p>
+
+<p>Ada 83 doesn't have Ada.Characters.Latin_1, but it has a package ASCII inside
+package Standard.&nbsp;  This package gives names to all of the unprintable
+ASCII characters and some of the printable ones.&nbsp;  (The ASCII characters
+are the first 128 of the 256 8-bit characters.)&nbsp;  Ada 95 also has package
+ASCII for compatibility, but with Ada 95 it's better to use
+Ada.Characters.Latin_1.</p>
+
+<p>Since ASCII is inside Standard, we never have to write a <b>with</b> clause
+for it.&nbsp; But ASCII isn't automatically <b>use</b>d.&nbsp;  If we want the
+dot notation for ASCII to be automatic, we have to provide a <b>use</b> clause.
+</p>
+
+<p>For example, either of these Ada 83 programs will beep the terminal:
+<pre class="hl">   <span class="hl kwa">with</span> Text_IO<span class="hl opt">;</span> <span class="hl kwa">use</span> Text_IO<span class="hl opt">;</span>    <span class="hl kwa">with</span> Text_IO<span class="hl opt">;</span> <span class="hl kwa">use</span> Text_IO<span class="hl opt">;</span>
+   <span class="hl kwa">procedure</span> Beep <span class="hl kwa">is             procedure</span> Beep <span class="hl kwa">is</span>
+   <span class="hl kwa">begin                           use</span> ASCII<span class="hl opt">;</span>
+     Put<span class="hl opt">(</span>ASCII<span class="hl opt">.</span>BEL<span class="hl opt">);</span>             <span class="hl kwa">begin</span>
+   <span class="hl kwa">end</span> Beep<span class="hl opt">;</span>                       Put<span class="hl opt">(</span>BEL<span class="hl opt">);</span>
+                                 <span class="hl kwa">end</span> Beep<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Note the placement of <b>use ASCII;</b> in the second example.&nbsp;  It's
+similar to the placement of <b>use My_Int_IO;</b> in
+<a href='../adatutor/add.ada'>ADD.ADA</a>, which we discussed early in the
+course.</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

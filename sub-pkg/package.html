@@ -1,0 +1,178 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Subprograms and Packages' href='index.html' />
+<link rel='prev' title='Default Parameters' href='def-param.html' />
+<link rel='next' title='Functions with Infix Notation' href='func-infix.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, package">
+
+<title>AdaTutor - Packages</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="def-param.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="func-infix.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Packages</h2>
+<p>A <b>package</b> lets us group related declarations, procedures, and
+functions.&nbsp;  A program can <b>with</b> the package and gain access to all
+of these.&nbsp;  However, as we'll see, packages have many other
+advantages.&nbsp;  Usually library units are packages rather than individual
+procedures and functions.</p>
+
+<p>By way of example, consider a very simple procedure and a very simple
+function:
+<pre class="hl">   <span class="hl kwa">procedure</span> Double<span class="hl opt">(</span>Number <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span> Answer <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Integer</span><span class="hl opt">);</span>
+   <span class="hl kwa">function</span> Twice<span class="hl opt">(</span>Number <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>We could compile these individually, or we could put them in a <b>package</b>
+and compile that instead.&nbsp;  Here's the package specification:
+<pre class="hl">   <span class="hl kwa">package</span> Simple_Math <span class="hl kwa">is</span>
+      <span class="hl kwa">procedure</span> Double<span class="hl opt">(</span>Number <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+                       Answer <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Integer</span><span class="hl opt">);</span>
+      <span class="hl kwa">function</span> Twice<span class="hl opt">(</span>Number <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Simple_Math<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>The package <b>body</b> must contain the bodies of all the procedures and
+functions declared in the package specification:
+<pre class="hl">    <span class="hl kwa">package body</span> Simple_Math <span class="hl kwa">is</span>
+        <span class="hl kwa">procedure</span> Double<span class="hl opt">(</span>Number <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+                         Answer <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span> <span class="hl kwa">is</span>
+        <span class="hl kwa">begin</span>
+            Answer <span class="hl opt">:=</span> Number <span class="hl opt">*</span> <span class="hl num">2</span><span class="hl opt">;</span>
+        <span class="hl kwa">end</span> Double<span class="hl opt">;</span>
+
+        <span class="hl kwa">function</span> Twice<span class="hl opt">(</span>Number <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Integer</span> <span class="hl kwa">is</span>
+        <span class="hl kwa">begin</span>
+            <span class="hl kwa">return</span> Number <span class="hl opt">*</span> <span class="hl num">2</span><span class="hl opt">;</span>
+        <span class="hl kwa">end</span> Twice<span class="hl opt">;</span>
+    <span class="hl kwa">end</span> Simple_Math<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>The package body could optionally declare either or both subprograms to be
+<b>separate</b>:
+<pre class="hl">    <span class="hl kwa">package body</span> Simple_Math <span class="hl kwa">is</span>
+        <span class="hl kwa">procedure</span> Double<span class="hl opt">(</span>Number <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+                         Answer <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span> <span class="hl kwa">is separate</span><span class="hl opt">;</span>
+        <span class="hl kwa">function</span> Twice<span class="hl opt">(</span>Number <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Integer</span>
+          <span class="hl kwa">is separate</span><span class="hl opt">;</span>
+    <span class="hl kwa">end</span> Simple_Math<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Here's an example of a calling program that <b>with</b>s the package and
+makes use of the two subprograms declared in the package specification:
+<pre class="hl"> <span class="hl kwa">with</span> Simple_Math<span class="hl opt">;</span> <span class="hl kwa">use</span> Simple_Math<span class="hl opt">;</span>
+ <span class="hl kwa">procedure</span> Package_Demo <span class="hl kwa">is</span>
+   I<span class="hl opt">,</span> J <span class="hl opt">:</span> <span class="hl kwb">Integer</span> <span class="hl opt">:=</span> <span class="hl num">10</span><span class="hl opt">;</span>
+ <span class="hl kwa">begin</span>
+   Double<span class="hl opt">(</span>Number <span class="hl opt">=&gt;</span> I<span class="hl opt">,</span> Answer <span class="hl opt">=&gt;</span> J<span class="hl opt">);</span>  <span class="hl slc">-- This line sets J to 20.</span>
+   J <span class="hl opt">:=</span> Twice<span class="hl opt">(</span>I<span class="hl opt">);</span>                <span class="hl slc">-- This line also sets J to 20.</span>
+ <span class="hl kwa">end</span> Package_Demo<span class="hl opt">;</span>
+</pre>
+
+<p>The package specification must be compiled first, but either the calling
+program or the package body may be compiled second.&nbsp;  The calling program
+depends only on the package <b>specification</b>, not the package
+<b>body</b>.&nbsp;  Similarly, the package body depends on the package
+specification.&nbsp;  If the package body declares any subprograms to be
+<b>separate</b>, these must be compiled after the package body, because any
+<b>separate</b> subprogram depends on its &ldquo;parent.&rdquo;</p>
+
+<p>A package specification that declares no subprograms (only objects, types,
+etc.) doesn't need a package body.&nbsp;  In Ada 95, a package specification
+that doesn't need a body may not have one, unless we include <b>pragma
+Elaborate_Body;</b> in the package specification.&nbsp;  We'll learn more about
+pragmas later.</p>
+
+<P>The main program may never be inside a package.&nbsp; It must be a procedure
+or function compiled directly into the library, such as Hello or Add.&nbsp;  In
+most implementations of Ada, the main program can't have any parameters, and
+must be a procedure rather than a function.</p>
+
+<p>A package body may optionally have initialization code, introduced by the
+word <b>begin</b>.&nbsp; This code is executed only once, the first time another
+program elaborates the package by <b>with</b>ing it.&nbsp;  For example, this
+package uses initialization code to initialize the array B:
+<pre class="hl">   <span class="hl kwa">package</span> P <span class="hl kwa">is</span>
+      <span class="hl kwa">function</span> F <span class="hl kwa">return</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> P<span class="hl opt">;</span>
+
+   <span class="hl kwa">package body</span> P <span class="hl kwa">is</span>
+      A <span class="hl opt">:</span> <span class="hl kwa">array</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">10</span><span class="hl opt">)</span> <span class="hl kwa">of</span> <span class="hl kwb">Float</span> <span class="hl opt">:= (</span><span class="hl kwa">others</span> <span class="hl opt">=&gt;</span> <span class="hl num">0.0</span><span class="hl opt">);</span>
+      B <span class="hl opt">:</span> <span class="hl kwa">array</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">10</span><span class="hl opt">,</span> <span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">10</span><span class="hl opt">)</span> <span class="hl kwa">of</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      <span class="hl kwa">function</span> F <span class="hl kwa">return</span> <span class="hl kwb">Float</span> <span class="hl kwa">is</span>
+         <span class="hl opt">...</span>
+      <span class="hl kwa">end</span> F<span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">for</span> I <span class="hl kwa">in</span> <span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">10</span> <span class="hl kwa">loop</span>
+         <span class="hl kwa">for</span> J <span class="hl kwa">in</span> <span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">10</span> <span class="hl kwa">loop</span>
+            B<span class="hl opt">(</span>I<span class="hl opt">,</span> J<span class="hl opt">) :=</span> I<span class="hl opt">*</span>J<span class="hl opt">*</span>J<span class="hl opt">;</span>
+         <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> P<span class="hl opt">;</span>
+</pre></p>
+
+<p>Declarations made inside a package <b>specification</b> are said to be
+<b>exported</b> and are available to programs outside the package that
+<b>with</b> the package.&nbsp;  However, declarations made inside the package
+<b>body</b> are available only inside the package.&nbsp;  The package body
+doesn't even have to be written before outside programs that <b>with</b> the
+package.&nbsp;  In this example, programs outside and inside the package may use
+type Answer, array A, and procedure R, but only procedures P, Q and R may use
+type Question and array B.&nbsp;  Procedure P may be called only by Q and R
+(and itself), and procedure Q is available only to R (and itself).
+<pre class="hl">   <span class="hl kwa">package</span> X <span class="hl kwa">is</span>
+      <span class="hl kwa">type</span> Answer <span class="hl kwa">is</span> <span class="hl opt">(</span>Yes<span class="hl opt">,</span> No<span class="hl opt">,</span> Maybe<span class="hl opt">);</span>
+      A <span class="hl opt">:</span> <span class="hl kwa">array</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">10</span><span class="hl opt">)</span> <span class="hl kwa">of</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+      <span class="hl kwa">procedure</span> R<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> X<span class="hl opt">;</span>
+
+   <span class="hl kwa">package body</span> X <span class="hl kwa">is</span>
+      <span class="hl kwa">type</span> Question <span class="hl kwa">is</span> <span class="hl opt">(</span>Why<span class="hl opt">,</span> Who<span class="hl opt">,</span> How<span class="hl opt">);</span>
+      B <span class="hl opt">:</span> <span class="hl kwa">array</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">10</span><span class="hl opt">)</span> <span class="hl kwa">of</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      <span class="hl kwa">procedure</span> P <span class="hl kwa">is separate</span><span class="hl opt">;</span>
+      <span class="hl kwa">procedure</span> Q <span class="hl kwa">is separate</span><span class="hl opt">;</span>
+      <span class="hl kwa">procedure</span> R <span class="hl kwa">is separate</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> X<span class="hl opt">;</span>
+</pre></p>
+
+<p>
+<div class="adat-q">
+<h2>Question</h2>
+<a href="javascript:adat_toggle('adat-pkga1', 'adat-pkga2');">True</a> or
+<a href="javascript:adat_toggle('adat-pkga2', 'adat-pkga1');">False</a>?&nbsp;
+In the above example, porcedure P may call R.
+<div id="adat-pkga1" class="adat-a" style="display: none"><b>You're
+right!</b>&nbsp;  R is declared in the package specification, so any program
+inside X (and any program outside X that <b>with</b>s the package) may call
+R.</div>
+<div id="adat-pkga2" class="adat-a" style="display: none">True.&nbsp; R is
+declared in the package specification, so any program inside X (and any program
+outside X that <b>with</b>s the package) may call R.</div>
+</div></p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

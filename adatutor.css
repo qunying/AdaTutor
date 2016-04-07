@@ -1,0 +1,107 @@
+body {
+  color: rgb(204, 204, 204);
+  background-color: rgb(41, 41, 41);
+  margin: 0; padding: 0;
+  text-align: center; /* !!! */
+}
+
+div.outer-box {
+   max-width: 800px;
+   margin: 0 auto;
+   text-align: left;
+   background-color: rgb(51,51,51);
+}
+
+div.main-content {
+  padding: 2em 8px 8px 8px;	
+  text-align: left;
+}
+
+div.nav {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  max-width: 792px;
+  background-color: rgb(34,34,34);
+  margin:0px auto;
+  padding: 4px;
+}
+
+h1 {
+  text-align: center;
+}
+
+div.nav table {
+  color: #A0A0A0;
+  width: 100%;
+  text-align: center;
+}
+div.nav td {
+  width: 33.33%;
+}
+
+div.nav-prev {
+  text-align: left;  
+}
+
+div.nav-next {
+  text-align:  right;
+}
+
+div.nav a:link {color:#A0A0A0; background-color: rgb(34,34,34);}
+div.nav a:visited {color:#A0A0A0; background-color: rgb(34,34,34);}
+div.nav a:active {color: #FFFFFF; background-color: #000000;}
+div.nav a:hover {color: #FFFFFF; background-color: #000000;}
+
+div.main-content a:link {color:#b45f06}      /* unvisited link */
+div.main-content a:visited {color:#b45f06;}  /* visited link */
+div.main-content a:hover {color: #FFFFFF; background-color: #000000;}  /* mouse over link */
+div.main-content a:active {color:#cc6600;}
+
+
+span.adatree-mark {
+  border: 1px solid;
+  border-radius:5px;
+  padding: 0px;
+}
+
+span.adat-hl {
+  background-color:#404040;
+}
+
+div.adat-q {
+  border: 1px solid;
+  border-radius:5px;
+  padding: 5px;
+}
+
+div.adat-a {
+  background-color:#404040;
+  padding: 5px;
+}
+
+pre {
+  background-color:#333333;
+  border: 1px dashed;
+  border-radius:5px;
+  padding: 2px;
+  white-space:pre-wrap;
+}
+
+pre.hl	{ color:#dedede; background-color:#333333; font-size:10pt; font-family:'Courier New';}
+.hl.num { color:#ffa0a0; }
+.hl.esc { color:#ffddad; }
+.hl.str { color:#ffa0a0; }
+.hl.pps { color:#ffa0a0; }
+.hl.slc { color:#ffa500; }
+.hl.com { color:#ffa500; }
+.hl.ppc { color:#5757ff; }
+.hl.opt { color:#dedede; }
+.hl.lin { color:#ffa500; }
+.hl.kwa { color:#f0e68c; }
+.hl.kwb { color:#bdb66b; }
+.hl.kwc { color:#8b95f0; }
+.hl.kwd { color:#f25252; }
+
+/* vim: set tabstop=8 sts=2 sw=2 : */

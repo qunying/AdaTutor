@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link href="../adatutor.css" type="text/css" rel="stylesheet">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='The Format of an Ada Program' href='index.html' />
+<link rel='prev' title='Numbers' href='numbers.html' />
+<link rel='next' title='Generic Instantiation' href='../generic-inst/index.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor">
+
+<title>AdaTutor - Making the Dot Notation Automatic</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="numbers.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="../generic-inst/index.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Making the Dot Notation Automatic</h2>
+<p>These two programs are equivalent:
+<pre class="hl"><span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>                 <span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span> <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>
+<span class="hl kwa">procedure</span> Hello <span class="hl kwa">is                procedure</span> Hello <span class="hl kwa">is</span>
+<span class="hl kwa">begin                             begin</span>
+  Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">.</span>Put_Line<span class="hl opt">(</span><span class="hl str">&quot;Hello!&quot;</span><span class="hl opt">);</span>   Put_Line<span class="hl opt">(</span><span class="hl str">&quot;Hello!&quot;</span><span class="hl opt">);</span>
+<span class="hl kwa">end</span> Hello<span class="hl opt">;</span>                        <span class="hl kwa">end</span> Hello<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Since the statement <b>with Ada.Text_IO;</b> makes the package
+<b>visible</b>, our program can call the procedures and functions in it.&nbsp;
+To call a procedure in Ada.Text_IO, we write the name of the package, a dot,
+and the name of the procedure.&nbsp;  But the statement <b>use Ada.Text_IO;</b>
+tells the compiler to supply the name of the package and the dot for us.&nbsp;
+ That's why the two programs above are equivalent.</p>
+
+<p>Remember, in Ada <b>with</b> provides visibility; <b>use</b> asks the
+compiler to supply the package name and the dot.&nbsp;  A package must be
+<b>with</b>ed before we can <b>use</b> it.</p>
+
+<p>The Ada meanings of the words <b>with</b> and <b>use</b> are more or less
+reversed from their meanings in Pascal.&nbsp;  Also, in Ada we can't use
+records, only packages.</p>
+
+<p>A program can <b>with</b> and <b>use</b> several packages.&nbsp;  For
+example, there's a package that comes with Ada called Ada.Calendar.&nbsp;
+(In Ada 83, the name is just Calendar, and Ada 95 accepts the shorter name for
+compatibility.)&nbsp; Suppose we've also compiled a package of our own,
+My_Pkg.&nbsp;  Then our program might say
+<pre class="hl">      <span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">,</span> Ada<span class="hl opt">.</span>Calendar<span class="hl opt">,</span> My_Pkg<span class="hl opt">;</span>
+      <span class="hl kwa">use</span>  Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">,</span> Ada<span class="hl opt">.</span>Calendar<span class="hl opt">,</span> My_Pkg<span class="hl opt">;</span>
+</pre></p>
+
+<p>In this case, when the compiler sees the call to Put_Line, it searches all
+three packages that we've <b>use</b>d for a procedure Put_Line that takes one
+String parameter (or &ldquo;argument&rdquo;).&nbsp;  If it finds no procedure
+Put_Line, the compiler displays an error message, like &ldquo;Undeclared
+identifier Put_Line&rdquo; or &ldquo;Put_Line is undefined.&rdquo;</p>
+
+<p>But what if there are several procedures Put_Line among the three
+packages?&nbsp; Will the compiler stop searching when it finds the first
+Put_Line?&nbsp;  No.</p>
+
+<p>If the compiler finds several Put_Line's, the name Put_Line is said to be
+<b>overloaded</b>.&nbsp; In that case the compiler uses the <b>number</b> and
+<b>types</b> of parameters (arguments) to try to select the right
+Put_Line.&nbsp; For example, if Ada.Text_IO contains a Put_Line that takes one
+String parameter, and My_Pkg contains a Put_Line that takes one Integer
+parameter, the compiler writes a call to Ada.Text_IO.Put_Line and not
+My_Pkg.Put_Line, because the calling statement supplies one String
+parameter.</p>
+
+<p>If there's more than one Put_Line that takes exactly one String parameter,
+then the call is ambiguous and the compiler can't resolve the
+overloading.&nbsp;  The compiler gives an error message, perhaps
+&ldquo;Ambiguity detected during overload resolution&rdquo; or &ldquo;Ambiguous
+expression.&rdquo;&nbsp;  In that case, we'd have to specify
+<b>Ada.Text_IO.</b>Put_Line even though we said use <b>Ada.Text_IO;</b>.</p>
+
+<p>Finally, if there are procedures Put_Line, but none of them has the right
+number and types of parameters, again the compiler gives an error message,
+perhaps &ldquo;Inconsistency detected during overloading resolution&rdquo; or
+&ldquo;Unresolvable expression&rdquo; or &ldquo;Invalid parameter list in
+call.&rdquo;</p>
+
+<p>In summary, the compiler searches all the packages that we've <b>used</b>
+for a procedure with the correct number and types of parameters.&nbsp; If it
+finds exactly one, everything's fine.&nbsp; An error message can result from
+the compiler finding no procedure with the correct name, several procedures
+with the correct name and the correct number and types of parameters, or
+several procedures with the correct name, none of which has the correct number
+and types of parameters.</p>
+
+<p>Overloading may seem like an unnecessary complication at this point, but
+you'll see later how very useful it can be.&nbsp;  Overloading is especially
+useful with the infix operators when we create our own types.&nbsp;  All of
+this will be covered later.</p>
+
+<p>
+<div class='adat-q'>
+<h2>Question</h2>
+Which <b>one</b> of the following would most likely be the cause of the message
+"Invalid parameter list in call"?
+
+<ol>
+<li><a href="javascript:adat_toggle('f3a1');">You tried to <b>use</b> a
+ package that you didn't <b>with</b>.</a><br />
+<div id='f3a1' class='adat-a' style="display: none">No, for number 1 the most
+ likely message would be something like "This package is not named in a prior
+ <b>with</b> clause," or "<b>use</b> clause was not expected here."&nbsp; The
+ message could also be "<package name> is undefined."</div>
+</li>
+
+<li><a href="javascript:adat_toggle('f3a2');">You misspelled the name of a
+ package in a call using dot notation.</a>
+<div id='f3a2' class='adat-a' style="display: none">No, if you misspell the
+ name of a package, procedure, or function, the most probable error message
+ would be "... is undefined" or "Undeclared identifier ..."
+</div></li>
+
+<li><a href="javascript:adat_toggle('f3a3');">You misspelled the name of a
+ procedure or function in a call.</a>
+<div id='f3a3' class='adat-a' style="display: none">No, if you misspell the
+ name of a package, procedure, or function, the most probable error message
+ would be "... is undefined" or "Undeclared identifier ..."</div></li>
+
+<li><a href="javascript:adat_toggle('f3a4');">You called a procedure or
+ function with the wrong number or types ofparameters.</a>
+<div id='f3a4' class='adat-a' style="display: none"><b>You're right!</b>&nbsp;
+  The message "Invalid parameter list in call" usually means that you called a
+ procedure or a function with the wrong number or types of parameters.
+</div></li>
+</ol>
+</div>
+</p>
+
+
+<p>Ada.Text_IO contains both a procedure <b>Put</b> and a procedure
+<b>Put_Line</b> (among other things).&nbsp;  <b>Put_Line</b> displays its
+String parameter followed by a Carriage Return and a Line Feed, while Put
+displays its String parameter without the CR-LF.&nbsp; Ada.Text_IO also
+contains a procedure <b>New_Line</b> which produces only CR-LF.&nbsp;  For
+example, the following program will display <b>Hi there</b>, leave a blank
+line, and display <b>everybody!</b>:
+<pre class="hl"><span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span> <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>
+<span class="hl kwa">procedure</span> Hi_There <span class="hl kwa">is</span>
+<span class="hl kwa">begin</span>
+   Put<span class="hl opt">(</span><span class="hl str">&quot;Hi&quot;</span><span class="hl opt">);</span>
+   Put_Line<span class="hl opt">(</span><span class="hl str">&quot; there,&quot;</span><span class="hl opt">);</span>
+   New_Line<span class="hl opt">;</span>
+   Put_Line<span class="hl opt">(</span><span class="hl str">&quot;everybody!&quot;</span><span class="hl opt">);</span>
+<span class="hl kwa">end</span> Hi_There<span class="hl opt">;</span>
+</pre></p>
+
+<p>We'll learn much <a href='../exception/textio.html'>more about
+Ada.Text_IO</a> later.</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

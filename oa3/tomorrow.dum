@@ -1,0 +1,6 @@
+-- Dummy solution to Outside Assignment 3
+separate (Nextdate)
+function Tomorrow(Today : in Date) return Date is
+begin
+  return Today;
+end Tomorrow;

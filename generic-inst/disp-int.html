@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Generic Instantiation' href='index.html' />
+<link rel='prev' title='Generic Instantiation' href='index.html' />
+<link rel='next' title='Generic Instantiation' href='gen-inst.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, display integer">
+
+<title>AdaTutor - Display Integers</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="index.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="gen-inst.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Displaying Integers</h2>
+<pre class="hl"><span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>                               <span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>
+<span class="hl kwa">use</span>  Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>                               <span class="hl kwa">use</span>  Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>
+<span class="hl kwa">procedure</span> Hello <span class="hl kwa">is</span>       THIS          THIS     <span class="hl kwa">procedure</span> Add <span class="hl kwa">is</span>
+<span class="hl kwa">begin</span>                 <span class="hl opt">&lt;=</span> <span class="hl kwa">IS              IS</span> <span class="hl opt">=&gt;</span>  <span class="hl kwa">begin</span>
+  Put_Line<span class="hl opt">(</span><span class="hl str">"Hello!"</span><span class="hl opt">);</span>    RIGHT        WRONG       Put_Line<span class="hl opt">(</span><span class="hl num">2</span> <span class="hl opt">+</span> <span class="hl num">2</span><span class="hl opt">);</span>
+<span class="hl kwa">end</span> Hello<span class="hl opt">;</span>                                      <span class="hl kwa">end</span> Add<span class="hl opt">;</span>
+</pre>
+<p>Now let's write a program called Add that computes 2 + 2 and displays the
+result.&nbsp;  You may think that we could take the Hello program and
+substitute <b>2 + 2</b> for <b>"Hello!"</b>, but that won't work.&nbsp;
+(We never said Ada is easy!)&nbsp;  Why won't it work?&nbsp;
+Because Ada.Text_IO doesn't have a procedure Put_Line that takes an Integer
+parameter.&nbsp;  One correct program is this:
+<pre class="hl"><span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span> <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>
+<span class="hl kwa">procedure</span> Add <span class="hl kwa">is</span>
+  <span class="hl kwa">package</span> My_Int_IO <span class="hl kwa">is new</span> Integer_IO<span class="hl opt">(</span><span class="hl kwb">Integer</span><span class="hl opt">);</span> <span class="hl kwa">use</span> My_Int_IO<span class="hl opt">;</span>
+<span class="hl kwa">begin</span>
+  Put<span class="hl opt">(</span><span class="hl num">2</span> <span class="hl opt">+</span> <span class="hl num">2</span><span class="hl opt">);</span>
+  New_Line<span class="hl opt">;</span>
+<span class="hl kwa">end</span> Add<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>The package Ada.Text_IO contains procedures for
+type String.&nbsp;  This package is ready-to-use.&nbsp;
+However, inside Ada.Text_IO is another package,
+Integer_IO, that's <b>not</b> ready-to-use.</p>
+<pre>
+        Ada.Text_IO
+ 
+ Put_Line for type String  
+ Put      for type String  
+ Get_Line for type String   
+ Get      for type String   
+ New_Line                   
+ ...                        
+                            
+ ______ Integer_IO ______   
+ | Put for type <>      |   
+ | Get for type <>      |   
+ | ...                  |   
+ |______________________|   
+ 
+</pre>
+<p>
+It's called a generic package because it has an empty
+<b>box (&lt;&gt;)</b> in place of the type.&nbsp;  We can make a
+new, ready-to-use package from Integer_IO by
+giving the type: package My_Int_IO is new
+Integer_IO(<b>Integer</b>); we could have used any name
+in place of My_Int_IO.&nbsp;  Note that we've declared
+our new package locally inside the procedure
+Add.&nbsp;  My_Int_IO now has the same procedures and
+functions as Integer_IO, but with the empty box
+filled in with the type Integer.</p>
+
+<p>Since Integer_IO (and therefore My_Int_IO) doesn't have a Put_Line, we call
+My_Int_IO.Put and then Ada.Text_IO.New_Line.&nbsp;  Note that our program says
+<b>use My_Int_IO;</b> after declaring My_Int_IO.&nbsp;  When the compiler
+sees the call
+Put(2 + 2); it writes code to call My_Int_IO.Put rather than Ada.Text_IO.Put,
+because My_Int_IO.Put takes a parameter of type Integer.&nbsp;  The compiler
+then finds New_Line in Ada.Text_IO and writes a call to
+Ada.Text_IO.New_Line.</p>
+
+<p>
+<div class='adat-q'>
+<h2>Question</h2>
+
+<a href="javascript:adat_toggle('adat-ga1', 'adat-ga2');">True</a> or
+<a href="javascript:adat_toggle('adat-ga2', 'adat-ga1');">False</a>?&nbsp;
+In our example, a program could call Integer_IO.Put.<br />
+
+<div id='adat-ga1' class='adat-a' style="display: none">False.&nbsp;
+Since Integer_IO is generic, a program can't call its procedures and
+functions.&nbsp;  The program must specify the type and create an
+<b>instance</b> of
+Integer_IO, such as My_Int_IO.&nbsp;  It can then call Put in My_Int_IO.&nbsp;
+Note also that we can't <b>use</b> a generic package like Integer_IO, but
+only an instance of it like My_Int_IO.</div>
+
+<div id='adat-ga2' class='adat-a' style="display: none">
+<b>You're right!</b>&nbsp; Since Integer_IO is generic, a program can't call
+its procedures and functions.&nbsp;  The program must specify the type and
+create an <b>instance</b> of Integer_IO, such as My_Int_IO.&nbsp;
+ It can then call Put in My_Int_IO.&nbsp; Note also that we can't <b>use</b>
+a generic package like Integer_IO, but only an instance of it like My_Int_IO.
+</div>
+</div></p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

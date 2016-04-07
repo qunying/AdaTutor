@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Control Constructs' href='control.html' />
+<link rel='prev' title='FOR Loop' href='for-loop.html' />
+<link rel='next' title='WHILE Loops' href='case.html' />
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor">
+
+<title>AdaTutor - The "EXIT" Statement</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="for-loop.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="control.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="label.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h3>The "EXIT" Statement</h3>
+<pre class="hl">    <span class="hl kwa">for</span> I <span class="hl kwa">in</span> <span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">10</span> <span class="hl kwa">loop            for</span> I <span class="hl kwa">in</span> <span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">10</span> <span class="hl kwa">loop</span>
+      J <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>                          J <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      <span class="hl kwa">loop                             loop</span>
+        J <span class="hl opt">:=</span> J <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>                      J <span class="hl opt">:=</span> J <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+        <span class="hl kwa">if</span> A<span class="hl opt">(</span>I<span class="hl opt">,</span> J<span class="hl opt">) =</span> <span class="hl num">0</span> <span class="hl kwa">then</span>
+          <span class="hl kwa">exit</span><span class="hl opt">;</span>                          <span class="hl kwa">exit when</span> A<span class="hl opt">(</span>I<span class="hl opt">,</span> J<span class="hl opt">) =</span> <span class="hl num">0</span><span class="hl opt">;</span>
+        <span class="hl kwa">end if</span><span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>                        <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+      B<span class="hl opt">(</span>I<span class="hl opt">) :=</span> J<span class="hl opt">;</span>                       B<span class="hl opt">(</span>I<span class="hl opt">) :=</span> J<span class="hl opt">;</span>
+    <span class="hl kwa">end loop</span><span class="hl opt">;</span>                        <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+</pre>
+<p>The statement <b>exit;</b> exits the innermost loop.&nbsp; In the example at
+the left, <b>exit;</b> transfers control to the statement
+<b>B(I) := J;</b>.&nbsp;  Since <b>exit;</b> is often the only statement in an
+<b>if</b> block, <b>exit when</b> is available to abbreviate an <b>if</b> block
+with <b>exit;</b> as its only statement.&nbsp;  The two examples above are
+equivalent.</p>
+
+<p>Although <b>exit</span>;</b> can appear anywhere inside any kind of loop, in
+the author's opinion it's usually best to use only <b>exit when</b>, and then
+only as the last statement of an otherwise infinite loop, as shown at the right
+above.&nbsp;  This simulates a "repeat ... until" loop, which isn't directly
+available in Ada.</p>
+
+<pre class="hl">      Outer<span class="hl opt">:</span>
+      <span class="hl kwa">for</span> I <span class="hl kwa">in</span> <span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">10</span> <span class="hl kwa">loop</span>
+         J <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+         <span class="hl kwa">loop</span>
+            J <span class="hl opt">:=</span> J <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+            <span class="hl kwa">exit</span> Outer <span class="hl kwa">when</span> A<span class="hl opt">(</span>I<span class="hl opt">,</span> J<span class="hl opt">) =</span> <span class="hl num">0</span><span class="hl opt">;</span>
+         <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+         B<span class="hl opt">(</span>I<span class="hl opt">) :=</span> J<span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span> Outer<span class="hl opt">;</span>
+      K <span class="hl opt">:=</span> J<span class="hl opt">;</span>
+</pre>
+
+<p>An <b>exit</b> statement can exit other than the innermost loop by
+<b>naming</b> the loop to be exited.&nbsp;  In this example, the <b>for</b>
+loop is named <b>Outer</b>.&nbsp;  A loop name is any Ada identifier, and is
+followed by a colon.&nbsp;  Of course, <b>Outer:</b> could have been placed on
+the same line as the <b>for</b>, with no semicolon being necessary to separate
+them.&nbsp;  When a loop is named, the <b>end loop</b> statement must repeat
+the name of the loop.&nbsp;  The <b>exit</b> statement can then name the loop
+to be exited, as in <b>exit Outer;</b> or <b>exit Outer when
+A(I, J) = 0;</b>.&nbsp;  In this example, the <b>exit</b> statement transfers
+control to the statement <b>K := J;</b>, not to <b>B(I) := J;</b>.</p>
+
+<p>In the author's opinion, it's best to <b>exit</b> only the innermost loop,
+unless doing so unnecessarily complicates the program.</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

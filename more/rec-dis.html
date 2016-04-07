@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='More Records and Types' href='index.html' />
+<link rel='prev' title='More Records and Types' href='index.html' />
+<link rel='next' title='Tagged Records and Dynamic Dispatching' href='tagged-rec.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, Record Discriminants and Record Variants">
+
+<title>AdaTutor - Record Discriminants and Record Variants</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="index.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="tagged-rec.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Record Discriminants and Record Variants</h2>
+<p>The definition of a record type can have <b>discriminants</b>, which have the
+same form as formal parameters (&ldquo;dummy arguments&rdquo;) of subprograms,
+except that the mode is omitted.&nbsp;  Default values may be supplied.&nbsp;
+For example,
+<pre class="hl">   <span class="hl kwa">type</span> Matrix <span class="hl kwa">is array</span><span class="hl opt">(</span><span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl opt">&lt;&gt;,</span> <span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl opt">&lt;&gt;)</span>
+      <span class="hl kwa">of</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+   <span class="hl kwa">type</span> Square_Matrix<span class="hl opt">(</span>Size <span class="hl opt">:</span> <span class="hl kwb">Positive</span> <span class="hl opt">:=</span> <span class="hl num">9</span><span class="hl opt">)</span> <span class="hl kwa">is record</span>
+      Sq <span class="hl opt">:</span> Matrix<span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> Size<span class="hl opt">,</span> <span class="hl num">1</span> <span class="hl opt">..</span> Size<span class="hl opt">);</span>
+   <span class="hl kwa">end record</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Although objects of type Matrix can be rectangular, objects of type
+Square_Matrix must be square.&nbsp;  In declaring these objects, we use the same
+syntax as a subprogram call, with either positional or named notation:
+<pre class="hl">   A <span class="hl opt">:</span> Square_Matrix<span class="hl opt">(</span><span class="hl num">7</span><span class="hl opt">);</span>  <span class="hl slc">-- a 7-by-7 matrix</span>
+   B <span class="hl opt">:</span> Square_Matrix<span class="hl opt">(</span>Size <span class="hl opt">=&gt;</span> <span class="hl num">5</span><span class="hl opt">);</span>  <span class="hl slc">-- a 5-by-5 matrix</span>
+   C <span class="hl opt">:</span> Square_Matrix<span class="hl opt">;</span>  <span class="hl slc">-- a 9-by-9 matrix, using the default</span>
+                       <span class="hl slc">-- value of Size</span>
+</pre>
+</p>
+
+<p>Of course, subtypes of discriminated records can be declared.&nbsp;  For
+example,
+<pre class="hl"><span class="hl kwa">subtype</span> Chess_Board <span class="hl kwa">is</span> Square_Matrix<span class="hl opt">(</span>Size <span class="hl opt">=&gt;</span> <span class="hl num">8</span><span class="hl opt">);</span>
+</pre>
+</p>
+
+<p>The older Ada 83 RM used a record discriminant in its definition of type Text
+for the Text_Handler package specification of
+<a href='http://www.adahome.com/LRM/83/RM/rm83html/lrm-07-06.html#7.6'>section
+7.6</a>:
+<pre class="hl">   Maximum <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:= ... ;</span>
+   <span class="hl kwa">subtype</span> Index <span class="hl kwa">is</span> <span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl num">0</span> <span class="hl opt">..</span> Maximum<span class="hl opt">;</span>
+   <span class="hl opt">...</span>
+   <span class="hl kwa">type</span> Text<span class="hl opt">(</span>Maximum_Length <span class="hl opt">:</span> Index<span class="hl opt">)</span> <span class="hl kwa">is record</span>
+      Pos   <span class="hl opt">:</span> Index <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      Value <span class="hl opt">:</span> <span class="hl kwb">String</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> Maximum_Length<span class="hl opt">);</span>
+   <span class="hl kwa">end record</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>With the simplified version of type Text that we presented earlier, every
+object of type Text occupied enough memory for the longest string we expected
+to handle (e.g., 80 characters).&nbsp;  With this version, each object of type
+Text that we create can have just the Maximum_Length we need, and its effective
+length Pos can vary from zero to that Maximum_Length.&nbsp;  For example, we
+could declare <b>Name : Text(50);</b> and <b>Employee_Number : Text(9)</b>.</p>
+
+<p>The definition of a record type can have a <b>variant</b>, which also has the
+same form as a subprogram formal parameter without the mode.&nbsp;  However, the
+syntax of a <b>case</b> construct is used to specify part of the record.&nbsp;
+Although a record can have several discriminants, it can have only one variant,
+and the variant part must appear last in the record.&nbsp;  For example,
+<pre class="hl">   <span class="hl kwa">type</span> Sex_Type <span class="hl kwa">is</span> <span class="hl opt">(</span>Male<span class="hl opt">,</span> Female<span class="hl opt">);</span>
+   <span class="hl kwa">type</span> Person<span class="hl opt">(</span>Sex <span class="hl opt">:</span> Sex_Type<span class="hl opt">)</span> <span class="hl kwa">is record</span>
+      Age <span class="hl opt">:</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span>
+      <span class="hl kwa">case</span> Sex <span class="hl kwa">is</span>
+         <span class="hl kwa">when</span> Male <span class="hl opt">=&gt;</span>
+            Bearded  <span class="hl opt">:</span> <span class="hl kwb">Boolean</span><span class="hl opt">;</span>
+         <span class="hl kwa">when</span> Female <span class="hl opt">=&gt;</span>
+            Children <span class="hl opt">:</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span>
+      <span class="hl kwa">end case</span><span class="hl opt">;</span>
+   <span class="hl kwa">end record</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>If the sex of the person is Male, we want the record to include a Boolean
+showing whether he's bearded, but if the sex is Female, we want the record to
+include an Integer (subtype Natural), showing the number of children she has.
+</p>
+
+<p>Objects are declared and given values as we'd expect:
+<pre class="hl">   John <span class="hl opt">:</span> Person<span class="hl opt">(</span>Sex <span class="hl opt">=&gt;</span> Male<span class="hl opt">) := (</span>Sex <span class="hl opt">=&gt;</span> Male<span class="hl opt">,</span> Age <span class="hl opt">=&gt;</span> <span class="hl num">21</span><span class="hl opt">,</span>
+                                  Bearded <span class="hl opt">=&gt;</span> <span class="hl kwd">False</span><span class="hl opt">);</span>
+   Mary <span class="hl opt">:</span> Person<span class="hl opt">(</span>Sex <span class="hl opt">=&gt;</span> Female<span class="hl opt">) := (</span>Sex <span class="hl opt">=&gt;</span> Female<span class="hl opt">,</span> Age <span class="hl opt">=&gt;</span> <span class="hl num">18</span><span class="hl opt">,</span>
+                                    Children <span class="hl opt">=&gt;</span> <span class="hl num">0</span><span class="hl opt">);</span>
+</pre>
+</p>
+
+<p>Attempting to reference John.Children or Mary.Bearded will raise
+Constraint_Error.&nbsp;  Subtypes may be declared as follows:
+<pre class="hl">   <span class="hl kwa">subtype</span> Man   <span class="hl kwa">is</span> Person<span class="hl opt">(</span>Male<span class="hl opt">);</span>
+   <span class="hl kwa">subtype</span> Woman <span class="hl kwa">is</span> Person<span class="hl opt">(</span>Female<span class="hl opt">);</span>
+</pre>
+</p>
+
+<p><div class="adat-q">
+<h2>Question</h2>
+
+<pre class="hl"> <span class="hl kwa">type</span> Computer_Size <span class="hl kwa">is</span> <span class="hl opt">(</span>Handheld<span class="hl opt">,</span> Notebook<span class="hl opt">,</span> Desktop<span class="hl opt">,</span>
+                        Mainframe<span class="hl opt">,</span> Cluster<span class="hl opt">);</span>
+ <span class="hl kwa">type</span> Computer<span class="hl opt">(</span>Size <span class="hl opt">:</span> Computer_Size<span class="hl opt">)</span> <span class="hl kwa">is record</span>
+   MB_Mem <span class="hl opt">:</span> <span class="hl kwb">Positive</span><span class="hl opt">;</span>
+   Disks  <span class="hl opt">:</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span>
+   <span class="hl kwa">case</span> Size <span class="hl kwa">is</span>
+   <span class="hl kwa">when</span> Cluster <span class="hl opt">=&gt;</span>
+      Number_Of_Units <span class="hl opt">:</span> <span class="hl kwb">Positive</span><span class="hl opt">;</span>
+      Data_Rate       <span class="hl opt">:</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+   <span class="hl kwa">when others</span> <span class="hl opt">=&gt;</span>
+      <span class="hl kwa">null</span><span class="hl opt">;</span>
+   <span class="hl kwa">end case</span><span class="hl opt">;</span>
+ <span class="hl kwa">end record</span><span class="hl opt">;</span>
+ My_PC       <span class="hl opt">:</span> Computer<span class="hl opt">(</span>Desktop<span class="hl opt">) := (</span>Desktop<span class="hl opt">,</span> MB_Mem <span class="hl opt">=&gt;</span>  <span class="hl num">64</span><span class="hl opt">,</span>
+                                     Disks <span class="hl opt">=&gt;</span> <span class="hl num">2</span><span class="hl opt">);</span>  <span class="hl slc"><a href="javascript:adat_toggle('adat-mr-a1', 'adat-mr-a2');">-- 1</a></span>
+ Company_LAN <span class="hl opt">:</span> Computer<span class="hl opt">(</span>Cluster<span class="hl opt">) := (</span>Cluster<span class="hl opt">,</span> MB_Mem <span class="hl opt">=&gt;</span> <span class="hl num">512</span><span class="hl opt">,</span>
+                                     Disks <span class="hl opt">=&gt;</span> <span class="hl num">8</span><span class="hl opt">);</span>  <span class="hl slc"><a href="javascript:adat_toggle('adat-mr-a2', 'adat-mr-a1');">-- 2</a></span>
+</pre>
+Which commented declaration above is <b>illegal</b>?
+
+<div id="adat-mr-a1" class="adat-a" style="display: none">
+1 - No, the declaration of My_PC and its initialization are correct.&nbsp; When
+Size is Desktop, the <b>others</b> clause of the <b>case</b> applies, so there
+are no Number_Of_Units and Data_Rate fields in this case.</div>
+
+<div id="adat-mr-a2" class="adat-a" style="display: none">2 - <b>You're
+right!</b>&nbsp;  The initialization of Company_LAN fails to include fields for
+Number_Of_Units and Data_Rate.</div>
+
+</div></p>
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

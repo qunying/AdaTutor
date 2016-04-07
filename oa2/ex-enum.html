@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Outside Assignment 2' href='index.html' />
+<link rel='prev' title='Outside Assignment 2' href='index.html' />
+<link rel='next' title='Congratulations on Completing Outside Assignment 2' href='oa2ans.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor">
+
+<title>AdaTutor - Exercise in Enumeration Types</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="index.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="oa2ans.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Exercise in Enumeration Types</h2>
+<p>In our next Outside Assignment, we ask you to write a function.&nbsp;  The
+function is completely specified by these two lines of Ada:
+<pre class="hl">   <span class="hl kwa">type</span> Triangle <span class="hl kwa">is</span> <span class="hl opt">(</span>Equilateral<span class="hl opt">,</span> Isosceles<span class="hl opt">,</span> Scalene<span class="hl opt">,</span>
+                     Not_A_Triangle<span class="hl opt">);</span>
+   <span class="hl kwa">function</span> Tritype <span class="hl opt">(</span>Len1<span class="hl opt">,</span> Len2<span class="hl opt">,</span> Len3 <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span>
+     <span class="hl kwa">return</span> Triangle<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>From these two lines, it's obvious that your function must decide whether
+three integers, representing the lengths of the sides of a triangle, in fact
+represent an equilateral triangle, an isosceles triangle, a scalene triangle,
+or no triangle at all.&nbsp;  (An equilateral triangle has three equal sides;
+an isosceles triangle has only two equal sides.&nbsp;  A scalene triangle has
+sides of three different lengths, and the integers -1, 0, 5 represent no
+triangle.)</p>
+
+<p>A test driver for your function is already written, and is in the file
+<b><a href='tri_test.ada'>TRI_TEST.ADA</a></b>.&nbsp;  A listing starts on
+page 10 of your <a href='../adatutor/printme.txt'>printed course
+notes</a>.&nbsp;  You need not understand the test driver.&nbsp;  It's
+sufficient to know that if your function passes all the tests, the message
+&ldquo;Congratulations, you completed the assignment!&rdquo; is shown.&nbsp;
+For any failed tests, the test driver displays the test case, the answer from
+your function, and the correct answer.&nbsp;  This will help you in debugging
+your function.</p>
+
+<p>The test driver, which is the main program, contains these declarations:
+
+<pre class="hl">   <span class="hl kwa">type</span> Triangle <span class="hl kwa">is</span> <span class="hl opt">(</span>Equilateral<span class="hl opt">,</span> Isosceles<span class="hl opt">,</span> Scalene<span class="hl opt">,</span>
+                     Not_A_Triangle<span class="hl opt">);</span>
+   <span class="hl kwa">function</span> Tritype <span class="hl opt">(</span>Len1<span class="hl opt">,</span> Len2<span class="hl opt">,</span> Len3 <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span>
+     <span class="hl kwa">return</span> Triangle <span class="hl kwa">is separate</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Most compilers will allow you to edit and recompile your function as often
+as you like, without having to recompile the test driver.&nbsp;  Since type
+<b>Triangle</b> is defined in the calling program, you should <b>not</b> define
+it in your function.</p>
+
+<p>To get you started, a dummy solution is given in <b><a href='tritype.dum'>
+TRITYPE.DUM</a></b>.&nbsp;  You can copy it and edit the copy to become your
+real solution.&nbsp;  It looks like this:
+<pre class="hl">   <span class="hl slc">-- Dummy solution for Outside Assignment 2</span>
+   <span class="hl slc">-- Edit to become your real solution.</span><div class='adat-a'>   <span class="hl kwa">separate</span> <span class="hl opt">(</span>Tritest<span class="hl opt">)</span>
+   <span class="hl kwa">function</span> Tritype<span class="hl opt">(</span>Len1<span class="hl opt">,</span> Len2<span class="hl opt">,</span> Len3 <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span>
+     <span class="hl kwa">return</span> Triangle <span class="hl kwa">is</span>
+   <span class="hl kwa">begin</span></div>     <span class="hl kwa">return</span> Not_A_Triangle<span class="hl opt">;</span>
+<div class='adat-a'>   <span class="hl kwa">end</span> Tritype<span class="hl opt">;</span></div>
+</pre>
+</p>
+
+<p>When you do edit the function, you'll probably want to remove or change the
+first two comment lines.&nbsp;  Don't change the lines <b>highlighted</b>
+above.&nbsp;  You may want to create a new variable of type Triangle, and
+return that variable instead of the constant Not_A_Triangle at the end of your
+function:
+<pre class="hl">   <span class="hl kwa">separate</span> <span class="hl opt">(</span>Tritest<span class="hl opt">)</span>
+   <span class="hl kwa">function</span> Tritype<span class="hl opt">(</span>Len1<span class="hl opt">,</span> Len2<span class="hl opt">,</span> Len3 <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span>
+     <span class="hl kwa">return</span> Triangle <span class="hl kwa">is</span>
+      Answer <span class="hl opt">:</span> Triangle<span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">if</span> <span class="hl opt">...</span> <span class="hl kwa">end if</span><span class="hl opt">;</span>
+      <span class="hl kwa">return</span> Answer<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Tritype<span class="hl opt">;</span>
+</pre>
+However, that's not the only way to solve the problem, just a suggestion.</p>
+
+
+<p>Here are the steps to follow for Outside Assignment 2.&nbsp;  They're also
+in your printed course notes on page 12:
+<ol>
+<li>Copy TRITYPE.DUM to TRITYPE.ADA to make a copy of the dummy solution.&nbsp;
+    Also, compile the test driver TRI_TEST.ADA.&nbsp;  You need do this step
+    only once.</li>
+
+<li>Edit TRITYPE.ADA to become your real solution.&nbsp;  You may skip this
+ step the first time through, to see error messages from the test driver.</li>
+
+<li>Compile your solution TRITYPE.ADA.&nbsp;  If the compiler finds errors, go
+ back to step 2.</li>
+
+<li>Link with the name of the main program Tritest.&nbsp;  Then execute.&nbsp;  If the test driver displays error messages, go back to step 2.</li>
+
+<li>When the message &ldquo;Congratulations, you completed the
+assignment!&rdquo; is displayed, you'll have a chance to compare your solution
+with ours.</li>
+</ol>
+</p>
+
+<p>Remember that a function can't change the values of its parameters (in this
+case, Len1, Len2, and Len3), because function parameters are always of mode
+<n>in</b>.</p>
+
+<p>This assignment should be a simple exercise in enumeration types and the
+control constructs.&nbsp;  Our solution easily fits on one screen.&nbsp;  If
+you find your solution getting long and difficult, you should probably think
+through the problem again.&nbsp;  See if there's a simple way to test for the
+four possible answers.</p>
+
+<p>Please stop reading AdaTutor temporarily, and try Outside Assignment
+2.&nbsp;  Work at your own pace; there's no deadline.&nsp;  Good luck!</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

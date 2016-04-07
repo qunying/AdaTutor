@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Simple Declarations and Simple Attributes' href='index.html' />
+<link rel='prev' title='Enumeration TYpes' href='enum.html' />
+<link rel='next' title='Simple Attributes' href='attr.html' />
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, subtype">
+
+<title>AdaTutor - Subtypes</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="enum.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="attr.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Subtypes</h2>
+<p>A subtype does <b>not</b> define a new type, but it imposes a range
+constraint on objects of that subtype.&nbsp;  For example,
+<pre class="hl"><span class="hl kwa">subtype</span> Day_Subtype <span class="hl kwa">is</span> <span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">31</span><span class="hl opt">;</span>
+D <span class="hl opt">:</span> Day_Subtype<span class="hl opt">;</span> <span class="hl slc">-- D can have only Integer values from 1 to 31.</span>
+
+<span class="hl kwa">type</span> Rainbow_Color <span class="hl kwa">is</span> <span class="hl opt">(</span>Red<span class="hl opt">,</span> Orange<span class="hl opt">,</span> Yellow<span class="hl opt">,</span> Green<span class="hl opt">,</span> Blue<span class="hl opt">,</span> Indigo<span class="hl opt">,</span>
+                       Violet<span class="hl opt">);</span>
+<span class="hl kwa">subtype</span> Bright_Color <span class="hl kwa">is</span> Rainbow_Color <span class="hl kwa">Range</span> Orange <span class="hl opt">..</span> Green<span class="hl opt">;</span>
+B <span class="hl opt">:</span> Bright_Color<span class="hl opt">;</span> <span class="hl slc">-- B can have only Rainbow_Color values from</span>
+                  <span class="hl slc">-- Orange to Green.</span>
+
+<span class="hl kwa">subtype</span> Probability <span class="hl kwa">is</span> <span class="hl kwb">Float</span> <span class="hl kwa">range</span> <span class="hl num">0.0</span> <span class="hl opt">..</span> <span class="hl num">1.0</span><span class="hl opt">;</span>
+P <span class="hl opt">:</span> Probability<span class="hl opt">;</span> <span class="hl slc">-- P can have only Float values from 0.0 to 1.0.</span>
+</pre>
+
+<p>Every time the program stores a value into D, B, or P, a check is made to
+see if the value is in range.&nbsp;  If it isn't, the message Constraint_Error
+is displayed.&nbsp;  Constraint Errors are usually detected at run time.</p>
+
+<p>Since subtypes don't define new types, the <b>type</b> of D is Integer, the
+<b>type</b> of B is Rainbow_Color, and that of P is Float.&nbsp;  Thus, if we
+write <b>I : Integer;</b> we may write <b>D := D + I;</b> etc., because D and
+I have the same type.</p>
+
+<p>We don't have to supply a name for the subtype explicitly.&nbsp;  If we
+declare
+<pre class="hl">    D <span class="hl opt">:</span> <span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">31</span><span class="hl opt">;</span>
+</pre>
+the compiler creates its own name for the subtype internally; we never see
+it.&nbsp; This is called an <b>anonymous</b> subtype.&nbsp;  The name the
+compiler creates will be one that we can't accidentally create ourselves.&nbsp;
+Perhaps it will contain a control character or punctuation mark that Ada
+doesn't allow us to put into an identifier.&nbsp;  The above declaration is
+equivalent to
+<pre class="hl">   <span class="hl kwa">subtype</span> <span class="hl opt">(</span>something<span class="hl opt">)</span> <span class="hl kwa">is</span> <span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">31</span><span class="hl opt">;</span>
+   D <span class="hl opt">: (</span>something<span class="hl opt">);</span>
+</pre>
+where (something) represents the anonymous subtype that we can't see or
+write.</p>
+
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

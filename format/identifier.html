@@ -1,0 +1,98 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link href="../adatutor.css" type="text/css" rel="stylesheet">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='The Format of an Ada Program' href='index.html' />
+<link rel='prev' title='Comments' href='comments.html' />
+<link rel='next' title='Numbers' href='numbers.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, identifier">
+
+<title>AdaTutor - Identifiers</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="comments.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="numbers.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<a name="f-ident"></a><h2>Identifiers</h2>
+<p>Here, reserved words are in lower case, and all other identifiers have
+initial capitals.&nbsp; (The Ada reserved words, which may not be used to
+identify anything in our programs, are listed on page 7 of your printed course
+notes, and in <a href='http://www.adahome.com/rm95/rm9x-02-09.html'>section
+2.9</a> of the Ada 95 RM.)&nbsp;  Ada identifiers may contain letters, digits,
+and underlines, but must start with a letter.&nbsp;  They may not contain spaces
+or other characters.&nbsp;  Identifiers may be as long as you like, up to the
+length of a line.&nbsp;  (The maximum line length depends on the particular
+implementation of Ada.)&nbsp;  All characters are significant, so
+This_Is_a_Long_Identifier_1 and This_Is_a_Long_Identifier_2 are distinct.&nbsp;
+Since underlines are significant, A_3 is different from A3.&nbsp;  Every
+underline must be followed by a letter or a digit.&nbsp;  Thus, you can't have
+two underlines together, and an identifier can't end in an underline.</p>
+
+<p>
+<div class='adat-q'>
+<h2>Question</h2>
+<ol>
+<li><a href="javascript:adat_toggle('f2a1');">1553B</a><br />
+<div id='f2a1' class='adat-a' style="display:none">No, number 1 is illegal
+because Ada identifiers must begin with a letter.</div></li>
+
+<li><a href="javascript:adat_toggle('f2a2');">Begin</a><br />
+<div id='f2a2' class='adat-a' style="display:none">No, number 2 is illegal
+because <b>begin</b> is a reserved word.</div>
+</li>
+
+<li><a href="javascript:adat_toggle('f2a3');">THIS_IS_A_VERY_LONG_NAME_FOR_AN_IDENTIFIER</a><br />
+<div id='f2a3' class='adat-a' style="display:none"><p><b>You're right!</b>&nbsp;
+An Ada identifier may be as long as we like (up to the length of a line), and
+upper/lower case isn't important in Ada.</p>
+
+<p>Number 1 begins with a digit, 2 is a reserved word, 4 has a dollar sign, 5
+has two underlines together, and 6 has a space.</p></div>
+</li>
+
+<li><a href="javascript:adat_toggle('f2a4');">SYS$QIO</a><br />
+<div id='f2a4' class='adat-a' style="display:none">No, number 4 is illegal
+because of the dollar sign.&nbsp;  Ada identifiers may contain only letters,
+digits, and underlines.</div>
+</li>
+
+<li><a href="javascript:adat_toggle('f2a5');">Number_Of__Targets</a><br />
+<div id='f2a5' class='adat-a' style="display:none">No, number 5 is illegal
+because of the two underlines together.&nbsp;  Every underline must be followed
+by a letter or a digit.</div>
+</li>
+
+<li><a href="javascript:adat_toggle('f2a6');">Max Speed</a><br />
+
+<div id='f2a6' class='adat-a' style="display:none">No, number 6 is illegal
+because of the space.&nbsp;  Ada identifiers may contain only letters, digits,
+and underlines.</div>
+</li>
+</ol>
+
+Only <b>one</b> of the above is a legal Ada identifier.  Which is it?
+</div>
+</p>
+
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

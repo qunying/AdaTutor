@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Operators and Control Constructs ' href='index.html' />
+<link rel='prev' title='Range Tests' href='range.html' />
+<link rel='next' title='Control Constructs' href='control.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor">
+
+<title>AdaTutor - The Short Circuit Forms</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="index.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="control.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>The Short Circuit Forms</h2>
+<p>Suppose that <b>N</b> (for numerator) and <b>D</b> (for denominator) are
+Floats, and we want to execute a block of code if the quotient is 10.0 or
+greater.&nbsp;  We could write
+<pre class="hl">   <span class="hl kwa">if</span> N<span class="hl opt">/</span>D <span class="hl opt">&gt;=</span> <span class="hl num">10.0</span> <span class="hl kwa">then</span>
+      <span class="hl slc">-----;</span>
+      <span class="hl slc">-----;  (block of code)</span>
+      <span class="hl slc">-----;</span>
+   <span class="hl kwa">end if</span><span class="hl opt">;</span>
+</pre>
+
+However, we realize that if <b>D</b> is 0.0, the program will raise a
+Constraint_Error or Numeric_Error trying to compute <b>N/D</b>.&nbsp;  If the
+denominator is zero, we consider the quotient to be very large, so we want to
+execute the block of code when <b>D</b> is zero.  Our second attempt might be
+<pre class="hl">   <span class="hl kwa">if</span> D <span class="hl opt">=</span> <span class="hl num">0.0</span> <span class="hl kwa">or</span> N<span class="hl opt">/</span>D <span class="hl opt">&gt;=</span> <span class="hl num">10.0</span> <span class="hl kwa">then</span>
+      <span class="hl slc">-----;</span>
+      <span class="hl slc">-----;  (block of code)</span>
+      <span class="hl slc">-----;</span>
+   <span class="hl kwa">end if</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Here we <b>hope</b> that <b>N/D</b> won't be evaluated if <b>D</b> is
+zero.&nbsp; We figure that the compiler should be smart enough to know that if
+the expression before <b>or</b> is True, then the whole expression must be
+True, so the expression to the right of or needn't be evaluated.&nbsp;  However,
+there's no guarantee that the compiler will write code to skip the evaluation of
+the second expression when the first is True.&nbsp;  An optimizing compiler just
+might, for some unknown reason, even decide that the expression on the right
+should be evaluated first.</p>
+
+<p>However, with the form <b>or else</b>, Ada can bypass (or "short circuit")
+evaluating the expression on the right when the one on the left is true:
+<pre class="hl">   <span class="hl kwa">if</span> D <span class="hl opt">=</span> <span class="hl num">0.0</span> <span class="hl kwa">or else</span> N<span class="hl opt">/</span>D <span class="hl opt">&gt;=</span> <span class="hl num">10.0</span> <span class="hl kwa">then</span>
+      <span class="hl slc">-----;</span>
+      <span class="hl slc">-----;  (block of code)</span>
+      <span class="hl slc">-----;</span>
+   <span class="hl kwa">end if</span><span class="hl opt">;</span>
+</pre></p>
+
+<p>Ada guarantees that the expression to the left of <b>or else</b> will be
+evaluated first.&nbsp; If this expression is True, the entire expression must be
+True, and it's guaranteed that the second expression won't be evaluated.&nbsp;
+If the first expression is False, then of course the second expression must be
+evaluated to determine if the entire expression is True.&nbsp;  Thus the code
+above will never try to divide by zero.&nbsp;  If <b>D</b> is zero, the
+expression on the left is True.&nbsp;  The expression on the right won't be
+evaluated in that case.</p>
+
+<p>There's another &ldquo;short circuit&rdquo; form called
+<b>and then</b>.&nbsp;  If the expression to the left of <b>and then</b> is
+False, the whole expression must be False, and the expression on the right
+won't be evaluated.&nbsp;  If the expression on the left is True, then the
+expression on the right must be evaluated to determine the value of the entire
+expression.&nbsp;  Suppose this time that we want to execute a block of code if
+N/D is <b>less than</b> 10.0.&nbsp;  If the denominator is zero, we consider the
+quotient to be very large, and we don't want to execute the block of code in
+that case.&nbsp;  We can write the following:
+<pre class="hl">   <span class="hl kwa">if</span> D <span class="hl opt">=</span> <span class="hl num">0.0</span> <span class="hl kwa">and then</span> N<span class="hl opt">/</span>D <span class="hl opt">&lt;</span> <span class="hl num">10.0</span> <span class="hl kwa">then</span>
+      <span class="hl slc">-----;</span>
+      <span class="hl slc">-----;  (block of code)</span>
+      <span class="hl slc">-----;</span>
+   <span class="hl kwa">end if</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Again this protects us from trying to divide by zero.&nbsp;  If <b>D</b> is
+zero, the expression on the left is False.&nbsp;  The second expression won't beevaluated in that case.</p>
+
+<p>After we discuss arrays, we'll see how the short circuit forms can prevent us
+from using out-of-range subscripts.&nbsp;  And when we learn about access types,
+we'll see how the short circuit forms can keep us from dereferencing a null
+access object (&ldquo;pointer&rdquo;).&nbsp;  That means trying to access
+&ldquo;the object pointed to&rdquo; when there's no such object.</p>
+
+<p>Note that Ada's <b>and then</b> is similar to &amp;&amp; in C and C++, and
+Ada's <b>or else</b> is similar to || in C and C++.</p>
+
+<p>Remember, <b>and then</b> evaluates the second expression only if the first
+expression is True; <b>or else</b> evaluates the second expression only if the
+first is False.</p>
+
+<div class="adat-q">
+<h2>Question</h2>
+<p>
+Assume that <b>N</b> has been declared <b>Float</b>, and that our program
+<b>with</b>s and <b>use</b>s a math package with a square root function called
+<b>Sqrt</b>.&nbsp;  Naturally, we don't want to call <b>Sqrt</b> with a negative
+parameter.&nbsp;  Which of the following would be more appropriate?
+</p>
+
+<ol>
+<li>
+<a href="javascript:adat_toggle('adat-sca1');">if N &gt;= 0.0 <b>and then</b>
+Sqrt(N) &gt; 1.618 then ...</a>
+<div id="adat-sca1" class="adat-a" style="display: none"><b>You're
+right!</b>&nbsp;  We want the second expression to be evaluated only if the
+first expression is True, so we use <b>and then</b>.
+</div></li>
+
+<li>
+<a href="javascript:adat_toggle('adat-sca2');">if N &gt;= 0.0 <b>or else</b>
+Sqrt(N) &gt; 1.618 then ...</a>
+<div id="adat-sca2" class="adat-a" style="display: none">No, we want the second expression to be evaluated only if the first
+expression is True, so we use <b>and then</b>.</div></li>
+
+</ol>
+</div>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

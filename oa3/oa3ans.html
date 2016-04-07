@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Outside Assignment 3' href='index.html' />
+<link rel='prev' title='Exercise in Records' href='ex-record.html' />
+<link rel='next' title='Recursion' href='../recursion/index.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, exercise in records">
+
+<title>AdaTutor - Congratulations on Completing Outside Assignment 3</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="ex-record.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="../recursion/index.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Congratulations on Completing Outside Assignment 3!</h2>
+<a href="javascript:adat_toggle('adat-oa3a1');">Click to view:</a>
+<div id="adat-oa3a1" style="display: none">
+<p>Our solution to Outside Assignment 3 (in
+<a href='tomorrow.ans'>TOMORROW.ANS</a>):
+
+<pre class="hl"> <span class="hl kwa">separate</span> <span class="hl opt">(</span>Nextdate<span class="hl opt">)</span>
+ <span class="hl kwa">function</span> Tomorrow<span class="hl opt">(</span>Today <span class="hl opt">:</span> <span class="hl kwa">in</span> Date<span class="hl opt">)</span> <span class="hl kwa">return</span> Date <span class="hl kwa">is</span>
+    Length <span class="hl opt">:</span> <span class="hl kwa">array</span><span class="hl opt">(</span>Month_Type<span class="hl opt">)</span> <span class="hl kwa">of</span> Day_Subtype <span class="hl opt">:=</span>
+        <span class="hl opt">(</span><span class="hl num">31</span><span class="hl opt">,</span> <span class="hl num">28</span><span class="hl opt">,</span> <span class="hl num">31</span><span class="hl opt">,</span> <span class="hl num">30</span><span class="hl opt">,</span> <span class="hl num">31</span><span class="hl opt">,</span> <span class="hl num">30</span><span class="hl opt">,</span> <span class="hl num">31</span><span class="hl opt">,</span> <span class="hl num">31</span><span class="hl opt">,</span> <span class="hl num">30</span><span class="hl opt">,</span> <span class="hl num">31</span><span class="hl opt">,</span> <span class="hl num">30</span><span class="hl opt">,</span> <span class="hl num">31</span><span class="hl opt">);</span>
+    Answer <span class="hl opt">:</span> Date<span class="hl opt">;</span>
+ <span class="hl kwa">begin</span>
+    <span class="hl kwa">if</span> Today<span class="hl opt">.</span>Year <span class="hl kwa">mod</span> <span class="hl num">4</span> <span class="hl opt">=</span> <span class="hl num">0</span>
+       <span class="hl kwa">and</span> <span class="hl opt">(</span>Today<span class="hl opt">.</span>Year <span class="hl kwa">mod</span> <span class="hl num">100</span> <span class="hl opt">/=</span> <span class="hl num">0</span>
+            <span class="hl kwa">or</span> Today<span class="hl opt">.</span>Year <span class="hl kwa">mod</span> <span class="hl num">400</span> <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">)</span> <span class="hl kwa">then</span>
+       Length<span class="hl opt">(</span>Feb<span class="hl opt">) :=</span> <span class="hl num">29</span><span class="hl opt">;</span>
+    <span class="hl kwa">end if</span><span class="hl opt">;</span>
+    <span class="hl kwa">if</span> Today<span class="hl opt">.</span>Day <span class="hl opt">/=</span> Length<span class="hl opt">(</span>Today<span class="hl opt">.</span>Month<span class="hl opt">)</span> <span class="hl kwa">then</span>
+       <span class="hl slc">-- Not end of month.</span>
+       Answer <span class="hl opt">:= (</span>Today<span class="hl opt">.</span>Day <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">,</span> Today<span class="hl opt">.</span>Month<span class="hl opt">,</span> Today<span class="hl opt">.</span>Year<span class="hl opt">);</span>
+    <span class="hl kwa">elsif</span> Today<span class="hl opt">.</span>Month <span class="hl opt">/=</span> Dec <span class="hl kwa">then</span>
+       <span class="hl slc">-- End of month, but not end of year.</span>
+       Answer <span class="hl opt">:= (</span><span class="hl num">1</span><span class="hl opt">,</span> Month_Type<span class="hl kwd">'Succ</span><span class="hl opt">(</span>Today<span class="hl opt">.</span>Month<span class="hl opt">),</span> Today<span class="hl opt">.</span>Year<span class="hl opt">);</span>
+    <span class="hl kwa">else</span>
+       <span class="hl slc">-- End of year.</span>
+       Answer <span class="hl opt">:= (</span><span class="hl num">1</span><span class="hl opt">,</span> Jan<span class="hl opt">,</span> Today<span class="hl opt">.</span>Year <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">);</span>
+    <span class="hl kwa">end if</span><span class="hl opt">;</span>
+    <span class="hl kwa">return</span> Answer<span class="hl opt">;</span>
+ <span class="hl kwa">end</span> Tomorrow<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>In our solution, the first <b>if</b> statement checks for leap year.&nbsp;
+No <b>else</b> is needed because the locally declared array <b>Length</b> is
+re-initialized every time the function is called.&nbsp;  After this <n>if</b>
+statement, the number of days in the month is in <b>Length(Today.Month)</b>,
+and it's easy to test for end of month and end of year - in only one place in
+the program.</p>
+
+<p>We could have written <b>Month_Type'Last</b> instead of <b>Dec</b>, and
+<b>Month_Type'First</b> instead of <b>Jan</b>.&nbsp;  We could even have used
+<b>Day_Subtype'First</b>.&nbsp;  But the program seems a little easier to read
+when we use the names <b>Dec</b> and <b>Jan</b> and the number <b>1</b>
+directly.</p>
+
+<p>Your solution might be entirely different from ours.&nbsp; If the test driver
+said &ldquo;Congratulations, you completed the assignment!&rdquo; you may
+consider your solution correct.&nbsp;  Let's go on to discuss recursion.</p>
+</div>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

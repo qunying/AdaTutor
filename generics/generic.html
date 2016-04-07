@@ -1,0 +1,238 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Generics and Tasking' href='index.html' />
+<link rel='prev' title='Generics and Tasking' href='index.html' />
+<link rel='next' title='Task' href='task.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, generic">
+
+<title>AdaTutor - Generics</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="index.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="task.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Generics</h2>
+<p>It would be easy to write a package that creates a single stack of 10
+Integers, and lets us Push and Pop on it.&nbsp;  However, the code would be
+about the same regardless of the size of the stack, and regardless of the type
+of objects on the stack.&nbsp;  For example, a second package that creates a
+stack of 50 Dates would look about the same.&nbsp;  We can write one
+<b>generic</b> package, and instantiate it for any size and almost any type we
+need.&nbsp;  The specification is:
+<pre class="hl">   <span class="hl kwa">generic</span>
+      Size <span class="hl opt">:</span> <span class="hl kwb">Positive</span><span class="hl opt">;</span>
+      <span class="hl kwa">type</span> Dummy <span class="hl kwa">is private</span><span class="hl opt">;</span>
+   <span class="hl kwa">package</span> Stack_Package <span class="hl kwa">is</span>
+      <span class="hl kwa">procedure</span> Push<span class="hl opt">(</span>Object <span class="hl opt">:</span> <span class="hl kwa">in</span> Dummy<span class="hl opt">);</span>
+      <span class="hl kwa">function</span> Pop <span class="hl kwa">return</span> Dummy<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Stack_Package<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Since both Size and type Dummy are generic, both must be specified when we
+instantiate the package:
+<pre class="hl">   <span class="hl kwa">package</span> Stack_Of_10_Integers <span class="hl kwa">is new</span> Stack_Package<span class="hl opt">(</span><span class="hl num">10</span><span class="hl opt">,</span> <span class="hl kwb">Integer</span><span class="hl opt">);</span>
+   <span class="hl kwa">package</span> Stack_Of_50_Dates    <span class="hl kwa">is new</span> Stack_Package<span class="hl opt">(</span><span class="hl num">50</span><span class="hl opt">,</span> Date<span class="hl opt">);</span>
+</pre>
+</p>
+
+<p>Generic objects like <b>Size</b> may be given default values.&nbsp;  A
+default value is used only if we don't specify that parameter in the
+instantiation.&nbsp;  For example:
+<pre class="hl"><span class="hl kwa">generic</span>
+   Size <span class="hl opt">:</span> <span class="hl kwb">Positive</span> <span class="hl opt">:=</span> <span class="hl num">10</span><span class="hl opt">;</span>
+   <span class="hl kwa">type</span> Dummy <span class="hl kwa">is private</span><span class="hl opt">;</span>
+<span class="hl kwa">package</span> Stack_Package <span class="hl kwa">is</span>
+   <span class="hl kwa">procedure</span> Push<span class="hl opt">(</span>Object <span class="hl opt">:</span> <span class="hl kwa">in</span> Dummy<span class="hl opt">);</span>
+   <span class="hl kwa">function</span> Pop <span class="hl kwa">return</span> Dummy<span class="hl opt">;</span>
+<span class="hl kwa">end</span> Stack_Package<span class="hl opt">;</span>
+
+<span class="hl kwa">package</span> Stack_Of_10_Integers <span class="hl kwa">is new</span> Stack_Package<span class="hl opt">(</span>Dummy <span class="hl opt">=&gt;</span> <span class="hl kwb">Integer</span><span class="hl opt">);</span>
+<span class="hl kwa">package</span> Stack_Of_50_Dates    <span class="hl kwa">is new</span> Stack_Package<span class="hl opt">(</span><span class="hl num">50</span><span class="hl opt">,</span> Date<span class="hl opt">);</span>
+</pre>
+</p>
+
+<p>In the above example, we specified a generic type with
+<pre class="hl"><span class="hl kwa">type</span> Dummy <span class="hl kwa">is private</span><span class="hl opt">;</span>
+</pre></p>
+
+<p>Actually, there are a number of ways to specify a generic type.&nbsp;  How we
+specify the generic type determines what actual types we may use in the
+instantiation, and what we may do with objects of that type in the body of our
+generic package or subprogram.&nbsp;  Let's look at the alternatives.</p>
+
+<p>If the generic part says <b>type Dummy is private;</b> then, in our
+subprogram or package body, what we may do with objects of type Dummy is similar
+to what we may do with objects of a private type <b>outside</b> an ordinary
+package: create them, assign them, test them for equality or inequality, and
+call other subprograms already available to us.&nbsp;  Although this list is
+short, we can instantiate with almost any type at all: Dates, Floats, Strings
+(see the next paragraph), Rainbow_Colors, and any type for which we can assign
+objects and test them for equality.&nbsp;  That means any type except a limited
+type.&nbsp;  We can't instantiate Stack_Package for type Ada.Text_IO.File_Type
+(a limited private type), or for task types (a limited type discussed later),
+because in our package body we're allowed to assign and test for equality
+objects of type Dummy.</p>
+
+<p>We can't create objects of an unconstrained type like String.&nbsp;  So, in
+Ada 83, if our package or subprogram creates objects of type Dummy, we can't
+instantiate it for type String; we must use a constrained subtype of
+String.&nbsp; Thus we could write <b>subtype Name is String(1 .. 30);</b> and
+then instantiate our package with <b>package Stack_Of_50_Names is new
+Stack_Package(50, Name);</b>.&nbsp;  In Ada 95 we can instantiate with an
+unconstrained type if and only if the formal type name in the generic part of
+the specification (<b>Dummy</b> in our example) is followed by
+<b>(&lt;&gt;)</b>.&nbsp;  In that case, the subprogram or package body must
+initialize any objects of that type that it creates, in order to constrainthem.
+</p>
+
+<p>We can instantiate our package or subprogram even for limited types like
+Ada.Text_IO.File_Type if the generic part says <b>type Dummy is limited
+private;</b>.&nbsp; However, the only things our package or subprogram body
+could do with objects of that type is create them and call other subprograms
+already available to us.&nbsp; Ordinarily, that's not very useful.</p>
+
+<p>If the generic part says <b>type Dummy is (&lt;&gt;);</b> then we can
+instantiate the package or subprogram for any discrete type.&nbsp;  That means
+any enumeration or integer type: Character, Boolean, Counter, No_Of_Apples,
+etc.&nbsp;  In the body, attributes like 'First are available.</p>
+
+<p>If the generic part says <b>type Dummy is range &lt;&gt;;</b> then we can
+instantiate for any integer type.&nbsp;  In the body, we can do things that can
+be done with all integer types, such as add, etc.</p>
+
+<p>If the generic part says <b>type Dummy is digits &lt;&gt;; </b> then we can
+instantiate for any floating point type, such as Float or the Real we created.
+</p>
+
+<p>If the generic part says <b>type Dummy is delta &lt;&gt;;</b> then we can
+instantiate for any fixed point type, to be discussed in the section on <a
+href='../more/index.html'>More Records and Types</a>.</p>
+
+<p>In Ada 95, some additional forms are allowed; beginners shouldn't expect to
+grasp them until later.&nbsp;  If the generic part says <b>type Dummy is tagged
+private;</b> then we can instantiate with any tagged type, to be covered in the
+section on <a href='../more/index.html'>More Records and Types</a>.</p>
+
+<p>If the generic part says <b>type Dummy is new X;</b> or <b>ype Dummy is new X
+with private;</b> then we can instantiate with type <b>X</b> or with any type
+derived from <b>X</b>.&nbsp; If <b>with private</b> is included, then we must
+instantiate with a tagged type.</p>
+
+<p>In both cases above, as with <b>type Dummy is private; </b> and <b>type Dummy
+is limited private;</b> we can follow <b>Dummy</b> with <b>(&lt;&gt;)</b> to
+allow instantiating with unconstrained types.&nbsp;  The body must initialize
+any objects of an unconstrained type that it creates.&nbsp;  We can also replace
+<b>is</b> in the generic part with <b>is private</b> to allow instantiating with
+abstract types, to be covered later.</p>
+
+
+<p>If the generic part says <b>type Dummy is mod &lt;&gt;;</b> then we can
+instantiate with any modular type, to be covered in the section on <a
+href='../more/index.html'>More Records and Types</a>.</p>
+
+<p>Finally, if the generic part says <b>with package Dummy is new P
+(&lt;&gt;);</b> where <b>P</b> is the name of a generic package, then we can
+instantiate with any package that we obtained by instantiating <b>P</b>.</p>
+
+<p>A generic package body looks just like an ordinary package body:
+<pre class="hl">   <span class="hl kwa">package body</span> Stack_Package <span class="hl kwa">is</span>
+      <span class="hl kwa">procedure</span> Push<span class="hl opt">(</span>Object <span class="hl opt">:</span> <span class="hl kwa">in</span> Dummy<span class="hl opt">)</span> <span class="hl kwa">is separate</span><span class="hl opt">;</span>
+      <span class="hl kwa">function</span> Pop <span class="hl kwa">return</span> Dummy <span class="hl kwa">is separate</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Stack_Package<span class="hl opt">;</span>
+
+   <span class="hl kwa">separate</span> <span class="hl opt">(</span>Stack_Package<span class="hl opt">)</span>
+   <span class="hl kwa">procedure</span> Push<span class="hl opt">(</span>Object <span class="hl opt">:</span> <span class="hl kwa">in</span> Dummy<span class="hl opt">)</span> <span class="hl kwa">is</span>
+      <span class="hl opt">...</span>
+   <span class="hl kwa">end</span> Push<span class="hl opt">;</span>
+
+   <span class="hl opt">(</span>etc<span class="hl opt">.)</span>
+</pre>
+</p>
+
+<p>Note that we simplified our Stack_Package example by ignoring the
+possibilities of stack overflow and underflow.&nbsp;  Ordinarily, these would be
+handled by exceptions.</p>
+
+<p>The specification of a generic subprogram must be given separately from the
+body.&nbsp;  For example, we can't eliminate the highlighted line in the
+following function:
+<pre class="hl">   <span class="hl kwa">generic</span>
+      <span class="hl kwa">type</span> Dummy_Float <span class="hl kwa">is digits</span> <span class="hl opt">&lt;&gt;;</span>
+      <span class="hl kwa">type</span> Dummy_Vector <span class="hl kwa">is array</span> <span class="hl opt">(</span><span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl opt">&lt;&gt;)</span> <span class="hl kwa">of</span> Dummy_Float<span class="hl opt">;</span>
+   <span class='adat-hl'><span class="hl kwa">function</span> Sum<span class="hl opt">(</span>V <span class="hl opt">:</span> <span class="hl kwa">in</span> Dummy_Vector<span class="hl opt">)</span> <span class="hl kwa">return</span> Dummy_Float<span class="hl opt">;</span></span>
+   <span class="hl kwa">function</span> Sum<span class="hl opt">(</span>V <span class="hl opt">:</span> <span class="hl kwa">in</span> Dummy_Vector<span class="hl opt">)</span> <span class="hl kwa">return</span> Dummy_Float <span class="hl kwa">is</span>
+      Answer <span class="hl opt">:</span> Dummy_Float <span class="hl opt">:=</span> <span class="hl num">0.0</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">for</span> I <span class="hl kwa">in</span> V<span class="hl kwd">'Range</span> <span class="hl kwa">loop</span>
+         Answer <span class="hl opt">:=</span> Answer <span class="hl opt">+</span> V<span class="hl opt">(</span>I<span class="hl opt">);</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+      <span class="hl kwa">return</span> Answer<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Sum<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>We can instantiate Sum and call our instantiation as follows:
+<pre class="hl">   <span class="hl kwa">type</span> Vector <span class="hl kwa">is array</span><span class="hl opt">(</span><span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl opt">&lt;&gt;)</span> <span class="hl kwa">of</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+   V1 <span class="hl opt">:</span> Vector<span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">10</span><span class="hl opt">);</span>
+   X  <span class="hl opt">:</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+   <span class="hl kwa">function</span> Sumv <span class="hl kwa">is new</span> Sum<span class="hl opt">(</span><span class="hl kwb">Float</span><span class="hl opt">,</span> Vector<span class="hl opt">);</span>
+   <span class="hl opt">...</span>
+   X <span class="hl opt">:=</span> Sumv<span class="hl opt">(</span>V1<span class="hl opt">);</span>
+</pre>
+</p>
+
+<p><div class="adat-q">
+<h2>Question</h2>
+<pre class="hl"> <span class="hl kwa">generic</span>
+    <span class="hl kwa">type</span> Dummy <span class="hl kwa">is range</span> <span class="hl opt">&lt;&gt;;</span>
+ <span class="hl kwa">procedure</span> Display<span class="hl opt">(</span>Item <span class="hl opt">:</span> <span class="hl kwa">in</span> Dummy<span class="hl opt">);</span>
+
+ <span class="hl kwa">type</span> No_Of_Apples <span class="hl kwa">is new</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+ <span class="hl kwa">type</span> Counter <span class="hl kwa">is range</span> <span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">1</span>_000_000<span class="hl opt">;</span>
+ <span class="hl kwa">type</span> Answer <span class="hl kwa">is</span> <span class="hl opt">(</span>Yes<span class="hl opt">,</span> No<span class="hl opt">,</span> Maybe<span class="hl opt">);</span>
+ <span class="hl kwa">procedure</span> Display_Apples   <span class="hl kwa">is new</span> Display<span class="hl opt">(</span>No_Of_Apples<span class="hl opt">);</span>  <a href="javascript:adat_toggle('adat-gen-a1', 'adat-gen-a2', 'adat-gen-a3');"><span class="hl slc">-- 1</span></a>
+ <span class="hl kwa">procedure</span> Display_Counters <span class="hl kwa">is new</span> Display<span class="hl opt">(</span>Counter<span class="hl opt">);</span>       <a href="javascript:adat_toggle('adat-gen-a2', 'adat-gen-a1', 'adat-gen-a3');"><span class="hl slc">-- 2</span></a>
+ <span class="hl kwa">procedure</span> Display_Answers  <span class="hl kwa">is new</span> Display<span class="hl opt">(</span>Answer<span class="hl opt">);</span>        <a href="javascript:adat_toggle('adat-gen-a3', 'adat-gen-a2', 'adat-gen-a1');"><span class="hl slc">-- 3</span></a>
+</pre>
+
+Which commented line in the above program segment is <b>illegal</b>?
+
+<div id="adat-gen-a1" class="adat-a" style="display: none">1 - No, when the
+generic part says <b>type Dummy is range &lt;&gt;;</b>, the procedure may be
+instantiated for any integer type.&nbsp;  No_Of_Apples is a type derived from
+Integer, so it's an integer type.
+</div>
+
+<div id="adat-gen-a2" class="adat-a" style="display: none">2 - No, when the
+generic part says <b>type Dummy is range &lt;&gt;;</b>, the procedure may be
+instantiated for any integer type.&nbsp;  The definition of the user-defined
+type Counter has the word <b>range</b>, so Counter is an integer type.</div>
+
+<div id="adat-gen-a3" class="adat-a" style="display: none">3 - <b>You're
+right!</b>&nbsp;  When the generic part says <b>type Dummy is range
+&lt;&gt;;</b>, the procedure may be instantiated for any integer type.&nbsp;
+Answer is a discrete type, but not an integer type.</div>
+
+</div></p>
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

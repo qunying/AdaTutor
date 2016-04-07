@@ -1,0 +1,187 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Exceptions, Ada.Text_IO' href='../index.html' />
+<link rel='prev' title='Exceptions' href='exception.html' />
+<link rel='next' title='Outside Assignment 5' href='../oa5/index.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, ada.text_io">
+
+<title>AdaTutor - More About Ada.Text_IO</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+<td><div class='nav-prev'><a href="exception.html">Prev</a></div></td>
+<td><div class='nav-conents'><a href="../index.html">Up</a></div></td>
+<td><div class="nav-next"><a href="../oa5/index.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>More About Ada.Text_IO</h2>
+<p>We're almost ready for Outside Assignment 5.&nbsp;  For that assignment, we
+had to cover type Text, access types, and exceptions.&nbsp;  We also need to
+learn a little more about Ada.Text_IO before we do the assignment.</p>
+
+<p>Ada.Text_IO does I/O with text files and the terminal.&nbsp;  Text files are
+files that can be listed at the terminal.&nbsp;  (Binary files are handled with
+other packages to be discussed in the Advanced Topics section, such as
+Ada.Direct_IO and Ada.Sequential_IO.)</p>
+
+<p>The full specification of Ada.Text_IO is in
+<a href='http://www.adahome.com/rm95/rm9x-A-10-01.html'>Annex A.10.1</a> of the
+Ada 95 RM.&nbsp; It's rather long, and some of the procedures and functions are
+rarely used.&nbsp;  So there's a simplified specification of Ada.Text_IO in your
+printed course notes, starting on page 17.&nbsp;  Please consult your printed
+course notes during the following discussion.</p>
+
+<p>Note that there's a limited private type called File_Type.&nbsp;  For each
+file that our program will use, we must create an object of this type, for
+example, <b>F1, F2 : File_Type;</b>.&nbsp;  We can then use these objects in the
+procedures Create and Open, to associate file names with the objects of type
+File_Type.</p>
+
+<p>Note that the I/O procedures, such as New_Line, Put, and Get, have one
+version for use with the terminal, and another version for use with a
+file.&nbsp;  The file version takes an object of type File_Type, <b>not</b> the
+name of the file.&nbsp;  The file must first have been Created or Opened.</p>
+
+<p>The exception Status_Error is raised by trying to do I/O on a closed
+file.&nbsp; Mode_Error is raised by trying to read from a file opened or created
+with mode Out_File, or by trying to write to a file of mode In_File.&nbsp;
+Name_Error is raised by trying to Open a file that doesn't exist, or by trying
+to Create a file with a name not allowed by the system.&nbsp;  End_Error is
+raised by trying to read past an end-of-file.</p>
+
+<p>New_Line creates one or more blank lines on <b>output</b>, and Skip_Line
+skips one or more lines of <b>input</b>.&nbsp;  We can Put characters and
+strings, and we can Put_Line a string.&nbsp;  We can Get a character, and
+Get_Line a string.&nbsp;  Note that when we Get_Line a string, the procedure
+returns the number of characters that were in the line.&nbsp;  Thus, if we have
+<b>S : String(1 .. 80);  Len : Integer;</b> and we execute
+<b>Get_Line(S, Len);</b> and the user types <b>Hello</b> followed by CR, Len
+will be set to 5, S(1 .. 5) will be set to "Hello", and the rest of S will be
+unmodified.</p>
+
+<p>Ada.Text_IO.Integer_IO can be instantiated for any integer type, including
+user-defined types and derived types like Counter and No_Of_Apples.</p>
+
+<p>When we call Put in an instantiation of Integer_IO (or in
+Ada.Integer_Text_IO), we can optionally specify the width and the base.</p>
+
+<p>The generic package Ada.Text_IO.Float_IO can be instantiated for any floating
+point type, such as Float (equivalent to Ada.Float_Text_IO) and the user-defined
+type Real that we created earlier.&nbsp;  Put allows us optionally to
+specify the number of places before and after the decimal point, and the size
+of the optional exponent field.</p>
+
+<p>The generic package Ada.Text_IO.Enumeration_IO can be instantiated for any
+enumeration type.&nbsp;  Put allows us optionally to specify the width.</p>
+
+<p>Ada.Text_IO contains another generic package Fixed_IO for fixed point types,
+not shown in our simplified version.&nbsp;  Fixed point types will be discussed
+in the section on <a href='../more/index.html'>More Records and Types</a>.</p>
+
+<p>To illustrate the use of Ada.Text_IO, here's a simple program that prompts
+for the names of an old input file and a new output file, and copies the input
+file to the output.&nbsp;  It's assumed that the input file is a plain text file
+no wider than 80 characters, and that it contains no special control characters
+such as form feeds.&nbsp;  This program also appears on page 19 of your printed
+course notes:
+
+<pre class="hl">   <span class="hl slc">-- For Ada 83, say simply Text_IO.</span>
+   <span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span> <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>
+   <span class="hl kwa">procedure</span> Filecopy <span class="hl kwa">is</span>
+      F1<span class="hl opt">,</span> F2 <span class="hl opt">:</span> File_Type<span class="hl opt">;</span>
+      S      <span class="hl opt">:</span> <span class="hl kwb">String</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">80</span><span class="hl opt">);</span>
+      Len    <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      Put<span class="hl opt">(</span><span class="hl str">&quot;Input file: &quot;</span><span class="hl opt">);</span>
+      Get_Line<span class="hl opt">(</span>S<span class="hl opt">,</span> Len<span class="hl opt">);</span>
+      Open<span class="hl opt">(</span>File <span class="hl opt">=&gt;</span> F1<span class="hl opt">,</span> Mode <span class="hl opt">=&gt;</span> In_File<span class="hl opt">,</span> Name <span class="hl opt">=&gt;</span> S<span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> Len<span class="hl opt">));</span>
+      Put<span class="hl opt">(</span><span class="hl str">&quot;Output file: &quot;</span><span class="hl opt">);</span>
+      Get_Line<span class="hl opt">(</span>S<span class="hl opt">,</span> Len<span class="hl opt">);</span>
+      Create<span class="hl opt">(</span>File <span class="hl opt">=&gt;</span> F2<span class="hl opt">,</span> Mode <span class="hl opt">=&gt;</span> Out_File<span class="hl opt">,</span> Name <span class="hl opt">=&gt;</span> S<span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> Len<span class="hl opt">));</span>
+      <span class="hl kwa">while not</span> End_Of_File<span class="hl opt">(</span>F1<span class="hl opt">)</span> <span class="hl kwa">loop</span>
+         Get_Line<span class="hl opt">(</span>F1<span class="hl opt">,</span> S<span class="hl opt">,</span> Len<span class="hl opt">);</span>
+         Put_Line<span class="hl opt">(</span>F2<span class="hl opt">,</span> S<span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> Len<span class="hl opt">));</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+      Close<span class="hl opt">(</span>F1<span class="hl opt">);</span>
+      Close<span class="hl opt">(</span>F2<span class="hl opt">);</span>
+   <span class="hl kwa">end</span> Filecopy<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>In many systems, all files are closed automatically when the main program
+terminates, and this program would work even without <b>Close(F1);</b> and
+<b>Close(F2);</b></p>
+
+<p>There's no way to test whether a file already exists without trying to Open
+it and trapping the Name_Error if the file doesn't exist.&nbsp;  The following
+function determines whether a file name represents an existing file.&nbsp;  It
+also appears on page 19 of your printed course notes:
+<pre class="hl">   <span class="hl slc">-- For Ada 83, say simply Text_IO.</span>
+   <span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span> <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>
+   <span class="hl kwa">function</span> Exists<span class="hl opt">(</span>File_Name <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">String</span><span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Boolean</span> <span class="hl kwa">is</span>
+      F      <span class="hl opt">:</span> File_Type<span class="hl opt">;</span>
+      Answer <span class="hl opt">:</span> <span class="hl kwb">Boolean</span> <span class="hl opt">:=</span> <span class="hl kwd">True</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">begin</span>
+         Open<span class="hl opt">(</span>F<span class="hl opt">,</span> In_File<span class="hl opt">,</span> File_Name<span class="hl opt">);</span>
+         Close<span class="hl opt">(</span>F<span class="hl opt">);</span>
+      <span class="hl kwa">exception</span>
+         <span class="hl kwa">when</span> Name_Error <span class="hl opt">=&gt;</span> Answer <span class="hl opt">:=</span> <span class="hl kwd">False</span><span class="hl opt">;</span>
+      <span class="hl kwa">end</span><span class="hl opt">;</span>
+      <span class="hl kwa">return</span> Answer<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Exists<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p><div class="adat-q">
+<h2>Question</h2>
+Which exception is raised by attempting to do I/O on a closed file?
+<ol>
+<li>
+<a href="javascript:adat_toggle('adat-textio-a1');">Status_Error</a>
+<div id="adat-textio-a1" class="adat-a" style="display: none"><b>You're
+right!</b>&nbsp;  Status_Error is raised by an attempt to do I/O on a closed
+file.
+</div>
+</li>
+<li>
+<a href="javascript:adat_toggle('adat-textio-a2');">Mode_Error</a>
+<div id="adat-textio-a2" class="adat-a" style="display: none">No, Mode_Error is
+raised by an attempt to read from a file of mode Out_File, or write to a file of
+mode In_File.</div>
+</li>
+
+<li>
+<a href="javascript:adat_toggle('adat-textio-a3');">Name_Error</a>
+<div id="adat-textio-a3" class="adat-a" style="display: none">No, Name_Error is raised by an attempt to Open a file that doesn't exist, or Create a file with
+an illegal name.</div>
+</li>
+
+<li>
+<a href="javascript:adat_toggle('adat-textio-a4');">End_Error</a>
+<div id="adat-textio-a4" class="adat-a" style="display: none">No, End_Error is
+raised by an attempt to read past an end-of-file.</div>
+</li>
+
+</ol>
+</div></p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

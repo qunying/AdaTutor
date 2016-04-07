@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Control Constructs' href='control.html' />
+<link rel='prev' title='The EXIT Statement' href='exit.html' />
+<link rel='next' title='The CASE Statement' href='case.html' />
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, label, goto">
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+<title>AdaTutor - Labels and GOTOs</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="for-loop.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="control.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="case.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+http://v.ifeng.com/live/#4AC51C17-9FBE-47F2-8EE0-8285A66EAFF5<h3>Labels and GOTOs</h3>
+<p>Although an Ada loop name looks exactly like a C or Pascal label,
+<b>Outer:</b> is not a label, and the program can't <b>goto Outer</b>.&nbsp;
+An Ada label looks like this:
+<pre class="hl">         <span class="hl opt">&lt;&lt;</span> Jail <span class="hl opt">&gt;&gt;</span>
+</pre>
+</p>
+
+<p>The <b>&lt;&lt;</b> ... <b>&gt;&gt;</b> makes the label very conspicuous,
+whether it's on the same line as a statement or on a line by itself.&nbsp;  The
+program can then say <b>goto Jail;</b>.&nbsp; Like all reserved words,
+<b>goto</b> can't contain a space.&nbsp;  Well-structured Ada programs don't
+need labels and <b>goto</b>s, so their use is very rare.</p>
+
+<p>
+<div class="adat-q">
+<h3>Question</h3>
+<pre class="hl">       I_Loop<span class="hl opt">:</span>   <span class="hl kwa">for</span> I <span class="hl kwa">in</span> <span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">10</span> <span class="hl kwa">loop</span>
+                   J <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+       J_Loop<span class="hl opt">:</span>     <span class="hl kwa">loop</span>
+                     J <span class="hl opt">:=</span> J <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+                     <span class="hl kwa">exit</span><span class="hl opt">;</span>
+                   <span class="hl kwa">end loop</span> J_Loop<span class="hl opt">;</span>
+                   L <span class="hl opt">:=</span> J<span class="hl opt">;</span>
+                 <span class="hl kwa">end loop</span> I_Loop<span class="hl opt">;</span>
+                 M <span class="hl opt">:=</span> J<span class="hl opt">;</span>
+
+</pre>
+In the program segment above, which statement will be executed after
+<b>exit;</b>?
+
+<ol>
+<li>
+<a href="javascript:adat_toggle('adat-c5a1');">L := J;</a>
+<div id="adat-c5a1" class="adat-a" style="display: none"><b>You're
+right!</b>&nbsp;  When used without a name, <b>exit;</b> leaves the innermost
+loop, so the next statement executed is <b>L := J;</b>.</div>
+</li>
+
+<li><a href="javascript:adat_toggle('adat-c5a2');">M := J;</a>
+<div id="adat-c5a2" class="adat-a" style="display: none">No, when used without
+a name, <b>exit;</b> leaves the <b>innermost</b> loop.</div>
+</li>
+
+<li><a href="javascript:adat_toggle('adat-c5a3');">for I in 1 .. 10 loop</a>
+<div id="adat-c5a3" class="adat-a" style="display: none">No, when used without
+a name, <b>exit;</b> leaves the <b>innermost</b> loop.&nbsp; The next
+statement executed will be the first statement after the end of the innermost
+loop.
+</div>
+</li>
+</ol>
+</div>
+</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

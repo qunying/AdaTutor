@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Advanced Topics' href='index.html' />
+<link rel='prev' title='Subprogram Parameters with Generics' href='subprg-gen.html' />
+<link rel='next' title='Unchecked Conversion and Unchecked Deallocation' href='unchecked.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, renaming">
+
+<title>AdaTutor - Representation Clauses and System</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="subprg-gen.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="unchecked.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Representation Clauses and System</h2>
+<p>Ada normally represents an enumeration type internally with successive
+integers starting at zero.&nbsp;  For example, if we write
+<pre class="hl"><span class="hl kwa">type</span> Command <span class="hl kwa">is</span> <span class="hl opt">(</span>Left<span class="hl opt">,</span> Right<span class="hl opt">,</span> Forward<span class="hl opt">,</span> Back<span class="hl opt">);</span>
+</pre>             
+the compiler will normally represent Left with 0, Right with 1, etc.&nbsp;
+Usually this doesn't concern the programmer.&nbsp;  However, after the above
+declaration, we can specify the internal representation with a representation
+clause like this:
+<pre class="hl"><span class="hl kwa">for</span> Command <span class="hl kwa">use</span> <span class="hl opt">(</span>Left <span class="hl opt">=&gt;</span> <span class="hl num">1</span><span class="hl opt">,</span> Right <span class="hl opt">=&gt;</span> <span class="hl num">2</span><span class="hl opt">,</span> Forward <span class="hl opt">=&gt;</span> <span class="hl num">4</span><span class="hl opt">,</span> Back <span class="hl opt">=&gt;</span> <span class="hl num">8</span><span class="hl opt">);</span>
+</pre>
+We might want to do that if, for example, we're sending a value of type Command
+to some hardware which will interpret the bit patterns.&nbsp; The values must be
+assigned in increasing order with no duplications, but gaps are permitted.&nbsp;
+The attributes <b>'Succ</b>, <b>'Pred</b>, <b>'Pos</b>, and <b>'Val</b> are
+<b>not</b> affected.&nbsp;  Thus <b>Command'Pos(Back)</b> is still 3.</p>
+
+<p>Ada lets us specify the <b>Size</b>, in bits, of the objects of a given type:
+<pre class="hl">   <span class="hl kwa">type</span> Num <span class="hl kwa">is range</span> <span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">100</span><span class="hl opt">;</span>
+   <span class="hl kwa">for</span> Num<span class="hl kwd">'Size</span> <span class="hl kwa">use</span> <span class="hl num">8</span><span class="hl opt">;</span>
+</pre>
+
+Similarly, we can specify the attribute 'Small for a fixed point type:
+<pre class="hl">   <span class="hl kwa">type</span> Voltage <span class="hl kwa">is delta</span> <span class="hl num">0.01</span> <span class="hl kwa">range</span> <span class="hl opt">-</span><span class="hl num">20.0</span> <span class="hl opt">..</span> <span class="hl num">20.0</span><span class="hl opt">;</span>
+   <span class="hl kwa">for</span> Voltage<span class="hl kwd">'Small</span> <span class="hl kwa">use</span> <span class="hl num">1.0</span><span class="hl opt">/</span><span class="hl num">128.0</span><span class="hl opt">;</span>
+</pre>
+
+These attributes can also be read:
+<pre class="hl">   I <span class="hl opt">:</span> <span class="hl kwb">Integer</span> <span class="hl opt">:=</span> Num<span class="hl kwd">'Size</span><span class="hl opt">;</span>
+   F <span class="hl opt">:</span> <span class="hl kwb">Float</span> <span class="hl opt">:=</span> Voltage<span class="hl kwd">'Small</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Before discussing the remaining types of representation clauses, we must
+briefly mention the package <b>System</b> that comes with Ada.&nbsp;
+<b>System</b> contains implementation dependent specifications.</p>
+
+<p>A brief outline of package System is in <a href="http://www.adahome.com/rm95/rm9x-13-07.html">section 13.7</a> of the Ada 95 RM.&nbsp; However, the full
+package specification should appear in the documentation that came with your
+compiler.&nbsp;  Of interest here is the type Address.&nbsp;  In our examples,
+we'll assume that System.Address is some integer type.&nbsp;  (On some PC
+implementations of Ada, type System.Address is a bit more complicated.)</p>
+
+<p>We can specify the absolute address of a variable, a constant, a task entry,
+a procedure, or a package, with a constant of type System.Address.&nbsp; In Ada
+83 the program must <b>with</b> System.&nbsp;  This is useful for memory-mapped
+I/O, interrupt handlers, etc.&nbsp;  For example:
+<pre class="hl">   Modem_Control <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+   <span class="hl kwa">for</span> Modem_Control<span class="hl kwd">'Address</span> <span class="hl kwa">use</span> <span class="hl num">16#7C00#</span><span class="hl opt">;</span>
+   <span class="hl kwa">task</span> Interrupt_Handler <span class="hl kwa">is</span>
+      <span class="hl kwa">entry</span> Clock_Interrupt<span class="hl opt">;</span>
+      <span class="hl kwa">for</span> Clock_Interrupt<span class="hl kwd">'Address</span> <span class="hl kwa">use</span> <span class="hl num">16#100#</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Interrupt_Handler<span class="hl opt">;</span>
+   <span class="hl kwa">procedure</span> Keystroke<span class="hl opt">;</span>
+   <span class="hl kwa">for</span> Keystroke<span class="hl kwd">'Address</span> <span class="hl kwa">use</span> <span class="hl num">16#200#</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+
+<p>In Ada 83, the syntax is <b>for Keystroke use 16#200#</b>, and Ada 95 accepts
+this older syntax for compatibility.</p>
+
+
+<p>Finally, we can specify how records are stored.&nbsp;  This example forces A
+and B to be stored in bits 0 .. 3 and 4 .. 7 of byte 0 of the record, and C and
+D to be packed into byte 1.&nbsp;  The optional clause <b>for Packed'Alignment
+use 2;</b> specifies that all records of type Packed will begin at even
+addresses:
+<pre class="hl">   <span class="hl kwa">type</span> Nibble <span class="hl kwa">is range</span> <span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">15</span><span class="hl opt">;</span>
+   <span class="hl kwa">type</span> Packed <span class="hl kwa">is record</span>
+       A<span class="hl opt">,</span> B<span class="hl opt">,</span> C<span class="hl opt">,</span> D <span class="hl opt">:</span> Nibble<span class="hl opt">;</span>
+   <span class="hl kwa">end record</span><span class="hl opt">;</span>
+   <span class="hl kwa">for</span> Packed<span class="hl kwd">'Alignment</span> <span class="hl kwa">use</span> <span class="hl num">2</span><span class="hl opt">;</span>
+   <span class="hl kwa">for</span> Packed <span class="hl kwa">use record</span>
+      A <span class="hl kwa">at</span> <span class="hl num">0</span> <span class="hl kwa">range</span> <span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">3</span><span class="hl opt">;</span>
+      B <span class="hl kwa">at</span> <span class="hl num">0</span> <span class="hl kwa">range</span> <span class="hl num">4</span> <span class="hl opt">..</span> <span class="hl num">7</span><span class="hl opt">;</span>
+      C <span class="hl kwa">at</span> <span class="hl num">1</span> <span class="hl kwa">range</span> <span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">3</span><span class="hl opt">;</span>
+      D <span class="hl kwa">at</span> <span class="hl num">1</span> <span class="hl kwa">range</span> <span class="hl num">4</span> <span class="hl opt">..</span> <span class="hl num">7</span><span class="hl opt">;</span>
+   <span class="hl kwa">end record</span><span class="hl opt">;</span>
+</pre></p>
+
+<p>In Ada 83, we use the clause <b>record at mod 2;</b> after <b>for Packed
+use</b>, rather than saying <b>or Packed'Alignment use 2;</b> before <b>for
+Packed use</b>:
+<pre class="hl">   <span class="hl kwa">type</span> Nibble <span class="hl kwa">is range</span> <span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">15</span><span class="hl opt">;</span>
+   <span class="hl kwa">type</span> Packed <span class="hl kwa">is record</span>
+      A<span class="hl opt">,</span> B<span class="hl opt">,</span> C<span class="hl opt">,</span> D <span class="hl opt">:</span> Nibble<span class="hl opt">;</span>
+   <span class="hl kwa">end record</span><span class="hl opt">;</span>
+   <span class="hl kwa">for</span> Packed <span class="hl kwa">use record at mod</span> <span class="hl num">2</span><span class="hl opt">;</span>
+      A <span class="hl kwa">at</span> <span class="hl num">0</span> <span class="hl kwa">range</span> <span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">3</span><span class="hl opt">;</span>
+      B <span class="hl kwa">at</span> <span class="hl num">0</span> <span class="hl kwa">range</span> <span class="hl num">4</span> <span class="hl opt">..</span> <span class="hl num">7</span><span class="hl opt">;</span>
+      C <span class="hl kwa">at</span> <span class="hl num">1</span> <span class="hl kwa">range</span> <span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">3</span><span class="hl opt">;</span>
+      D <span class="hl kwa">at</span> <span class="hl num">1</span> <span class="hl kwa">range</span> <span class="hl num">4</span> <span class="hl opt">..</span> <span class="hl num">7</span><span class="hl opt">;</span>
+   <span class="hl kwa">end record</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Again, Ada 95 accepts this older syntax for compatibility.</p>
+
+<p>An implementation of Ada need not accept most representation clauses to meet
+the standard.&nbsp;  If any clause is rejected, an error message will be
+displayed.</p>
+
+<p><div class="adat-q">
+<h2>Question</h2>
+<pre class="hl">   <span class="hl kwa">type</span> Answer <span class="hl kwa">is</span> <span class="hl opt">(</span>Yes<span class="hl opt">,</span> No<span class="hl opt">,</span> Maybe<span class="hl opt">);</span>
+   <span class="hl kwa">for</span> Answer <span class="hl kwa">use</span> <span class="hl opt">(</span>Yes <span class="hl opt">=&gt;</span> <span class="hl num">1</span><span class="hl opt">,</span> No <span class="hl opt">=&gt;</span> <span class="hl num">2</span><span class="hl opt">,</span> Maybe <span class="hl opt">=&gt;</span> <span class="hl num">4</span><span class="hl opt">);</span>
+</pre>
+What is Answer'Val(20)?
+
+<ol>
+<li>
+<a href="javascript:adat_toggle('adat-adv-rep-a1');">Answer'Val(2) is No.</a>
+<div id="adat-adv-rep-a1" class="adat-a" style="display: none">No, the
+representation clause doesn't affect the attributes 'Pos and 'Val, and positions
+are numbered from zero.&nbsp;  So Answer'Val(2) is Maybe.</div>
+</li>
+
+<li>
+<a href="javascript:adat_toggle('adat-adv-rep-a2');">Answer'Val(2) is Maybe.</a>
+<div id="adat-adv-rep-a2" class="adat-a" style="display: none"><b>You're
+right!</b>&nbsp;  The representation clause doesn't affect the attributes 'Pos
+and 'Val, and positions are numbered from zero.&nbsp;  So <b>Answer'Val(2)</b>
+is <b>Maybe</b>.</div>
+</li>
+
+</ol>
+</div></p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

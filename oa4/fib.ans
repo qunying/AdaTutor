@@ -1,0 +1,10 @@
+-- Our solution to Outside Assignment 4 (in FIB.ANS):
+separate (Fibtest)
+function Fib(N : in Positive) return Positive is
+  Answer : Positive := 1;
+begin
+  if N > 2 then
+    Answer := Fib(N - 1) + Fib(N - 2);
+  end if;
+  return Answer;
+end Fib;

@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Outside Assignment 4' href='index.html' />
+<link rel='prev' title='Exercise in Recursion' href='ex-recursion.html' />
+<link rel='next' title='Subprograms and Packages' href='../sub-pkg/index.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor">
+
+<title>AdaTutor - Congratulations on Completing Outside Assignment 4</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="ex-recursion.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="../sub-pkg/index.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Congratulations on Completing Outside Assignment 4!</h2>
+<a href="javascript:adat_toggle('adat-oa4a1');">Click to view:</a>
+<div id='adat-oa4a1' style="display: none">
+<p>Our solution to Outside Assignment 4 (in <a href='fib.ans'>FIB.ANS</a>):
+<pre class="hl"><span class="hl kwa">separate</span> <span class="hl opt">(</span>Fibtest<span class="hl opt">)</span>
+<span class="hl kwa">function</span> Fib<span class="hl opt">(</span>N <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Positive</span><span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Positive</span> <span class="hl kwa">is</span>
+   Answer <span class="hl opt">:</span> <span class="hl kwb">Positive</span> <span class="hl opt">:=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+<span class="hl kwa">begin</span>
+   <span class="hl kwa">if</span> N <span class="hl opt">&gt;</span> <span class="hl num">2</span> <span class="hl kwa">then</span>
+      Answer <span class="hl opt">:=</span> Fib<span class="hl opt">(</span>N <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">) +</span> Fib<span class="hl opt">(</span>N <span class="hl opt">-</span> <span class="hl num">2</span><span class="hl opt">);</span>
+   <span class="hl kwa">end if</span><span class="hl opt">;</span>
+   <span class="hl kwa">return</span> Answer<span class="hl opt">;</span>
+<span class="hl kwa">end</span> Fib<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Your solution is probably quite similar to ours.&nbsp;  Perhaps you used
+<b>else</b> and didn't initialize Answer in the declarative region.&nbsp;
+Perhaps you had some other minor variation.&nbsp;  Our solution is probably no
+&ldquo;better&rdquo; than yours, if the test driver said,
+&ldquo;Congratulations, you completed the assignment!&rdquo;</p>
+
+<p>Was this assignment <b>too</b> easy?&nbsp;  We promise that Outside
+Assignment 5 will be much more challenging!&nbsp;  But first we need to discuss
+procedures and functions in more detail, as well as packages and information
+hiding, access types, and exceptions.</p>
+</div>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

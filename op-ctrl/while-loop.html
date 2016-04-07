@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Control Constructs' href='control.html' />
+<link rel='prev' title='The IF Block' href='if-blk.html' />
+<link rel='next' title='FOR Loops' href='for-loop.html' />
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor">
+
+<title>AdaTutor - "WHILE" Loops</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="if-blk.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="control.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="for-loop.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h3>"WHILE" Loops</h3>
+<pre class="hl">    <span class="hl kwa">while</span> I <span class="hl opt">&lt;</span> <span class="hl num">10</span> <span class="hl kwa">loop</span>
+      <span class="hl slc">-----;</span>
+      <span class="hl slc">-----;</span>
+      <span class="hl slc">-----;</span>
+    <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+</pre>
+<p>The <b>while</b> loop first evaluates the Boolean expression (<b>I &lt;
+10</b> in this example).&nbsp; If it's False, the block of code isn't executed
+at all, and execution continues after the <b>end loop;</b>.&nbsp; If it's True,
+the block of code is executed and then the Boolean condition is again
+evaluated.&nbsp;  If the condition is still True, the block is executed again
+and the Boolean expression is evaluated again, and so forth.&nbsp;  When the
+Boolean expression becomes False, the block of code is skipped and execution
+continues after the <b>end loop;</b>.</p>
+
+<p>To create an &ldquo;infinite loop,&rdquo; it isn't necessary to write
+<b>while True loop</b> ...  <b>end loop;</b>.&nbsp;  We simply write
+<b>loop</b> ...  <b>end loop;</b>, like this:
+<pre class="hl">   <span class="hl kwa">loop</span>
+      <span class="hl slc">-----;</span>
+      <span class="hl slc">-----;</span>
+      <span class="hl slc">-----;</span>
+   <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+</pre></p>
+
+<p>An infinite loop might be useful in a device that continually does the same
+thing so long as power is applied.</p>
+
+<p>Ada doesn't have a &ldquo;repeat ... until&rdquo; loop, with the test at the
+bottom.&nbsp; However, we can create a loop that's equivalent to a
+&ldquo;repeat ... until&rdquo; loop by using what would otherwise be an
+infinite loop with an <b>exit</b> statement, to be covered very soon.</p>
+
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

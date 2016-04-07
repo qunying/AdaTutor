@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link href="../adatutor.css" type="text/css" rel="stylesheet">
+<link rel='top' title='Contents' href='../index.html' />
+<link rel='up' title='The Format of an Ada Program' href='index.html' />
+<link rel='prev' title='The Format of an Ada Program' href='index.html' />
+<link rel='next' title='Local Declarations' href='local.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor">
+
+<title>AdaTutor - Our First Ada Program</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+<td><div class='nav-prev'><a href="index.html">Prev</a></div></td>
+<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+<td><div class="nav-next"><a href="local.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<a name="f-first"></a><h2>Our First Ada Program</h2>
+<pre class="hl"><span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>
+<span class="hl kwa">procedure</span> Hello <span class="hl kwa">is</span>
+<span class="hl kwa">begin</span>
+  Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">.</span>Put_Line<span class="hl opt">(</span><span class="hl str">&quot;Hello!&quot;</span><span class="hl opt">);</span>
+<span class="hl kwa">end</span> Hello<span class="hl opt">;</span>
+</pre>
+
+<p>Here's a simple program that displays "Hello!" on the screen.&nbsp;
+Ada.Text_IO is a &ldquo;package&rdquo; that comes with Ada.&nbsp;  (In Ada 83,
+the package name is just Text_IO, and for compatibility, Ada 95 also accepts the
+shorter name.)&nbsp;  We'll learn more about packages later.&nbsp;  Ada.Text_IO
+contains, among other things, a procedure Put_Line that takes one parameter of
+type String and displays it.&nbsp;  In this case, the String parameter is
+<b>"Hello!"</b>.&nbsp;  Ada doesn't have any special I/O statements.&nbsp;  I/O
+is done by calling procedures that Ada provides for us.</p>
+
+<p>Even though the package Ada.Text_IO comes with Ada, our procedure Hello can't
+&ldquo;see&rdquo; it unless it says <b>with Ada.Text_IO;</b>.&nbsp;  With that
+statement, our procedure can call any procedure or function inside
+Text_IO.&nbsp;  We call a procedure by giving the package name (Ada.Text_IO),
+followed by a dot and the name of the procedure within the package
+(Put_Line).&nbsp;  Like C and unlike Fortran, the word CALL isn't used in Ada.
+</p>
+
+<p>The statement <b>with Ada.Text_IO;</b> is called a <b>context clause</b>
+because it specifies the &ldquo;context&rdquo; in which procedure Hello is
+compiled.</p>
+
+<p>In Ada a <b>procedure</b> may be called either from another procedure or as
+the main program.&nbsp;  In this example, Hello is the main program; it calls
+Put_Line.</p>
+
+<p>Every Ada statement, including the last, ends with a semicolon.&nbsp;
+(Technically, the lines above without semicolons aren't statements.)&nbsp;  In
+Pascal, semicolons come <b>between</b> statements, but in Ada, as in C, a
+semicolon <b>ends</b> a statement.</p>
+
+<p>In Ada, the <b>end</b> statement may optionally give the name of the
+procedure or function.&nbsp;  If a name is given, the compiler will check that
+it agrees with the name at the beginning.&nbsp;  If it doesn't agree, the
+compiler will issue a message.</p>
+
+<p>The statements between <b>begin</b> and <b>end</b> (this program has only
+one) are called executable statements; when they're obeyed they're said to be
+<b>executed</b>.</p>
+
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

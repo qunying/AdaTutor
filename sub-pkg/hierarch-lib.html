@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Subprograms and Packages' href='index.html' />
+<link rel='prev' title='Type Text and Limited Private Types' href='limited-type.html' />
+<link rel='next' title='Access Types, User Defined Types, and Derived Types' href='../types/index.html' />
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, records">
+
+<title>AdaTutor - Hierarchical Libraries</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="limited-type.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="../types/index.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Hierarchical Libraries</h2>
+<p>Earlier we considered a package CRT_Controller that had procedures to draw
+dots, lines, and boxes.&nbsp;  Suppose that we have compiled that package and
+several calling programs, and then we wish to add a procedure to draw a
+circle.&nbsp;  If we add the procedure directly to CRT_Controller, we'll have to
+recompile CRT_Controller, and, as a result, all of the previously written
+calling programs, because these with the package.&nbsp;  This is true even
+though the previously written calling programs don't call the new procedure to
+draw a circle.</p>
+
+<p>In Ada 95, we can write a <b>child package</b> to get around this
+problem.&nbsp;  Its name is CRT_Controller followed by a dot and another name,
+for example, <b>CRT_Controller.More</b>.&nbsp;  (The pre-supplied package
+Ada.Text_IO is a child of the package Ada; that's why its name contains a
+dot.)&nbsp;  A child package must be compiled after the specification of the
+parent, such as CRT_Controller.&nbsp;  We do not change or recompile
+CRT_Controller.&nbsp;  Instead, we put our new routines, such as Circle, in
+CRT_Controller.More and compile it.</p>
+
+<p>Now the previously written calling programs that <b>with</b> CRT_Controller
+don't have to be recompiled.&nbsp;  The new programs, that can call Circle (as
+well as Dot, Line, Box, etc.) should say <b>with CRT_Controller.More;</b>.&nbsp;
+This automatically does <b>with CRT_Controller;</b> as well, so we don't need to
+mention CRT_Controller in a <b>with</b> statement.&nbsp;  However, if we want to
+use both the parent package and the child package, we must mention both in a use
+statement.</p>
+
+<p>Our new Ada 95 child package specification will look like this:
+<pre class="hl">   <span class="hl kwa">package</span> CRT_Controller<span class="hl opt">.</span>More <span class="hl kwa">is</span>
+      <span class="hl opt">...</span>
+      <span class="hl kwa">procedure</span> Circle <span class="hl opt">... ;</span>
+      <span class="hl opt">...</span>
+   <span class="hl kwa">end</span> CRT_Controller<span class="hl opt">.</span>More<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>A parent package can have several children, and the children can have
+children, to any depth.&nbsp;  While only packages can have children, the
+children themselves can be subprograms (procedures or functions) as well as
+packages.</p>
+
+<p>Although subprograms can't have &ldquo;children,&rdquo; they can, of course
+locally declare other subprograms, and these declarations may say <b>is
+separate</b>, even in Ada 83.</p>
+
+<p>A child package can be made private to its parent.&nbsp;  Let's suppose that,
+for some reason, we wanted the resources of CRT_Controller.More (such as Circle)
+to be available only within the CTR_Controller family of packages and
+subprograms.&nbsp; We can write
+<pre class="hl">   <span class="hl kwa">private package</span> CRT_Controller<span class="hl opt">.</span>More <span class="hl kwa">is</span>
+      <span class="hl opt">...</span>
+      <span class="hl kwa">procedure</span> Circle <span class="hl opt">... ;</span>
+      <span class="hl opt">...</span>
+   <span class="hl kwa">end</span> CRT_Controller<span class="hl opt">.</span>More<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Now units outside this family can't <b>with</b> CRT_Controller.More, because
+this package is a private child.&nbsp;  Also, the <b>specifications</b> of other
+children of CRT_Controller can't <b>with</b> CRT_Controller.More either, because
+if they could, they could export its resources outside the family.&nbsp;
+However, the <b>bodies</b> of the other children of CRT_Controller <b>can</b>
+with CRT_Controller.More, because resources in the bodies aren't available
+outside the family.</p>
+
+<p>Ada 95 hierarchical libraries and Ada 95 tagged types (discussed later) both
+help support Object Oriented Design (OOD).</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

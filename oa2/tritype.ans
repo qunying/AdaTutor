@@ -1,0 +1,16 @@
+-- Our solution to Outside Assignment 2:
+separate (Tritest)
+function Tritype(Len1, Len2, Len3 : in Integer) return Triangle is
+  Answer : Triangle;
+begin
+  if Len1 + Len2 <= Len3  or Len1 + Len3 <= Len2  or Len2 + Len3 <= Len1  then
+    Answer := Not_A_Triangle;
+  elsif  Len1 = Len2  and  Len2 = Len3  then
+    Answer := Equilateral;
+  elsif  Len1 = Len2  or  Len2 = Len3  or  Len1 = Len3  then
+    Answer := Isosceles;
+  else
+    Answer := Scalene;
+  end if;
+  return Answer;
+end Tritype;

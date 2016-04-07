@@ -1,0 +1,376 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Exceptions, Ada.Text_IO' href='index.html' />
+<link rel='prev' title='Exceptions, Ada.Text_IO' href='index.html' />
+<link rel='next' title='More About Ada.Text_IO' href='textio.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, exception">
+
+<title>AdaTutor - Exceptions</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+<td><div class='nav-prev'><a href="index.html">Prev</a></div></td>
+<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+<td><div class="nav-next"><a href="textio.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Exceptions</h2>
+<p>When an error occurs during the elaboration or execution of a statement, Ada
+is said to <b>raise an exception</b>.&nbsp;  Ordinarily this stops the program,
+but Ada programs can trap exceptions and execute a special block of code when an
+exception is raised.&nbsp;  This code is called an <b>exception handler</b>.</p>
+
+<p>We can define our own exceptions, but four of them are predefined by Ada:
+
+<dl>
+<dt><b>Constraint_Error</b></dt>
+<dd>This is the exception encountered most often by beginners, because it can
+be caused by a number of different things.&nbsp;  It can be raised by a
+subscript out of range, a subtype out of range (USA.Day := 32;), an attribute
+used improperly (Integer'Value("12X3") or Month_Type'Val(13)), assigning an
+array of one length to a destination of another (H : String(1 .. 5) := "Hi";),
+attempting to access an object through a null access value (D1 := null;
+D1.Day := 31;), attempting to divide by zero, or by an arithmetic overflow.</dd>
+
+<dt><b>Program_Error</b></dt>
+<dd>This is rarely encountered by beginners, but it can be raised by skipping
+around the <b>return</b> statement in a function and running into the <b>end</b>
+statement.</dd>
+
+<dt><b>Storage_Error</b></dt>
+<dd>This is raised by running out of memory, as with a recursive program calling
+itself unconditionally or an attempt to create an infinitely large linked
+list.</dd>
+
+<dt><b>Tasking_Error</b></dt>
+<dd>This will be discussed in the <a href='../generics/task.html'>section on
+Tasking</a>.</dd>
+</dl>
+
+<p>(Older Ada 83 compilers also predefined an exception <b>Numeric_Error</b>,
+but now Numeric_Error is simply another name for Constraint_Error.)</p>
+
+<p>An exception handler is introduced by the reserved word <b>exception</b>; its
+structure is similar to that of a <b>case</b> construct.&nbsp;  We'll see an
+example in a moment.&nbsp;  Unlike a <b>case</b> construct, an exception handler
+need not account for all the possibilities.</p>
+
+<p>An exception handler can be placed in a subprogram, in the initialization
+code of a package, in a task (to be discussed in the <a
+href='../generics/task.html'>section on Tasking</a>), or in a block (to be
+discussed later in this section).&nbsp;  Here's a procedure with an exception
+handler that handles an exception, <b>Wrong</b>, that we declare ourselves,
+as well as the built-in exceptions <b>Constraint_Error</b> and
+<b>Numeric_Error</b>:
+<pre class="hl">   <span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">,</span> Ada<span class="hl opt">.</span>Integer_Text_IO<span class="hl opt">;</span>
+   <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">,</span> Ada<span class="hl opt">.</span>Integer_Text_IO<span class="hl opt">;</span>
+   <span class="hl kwa">procedure</span> Exception_Demo <span class="hl kwa">is</span>
+      I     <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+<span class='adat-hl'>      Wrong <span class="hl opt">:</span> <span class="hl kwa">exception</span><span class="hl opt">;</span></span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">loop</span>
+         New_Line<span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">);</span>
+         Put<span class="hl opt">(</span><span class="hl str">&quot;Type a positive integer. &quot;</span><span class="hl opt">);</span>
+         Get<span class="hl opt">(</span>I<span class="hl opt">);</span>
+         Skip_Line<span class="hl opt">;</span>
+         <span class="hl kwa">if</span> I <span class="hl opt">&lt;=</span> <span class="hl num">0</span> <span class="hl kwa">then</span>
+<span class='adat-hl'>            <span class="hl kwa">raise</span> Wrong<span class="hl opt">;</span></span>
+         <span class="hl kwa">end if</span><span class="hl opt">;</span>
+         Put<span class="hl opt">(</span><span class="hl str">&quot;The square is ... &quot;</span><span class="hl opt">);</span>
+<span class='adat-hl'>         <span class="hl slc">-- Raises Constraint_Error or Numeric_Error</span>
+         <span class="hl slc">-- if I is too large.</span>
+         Put<span class="hl opt">(</span>I<span class="hl opt">*</span>I<span class="hl opt">);</span></span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+<span class='adat-hl'>   <span class="hl kwa">exception</span>
+      <span class="hl kwa">when</span> Constraint_Error | Numeric_Error <span class="hl opt">=&gt;</span></span>
+         Put<span class="hl opt">(</span><span class="hl str">&quot; ... too big.&quot;</span><span class="hl opt">);</span>
+<span class='adat-hl'>      <span class="hl kwa">when</span> Wrong <span class="hl opt">=&gt;</span></span>
+         New_Line<span class="hl opt">;</span>
+         Put<span class="hl opt">(</span><span class="hl str">&quot;I said Positive integer!&quot;</span><span class="hl opt">);</span>
+   <span class="hl kwa">end</span> Exception_Demo<span class="hl opt">;</span>
+</pre></p>
+
+<p>We can deliberately raise an exception (either user-defined or built-in) with
+the <b>raise</b> statement, as in <b>raise Wrong;</b> or <b>raise
+Constraint_Error;</b>.&nbsp;  Also, ordinary statements can raise
+exceptions.&nbsp;  In our sample program, <b>Put(I*I);</b> raises
+Constraint_Error or Numeric_Error if I is too large.&nbsp;  When an executable
+statement raises an exception, the exception handler is executed instead of the
+rest of the procedure, function, etc.&nbsp;  Our program keeps asking for
+integers and displaying their squares until an exception is raised.&nbsp; Then,
+the exception handler is executed, and there's no way to get back into the
+procedure to ask for another integer (short of a recursive call).&nbsp;  Even a
+<b>goto</b> from the exception handler to the main part of the procedure is
+forbidden.&nbsp;  Soon we'll show how the block construct can overcome this
+problem, so that our program will continue to ask for more integers even after
+an exception is handled.</p>
+
+<p>As with <b>case</b> constructs, an exception handler may use the vertical bar
+to denote multiple choices (<b>when Constraint_Error | Numeric_Error =></b>
+block of code), and it may say <b>when others =&gt;</b> to handle all cases not
+covered earlier.&nbsp; But there's no way to test, inside the exception handler,
+<b>which line</b> raised the exception.&nbsp; We can only test <b>which kind</b>
+of exception was raised.</p>
+
+<p>Don't use exceptions where a simple <b>if</b> will do.&nbsp;  In our program,
+trapping the arithmetic overflow was OK, but the <b>if</b> could have handled
+<b>I &lt;= 0</b> without raising Wrong.&nbsp;  This exception was declared only
+to give a simple example.</p>
+
+
+<p><div class="adat-q">
+<h2>Question</h2>
+Assuming Rainbow_Color and Traffic_Light_Color are defined as before, which of
+the below exceptions would be raised by <b>Rainbow_Color'Value("AMBER")</b>?
+
+<ol>
+<li>
+<a href="javascript:adat_toggle('adat-excp-a1');">Constraint_Error</a>
+<div id="adat-excp-a1" class="adat-a" style="display: none"><b>You're
+right!</b>&nbsp;  Using an attribute improperly in this way will raise
+Constraint_Error.</div>
+</li>
+<li>
+<a href="javascript:adat_toggle('adat-excp-a2');">Numeric_Error</a>
+<div id="adat-excp-a2" class="adat-a" style="display: none">No, Numeric_Error is
+usually raised by arithmetic overflow, or attempted division by zero, with older
+Ada compilers (modern compilers raise Constraint_Error instead).</div>
+</li>
+<li>
+<a href="javascript:adat_toggle('adat-excp-a3');">Program_Error</a>
+<div id="adat-excp-a3" class="adat-a" style="display: none">No, Program_Error is
+usually raised by skipping around the <b>return</b> statement in a function.
+</div>
+</li>
+<li>
+<a href="javascript:adat_toggle('adat-excp-a4');">Storage_Error</a>
+<div id="adat-excp-a4" class="adat-a" style="display: none">No, Storage_Error is
+raised by running out of memory.</div>
+</li>
+<li>
+<a href="javascript:adat_toggle('adat-excp-a5');">Tasking_Error</a>
+<div id="adat-excp-a5" class="adat-a" style="display: none">No, Tasking_Error is
+raised only by programs using tasking, which we haven't yet discussed.</div>
+</li>
+</ol>
+</div></p>
+
+<p>A block construct lets us declare objects in the <b>executable</b> region of
+the program.&nbsp;  For example, in the following, I and F come into existence
+where they're declared, and go out of existence at the following <b>end</b>
+statement:
+<pre class="hl">   <span class="hl kwa">procedure</span> Block_Demo <span class="hl kwa">is</span>
+      Q <span class="hl opt">:</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      Q <span class="hl opt">:=</span> <span class="hl num">0.0</span><span class="hl opt">;</span>
+<span class='adat-hl'>      <span class="hl kwa">declare</span>
+  I <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+  F <span class="hl opt">:</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+      <span class="hl kwa">begin</span>
+  I <span class="hl opt">:=</span> <span class="hl num">5</span><span class="hl opt">;</span>
+  F <span class="hl opt">:=</span> Q<span class="hl opt">;</span>
+      <span class="hl kwa">end</span><span class="hl opt">;</span></span>
+      Q <span class="hl opt">:=</span> Q <span class="hl opt">+</span> <span class="hl num">3.0</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Block_Demo<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>However, the usual use of a block is to localize an exception handler, not to
+bring objects into existence in the executable region of a program.&nbsp;  The
+declarative part of the block is optional.&nbsp;  For example, let's rewrite
+Exception_Demo to make use of a block with an exception handler.</p>
+
+<pre class="hl">   <span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">,</span> Ada<span class="hl opt">.</span>Integer_Text_IO<span class="hl opt">;</span>
+   <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">,</span> Ada<span class="hl opt">.</span>Integer_Text_IO<span class="hl opt">;</span>
+   <span class="hl kwa">procedure</span> Exception_Demo <span class="hl kwa">is</span>
+      I     <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+       Wrong <span class="hl opt">:</span> <span class="hl kwa">exception</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">loop</span>
+  <span class="hl kwa">begin</span>
+     New_Line<span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">);</span>
+     Put<span class="hl opt">(</span><span class="hl str">&quot;Type a positive integer. &quot;</span><span class="hl opt">);</span>
+     Get<span class="hl opt">(</span>I<span class="hl opt">);</span>
+     Skip_Line<span class="hl opt">;</span>
+     <span class="hl kwa">if</span> I <span class="hl opt">&lt;=</span> <span class="hl num">0</span> <span class="hl kwa">then</span>
+        <span class="hl kwa">raise</span> Wrong<span class="hl opt">;</span>
+     <span class="hl kwa">end if</span><span class="hl opt">;</span>
+     Put<span class="hl opt">(</span><span class="hl str">&quot;The square is ... &quot;</span><span class="hl opt">);</span>
+     Put<span class="hl opt">(</span>I<span class="hl opt">*</span>I<span class="hl opt">);</span>
+  <span class="hl kwa">exception</span>
+     <span class="hl kwa">when</span> Constraint_Error | Numeric_Error <span class="hl opt">=&gt;</span>
+        Put<span class="hl opt">(</span><span class="hl str">&quot; ... too big.&quot;</span><span class="hl opt">);</span>
+     <span class="hl kwa">when</span> Wrong <span class="hl opt">=&gt;</span>
+        New_Line<span class="hl opt">;</span>  Put<span class="hl opt">(</span><span class="hl str">&quot;I said Positive integer!&quot;</span><span class="hl opt">);</span>
+  <span class="hl kwa">end</span><span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Exception_Demo<span class="hl opt">;</span>
+</pre>
+
+<p>Note that in our rewritten program, a block with an exception handler has
+been created inside the loop.&nbsp;  Now, if an exception occurs, the handler
+will be executed instead of the rest of the <b>block</b>, not the rest of the
+<b>procedure</b>.&nbsp; Thus, the loop will still be executed, and the program
+will continue to ask for integers after an exception is handled.</p>
+
+<p>There are two advantages to confining exception handlers to small
+blocks.&nbsp; First, we narrow down the range of statements that might have
+raised the exception.&nbsp;  Recall that the handler can't test which line
+raised the exception, but it must have been one of the lines in the block.&nbsp;
+(If an exception is raised outside the block, our program provides no handler
+for it.)&nbsp;  Second, program execution will continue after the end of the
+block.</p>
+
+<p>If an exception occurs for which there's no handler, the exception reaches
+the next higher level.&nbsp;  For example, if the block in Exception_Demo
+somehow raises Storage_Error and doesn't handle it, an exception handler for the
+whole procedure would get a chance to handle it.&nbsp;  (In our case, there is
+none.)&nbsp;  If it's still unhandled, it's as if the call to Exception_Demo
+raised Storage_Error.&nbsp;  If the caller doesn't handle it, the exception
+reaches the caller's caller, etc.&nbsp;  If the exception reaches the main
+program and is still unhandled, the program is stopped and the system displays
+the name of the exception.&nbsp;  However, exceptions that are handled don't
+even reach the caller.</p>
+
+<p>In the unusual case of an exception raised in the <b>declarative</b> region,
+the unit raising the exception (subprogram, block, etc.) is <b>not</b> given a
+chance to handle it.&nbsp;  Exceptions raised in the declarative region
+immediately reach the next higher level.</p>
+
+<p>In a handler, the word <b>raise</b> may be used without a name of an
+exception to re-raise whatever exception brought control to the handler.&nbsp;
+This is especially useful after <b>when others =&gt;</b>, because any one of a
+number of exceptions might have transferred control there.&nbsp;  For example,
+<pre class="hl">   <span class="hl kwa">when others</span> <span class="hl opt">=&gt;</span>
+      Put_Line<span class="hl opt">(</span><span class="hl str">&quot;I don't know what went wrong.&quot;</span><span class="hl opt">);</span>
+      <span class="hl slc">-- Close files and do general cleanup.</span>
+      <span class="hl kwa">raise</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>This lets us do some processing of the error, and still lets the next higher
+level do additional processing.&nbsp;  Note that it's superfluous to say simply
+<b>when others =&gt; raise;</b> because the exception will reach the next higher
+level even if that code is omitted.&nbsp;  Any unhandled exception reaches the
+next higher level.</p>
+
+<p>An error occurring <b>in an exception handler</b> is unhandled and reaches
+the next higher level (unless it occurs in a block with its own exception
+handler).</p>
+
+
+<p>In Ada 95, it's possible to get some information about an exception, even in
+the <b>when others</b> branch of an exception handler.&nbsp;  The package
+Ada.Exceptions provides a type Exception_Occurrence and three functions
+(Exception_Name, Exception_Message, and Exception_Information) that take an
+object of type Exception_Occurrence and return a String.&nbsp;  Here's a sample
+program making use of that feature:
+<pre class="hl">   <span class="hl kwa">package</span> P <span class="hl kwa">is</span>
+      Cain <span class="hl opt">:</span> <span class="hl kwa">exception</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> P<span class="hl opt">;</span>
+
+   <span class="hl kwa">with</span> P<span class="hl opt">,</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">,</span> Ada<span class="hl opt">.</span>Exceptions<span class="hl opt">;</span>
+   <span class="hl kwa">use</span> P<span class="hl opt">,</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>
+   <span class="hl kwa">procedure</span> Test <span class="hl kwa">is</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">raise</span> Cain<span class="hl opt">;</span>
+   <span class="hl kwa">exception when</span> Fault <span class="hl opt">:</span> <span class="hl kwa">others</span> <span class="hl opt">=&gt;</span>
+      Put_Line<span class="hl opt">(</span>Ada<span class="hl opt">.</span>Exceptions<span class="hl opt">.</span>Exception_Name<span class="hl opt">(</span>Fault<span class="hl opt">));</span>
+   <span class="hl kwa">end</span> Test<span class="hl opt">;</span>
+</pre>
+</p>
+
+
+<p>Note that we create an identifier (like <b>Fault</b>) and place it and a
+colon between <b>when</b> and the name of the exception (or
+<b>others</b>).&nbsp;  This automatically declares the constant <b>Fault</b> to
+be of the proper type, Exception_Occurrence.</p>
+
+<p>The function <b>Exception_Name</b> returns the full name of the exception,
+using dot notation.&nbsp;  This tells us in which package the exception was
+declared.&nbsp;  For example, the above program displays <b>P.CAIN</b> because
+<b>Cain</b> was declared in the package <b>P</b>.</p>
+
+<p>The information retrieved by <b>Exception_Message</b> and
+<b>Exception_Information</b> depends on the particular implementation of Ada
+95.&nbsp;  However, in the case where we deliberately raise an exception
+ourselves, we can control the information that will be retrieved by
+<b>Exception_Message</b>.&nbsp;  Instead of executing the <b>raise</b>
+statement, we call the procedure <b>Raise_Exception</b> in Ada.Exceptions.&nbsp;
+The first parameter is the name of the exception followed by <b>'Identity</b>,
+and the second parameter is the string that we want <b>Exception_Message</b> to
+retrieve.&nbsp;  For example, if exception <b>Cain</b> is defined, instead of
+<b>raise Cain;</b> we could write
+<b>Ada.Exceptions.Raise_Exception(Cain'Identity,
+"That number is too large.");</b>.&nbsp; Then, in the exception handler, the
+call to <b>Ada.Exceptions.Exception_Message</b> would return the string
+<b>"That number is too large."</b></p>
+
+<p>One warning about <b>Storage_Error</b>:&nbsp;  When a handler for
+<b>Storage_Error</b> is reached, the program has already run out of
+memory.&nbsp;  The program may no longer be able to use Ada.Text_IO,
+Exception_Name, Exception_Message, etc.&nbsp;  An attempt to do so may just
+raise Storage_Error again, bypassing your handler.</p>
+
+<p><div class="adat-q">
+<h2>Question</h2>
+<pre class="hl">   <span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span> <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>      
+   <span class="hl kwa">procedure</span> One <span class="hl kwa">is</span>                        
+      <span class="hl kwa">procedure</span> Two <span class="hl kwa">is separate</span><span class="hl opt">;</span>            
+   <span class="hl kwa">begin</span>                                   
+      Two<span class="hl opt">;</span>                                  
+   <span class="hl kwa">exception</span>                               
+      <span class="hl kwa">when others</span> <span class="hl opt">=&gt;</span>                        
+         Put_Line<span class="hl opt">(</span><span class="hl str">&quot;1&quot;</span><span class="hl opt">);</span>                      
+   <span class="hl kwa">end</span> One<span class="hl opt">;</span>                                
+
+
+   <span class="hl kwa">separate</span> <span class="hl opt">(</span>One<span class="hl opt">)</span>
+   <span class="hl kwa">procedure</span> Two <span class="hl kwa">is</span>
+      Cain <span class="hl opt">:</span> <span class="hl kwa">exception</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">raise</span> Cain<span class="hl opt">;</span>
+   <span class="hl kwa">exception</span>
+      <span class="hl kwa">when others</span> <span class="hl opt">=&gt;</span>
+         Put_Line<span class="hl opt">(</span><span class="hl str">&quot;2&quot;</span><span class="hl opt">);</span>
+   <span class="hl kwa">end</span> Two<span class="hl opt">;</span>
+</pre>
+What will the above program display?
+
+<ol>
+<li>
+<a href="javascript:adat_toggle('adat-excp2-a1');">The program will display
+1</a>
+<div id="adat-excp2-a1" class="adat-a" style="display: none">No, Two handles
+the exception, so it never reaches One.</div>
+</li>
+<li>
+<a href="javascript:adat_toggle('adat-excp2-a2');">The program will display
+2</a>
+<div id="adat-excp2-a2" class="adat-a" style="display: none"><b>You're
+right!</b>&nbsp;  Two handles the exception, so it never reaches One.</div>
+</li>
+
+</ol>
+
+</div></p>
+    
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Outside Assignment 6' href='index.html' />
+<link rel='prev' title='Outside Assignment 6' href='index.html' />
+<link rel='next' title='Congratulations on Completing Outside Assignment 6'
+      href='oa6ans.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor">
+
+<title>AdaTutor - Exercise in Tasking</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="index.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="oa6ans.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Exercise in Tasking</h2>
+<p>On page 33 of your printed course notes is a listing of
+<b><a href='tasking.dum'>TASKING.DUM</a></b>.&nbsp;  This program calls a task
+entry to display <b>Tick!</b> on the screen every five seconds until it has been
+displayed nine times.</p>
+
+<p>Every time <b>delay</b> is executed, the message <b>(5-second delay)</b> is
+displayed so that the delay will be visible on the screen.&nbsp;  The program is
+entirely in lower case, because your assignment is to modify it.&nbsp;  If you
+make your modifications in upper case, it will be easy to see what you've
+changed.</p>
+
+<p>We want you to change the declaration of T from a single task to an
+<b>array</b> of three tasks.&nbsp;  The tasks are numbered 1, 2, and 3.&nbsp;
+Task 1 is to be activated every <b>two</b> five-second intervals.&nbsp;  Task 2
+is to be activated every <b>three</b> five- -second intervals, and task 3, every
+<b>four</b>.&nbsp;  Also, instead of displaying <b>Tick!</b>, each task will
+identify itself by number, for example, <b>Task number 3 is starting</b>.&nbsp;
+Output should look as shown on page 35 of your printed notes.</p>
+
+<p>We recommend that you create an array of three counters.&nbsp;  Each counter
+counts down from its period (2, 3, or 4) to zero by one count every
+interval.&nbsp;  When a counter reaches zero, the corresponding task entry is
+called, and the counter is reset to its period.&nbsp;  All three counters should
+be initialized to zero, so that all three tasks display their messages
+immediately upon activation of the program.&nbsp;  You should use the rendezvous
+mechanism to inform each task of its number (1, 2, or 3).&nbsp;  Your program
+should use a loop to do an orderly shutdown of all three tasks at the end.</p>
+
+<p>Here are the steps to follow for Outside Assignment 6.&nbsp;  They're also
+in your printed course notes on page 34:
+<ol>
+<li>Copy the file TASKING.DUM to TASKING.ADA.&nbsp;  Compile, link, and execute
+the program to make sure it displays <b>Tick!</b> nine times, with a 5-second
+delay after each &ldquo;Tick.&rdquo;</li>
+
+<li>Edit TASKING.ADA to become your solution.&nbsp;  Make your changes in upper
+case.</li>
+
+<li>Compile TASKING.ADA, link, and execute.</li>
+
+<li>Compare your output with page 35 of your printed course notes.&nbsp;  If
+there are any errors, go back to step 2.</li>
+
+<li>When your output agrees with your printed course notes, you've finished the
+    assignment and will have a chance to compare your solution with ours.</li>
+</ol>
+
+Please stop reading AdaTutor temporarily, and try Outside Assignment 6.&nbsp;
+Work at your own pace; there's no deadline.&nbsp;  Good luck!</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Advanced Topics' href='index.html' />
+<link rel='prev' title='Renaming' href='renaming.html' />
+<link rel='next' title='Representation Clauses and System' href='rep-clause.html' />
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, subprogram parameters with generics">
+
+<title>AdaTutor - Subprogram Parameters with Generics</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="renaming.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="rep-clause.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Subprogram Parameters with Generics</h2>
+<p>The generic part of a subprogram or package can specify a dummy
+<b>subprogram</b> as well as a dummy <b>type</b> or <b>object</b>.&nbsp;  This
+is similar to using subprograms as parameters in Algol and Pascal, and to using
+the little-known keyword EXTERNAL in Fortran.&nbsp;  In Ada, we simply precede
+the dummy subprogram specification with the keyword <b>with</b> in the generic
+part.&nbsp;  This use of the word <b>with</b> has nothing to do with context
+clauses.&nbsp;  Here's the specification of a generic function that has one
+dummy function specification in the generic part:
+<pre class="hl"><span class="hl kwa">generic</span>
+   <span class="hl kwa">with function</span> Dummy<span class="hl opt">(</span>X <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Float</span><span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+<span class="hl kwa">function</span> Definite_Integral<span class="hl opt">(</span>Lower_Limit<span class="hl opt">,</span> Upper_Limit <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Float</span><span class="hl opt">)</span>
+   <span class="hl kwa">return</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>If we instantiate Ada.Numerics.Generic_Elementary_Functions for type Float,
+and <b>use</b> that instantiation, we get functions like Cos for type
+Float.&nbsp;  We could then instantiate Definite_Integral for Cos, and make use
+of it as follows:
+
+<pre class="hl"> Answer <span class="hl opt">:</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+ <span class="hl kwa">function</span> Definite_Integral_Of_Cos <span class="hl kwa">is new</span> Definite_Integral<span class="hl opt">(</span>Cos<span class="hl opt">);</span>
+ <span class="hl opt">...</span>
+ Answer <span class="hl opt">:=</span> Definite_Integral_Of_Cos<span class="hl opt">(</span>Lower_Limit <span class="hl opt">=&gt;</span> <span class="hl num">0.0</span><span class="hl opt">,</span>
+                                    Upper_Limit <span class="hl opt">=&gt;</span> <span class="hl num">1.5708</span><span class="hl opt">);</span>
+</pre>
+</p>
+
+<p>
+<pre class="hl"><span class="hl kwa">generic</span>
+   <span class="hl kwa">with function</span> Dummy<span class="hl opt">(</span>X <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Float</span><span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+<span class="hl kwa">function</span> Definite_Integral<span class="hl opt">(</span>Lower_Limit<span class="hl opt">,</span> Upper_Limit <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Float</span><span class="hl opt">)</span>
+   <span class="hl kwa">return</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+
+<span class="hl kwa">function</span> Definite_Integral<span class="hl opt">(</span>Lower_Limit<span class="hl opt">,</span> Upper_Limit <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Float</span><span class="hl opt">)</span>
+   <span class="hl kwa">return</span> <span class="hl kwb">Float</span> <span class="hl kwa">is</span>
+   Mult <span class="hl opt">:</span> <span class="hl kwa">array</span><span class="hl opt">(</span><span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">6</span><span class="hl opt">)</span> <span class="hl kwa">of</span> <span class="hl kwb">Float</span> <span class="hl opt">:= (</span><span class="hl num">1.0</span><span class="hl opt">,</span> <span class="hl num">4.0</span><span class="hl opt">,</span> <span class="hl num">2.0</span><span class="hl opt">,</span> <span class="hl num">4.0</span><span class="hl opt">,</span>
+                                     <span class="hl num">2.0</span><span class="hl opt">,</span> <span class="hl num">4.0</span><span class="hl opt">,</span> <span class="hl num">1.0</span><span class="hl opt">);</span>
+   Sum  <span class="hl opt">:</span> <span class="hl kwb">Float</span> <span class="hl opt">:=</span> <span class="hl num">0.0</span><span class="hl opt">;</span>
+   X    <span class="hl opt">:</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>  <span class="hl slc">-- the independent variable</span>
+<span class="hl kwa">begin</span>
+   <span class="hl kwa">for</span> I <span class="hl kwa">in</span> <span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">6</span> <span class="hl kwa">loop</span>
+      X   <span class="hl opt">:=</span> Lower_Limit
+             <span class="hl opt">+ (</span><span class="hl kwb">Float</span><span class="hl opt">(</span>I<span class="hl opt">) /</span> <span class="hl num">6.0</span><span class="hl opt">) * (</span>Upper_Limit <span class="hl opt">-</span> Lower_Limit<span class="hl opt">);</span>
+      Sum <span class="hl opt">:=</span> Sum <span class="hl opt">+</span> Mult<span class="hl opt">(</span>I<span class="hl opt">) *</span> Dummy<span class="hl opt">(</span>X<span class="hl opt">);</span>
+   <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+   <span class="hl kwa">return</span> Sum <span class="hl opt">* (</span>Upper_Limit <span class="hl opt">-</span> Lower_Limit<span class="hl opt">) /</span> <span class="hl num">18.0</span><span class="hl opt">;</span>
+<span class="hl kwa">end</span> Definite_Integral<span class="hl opt">;</span>
+</pre>
+This is one possible body for the generic function Definite_Integral.&nbsp;
+(We've repeated the specification above the body for reference.)&nbsp;  This
+function integrates the function Dummy between the two limits by evaluating
+Dummy at seven points and using Simpson's rule.&nbsp;  (Definite_Integral could
+be improved by making the number of points a generic parameter, instead of
+fixing it at seven.)</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

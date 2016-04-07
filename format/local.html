@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link href="../adatutor.css" type="text/css" rel="stylesheet">
+<link rel='top' title='Contents' href='../index.html' />
+<link rel='up' title='The Format of an Ada Program' href='index.html' />
+<link rel='prev' title='The Format of an Ada Program' href='first.html' />
+<link rel='next' title='Capitalization and Spacing' href='cap-space.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor">
+
+<title>AdaTutor - Local Declarations</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+<td><div class='nav-prev'><a href="first.html">Prev</a></div></td>
+<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+<td><div class="nav-next"><a href="cap-space.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<a name="f-local"></a><h2>Local Declarations</h2>
+<pre class="hl"><span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>
+<span class="hl kwa">procedure</span> Hello <span class="hl kwa">is</span>
+   I    <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+   X<span class="hl opt">,</span> Y <span class="hl opt">:</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+<span class="hl kwa">begin</span>
+  Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">.</span>Put_Line<span class="hl opt">(</span><span class="hl str">&quot;Hello!&quot;</span><span class="hl opt">);</span>
+<span class="hl kwa">end</span> Hello<span class="hl opt">;</span>
+</pre>
+<p>
+Local declarations may appear between <b>procedure ... is</b> and
+<b>begin</b>.&nbsp; This simple program doesn't need any, but we've added
+two declarative statements by way of example.&nbsp;  Executable statements
+are said to be <b>executed</b> when they're obeyed, but when a declarative
+statement is obeyed, it's said to be <b>elaborated</b>.&nbsp;  Declarative
+statements are elaborated at run time, not compile time.</p>
+
+<p>In this example, when the procedure is called (either from another
+procedure or as the main program), the declarations are elaborated and
+variables I, X, and Y come into existence.&nbsp;  Then the executable
+statement(s) are obeyed.&nbsp;  When the <b>end</b> statement is reached and
+the procedure returns, I, X, and Y go out of existence.&nbsp;  These three
+variables are local to procedure Hello and can't be referenced outside this
+procedure.</p>
+
+<p>If Hello is called again, I, X, and Y will again be brought into existence,
+but their previous values won't necessarily be remembered between calls.&nbsp;
+(Of course, in this simple example, I, X, and Y aren't assigned values
+anyway.)</p>
+
+<p>Like C and Pascal, and unlike Basic and Fortran, every Ada variable must be
+declared.&nbsp;  (The index of an Ada <b>for</b> loop declares itself, but
+we'll discuss that later.)&nbsp;  Unlike Pascal, Ada programs don't need to
+say "var."&nbsp;  Ada knows that the objects declared above are variables.&nbsp;
+Constant declarations contain the reserved word <b>constant</b> and may or
+may not specify a type, like this:
+
+<pre class="hl"> Pi     <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> <span class="hl num">3.141592654</span><span class="hl opt">;</span>
+ Two_Pi <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl kwb">Float</span> <span class="hl opt">:=</span> <span class="hl num">2.0</span> <span class="hl opt">*</span> Pi<span class="hl opt">;</span>
+</pre>
+Constant declarations that don't specify a type are called <b>named numbers</b>.</p>
+
+<p>The difference between a named number, like Pi, and a constant declaration
+that specifies a type, like Two_Pi, is subtle.&nbsp;  We'll explain the
+difference in the section on More Records and Types under "Universal
+Types."&nbsp;  For now, it doesn't make any difference whether or not a
+constant declaration specifies a type.&nbsp; The compiler can tell, from
+looking at the constant, whether the type is Integer or Float.</p>
+
+<p>Declarations are elaborated in order, top to bottom.&nbsp;  The two
+declarations above must appear in the order shown, because the second
+refers to the first.</p>
+
+<p>Unlike Pascal, Ada allows constant declarations to be intermixed with
+variable declarations, so long as no declaration refers to a declaration
+below it.</p>
+
+<p>
+<div class='adat-q'>
+<h2>Question</h2>
+<pre class="hl">   <a href="javascript:adat_toggle('f1a1', 'f1a2', 'f1a3');"><span class="hl num">1</span>    <span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span></a>
+        <span class="hl kwa">procedure</span> Hello <span class="hl kwa">is</span>
+   <a href="javascript:adat_toggle('f1a2', 'f1a1', 'f1a3');"><span class="hl num">2</span>       I    <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+           X<span class="hl opt">,</span> Y <span class="hl opt">:</span> <span class="hl kwb">Float</span><span class="hl opt">;</span></a>
+        <span class="hl kwa">begin</span>
+   <a href="javascript:adat_toggle('f1a3', 'f1a1', 'f1a2');"><span class="hl num">3</span>       Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">.</span>Put_Line<span class="hl opt">(</span><span class="hl str">&quot;Hello!&quot;</span><span class="hl opt">);</span></a>
+        <span class="hl kwa">end</span> Hello<span class="hl opt">;</span>
+</pre>
+
+OK, in the program above, where are the <b>executable statement(s)</b>?
+<div id='f1a1' class='adat-a' style="display: none">
+1 - No, <b>with Ada.Text_IO;</b> is a context clause.&nbsp;
+ Executable statements are placed between <b>begin</b> and <b>end</b>.
+</div>
+
+<div id='f1a2' class='adat-a' style="display: none">
+2 - No, <b>declarative</b> statements are placed
+between <b>procedure ... is</b> and <b>begin</b>.
+<b>Executable</b> statements are placed between <b>begin</b> and <b>end</b>.
+</div>
+
+<div id='f1a3' class='adat-a' style="display: none">
+3 - <b>You're right!</b>&nbsp;  Executable statements are placed between
+<b>begin</b> and <b>end</b>.
+</div>
+</div>
+</p>
+<p>
+<div class='adat-q'>
+<h4>Question</h4>
+<pre class="hl">   <a href="javascript:adat_toggle('f1a4', 'f1a5', 'f1a6');"><span class="hl num">1</span>    <span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span></a>
+        <span class="hl kwa">procedure</span> Hello <span class="hl kwa">is</span>
+   <a href="javascript:adat_toggle('f1a5', 'f1a4', 'f1a6');"><span class="hl num">2</span>       I    <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+           X<span class="hl opt">,</span> Y <span class="hl opt">:</span> <span class="hl kwb">Float</span><span class="hl opt">;</span></a>
+        <span class="hl kwa">begin</span>
+   <a href="javascript:adat_toggle('f1a6', 'f1a4', 'f1a5');"><span class="hl num">3</span>       Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">.</span>Put_Line<span class="hl opt">(</span><span class="hl str">&quot;Hello!&quot;</span><span class="hl opt">);</span></a>
+        <span class="hl kwa">end</span> Hello<span class="hl opt">;</span>
+</pre>
+
+Now, where are the <b>local declaration(s)</b>?
+<div id='f1a4' class='adat-a' style="display: none">1 - No,
+    <b>with Ada.Text_IO;</b> is a context clause.&nbsp;  Local declarations are
+    placed between <b>procedure ... is</b> and <b>begin</b>.
+</div>
+
+<div id='f1a5' class='adat-a' style="display: none">2 -
+    <b>You're right!</b>&nbsp; Local declarations are placed between
+    <b>procedure ... is</b> and <b>begin</b>.
+</div>
+
+<div id='f1a6' class='adat-a' style="display: none">3 - No, executable
+    statements are placed between <b>begin</b> and <b>end</b>.&nbsp;  Local
+    declarations are placed between <b>procedure ... is</b> and <b>begin</b>.
+</div>
+</div>
+</p>
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

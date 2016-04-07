@@ -1,0 +1,167 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Recursion' href='index.html' />
+<link rel='prev' title='Recursion' href='index.html' />
+<link rel='next' title='The Tower of Hanoi Problem' href='hanoi.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, recursion">
+
+<title>AdaTutor - Recursion</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="index.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="hanoi.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Recursion</h2>
+<p>Ada procedures and functions may call themselves, directly or
+indirectly.&nbsp;  This process is called <b>recursion</b>.&nbsp;  While
+recursion often uses a little extra memory and execution time, for certain
+types of problems it pays large dividends in program simplicity.&nbsp;  That's
+a very worthwhile exchange!</p>
+
+<p>For example, let's write a function to compute the factorial of a positive
+integer.&nbsp;  The factorial of an integer is the product of all the integers
+from that number down to one.&nbsp;  Thus, Factorial(5) = 5 * 4 * 3 * 2 * 1 =
+120.&nbsp; Although we could easily write this function with a <b>for</b> loop,
+we'll use recursion instead.&nbsp;  Note that if N = 1, then Factorial(N) = 1;
+otherwise, Factorial(N) = N * Factorial(N - 1).</p>
+
+<pre class="hl">   <span class="hl kwa">function</span> Factorial<span class="hl opt">(</span>N <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Positive</span><span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Positive</span> <span class="hl kwa">is</span>
+      Answer <span class="hl opt">:</span> <span class="hl kwb">Positive</span> <span class="hl opt">:=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">if</span> N <span class="hl opt">&gt;</span> <span class="hl num">1</span> <span class="hl kwa">then</span><div class="adat-a">         Answer <span class="hl opt">:=</span> N <span class="hl opt">*</span> Factorial<span class="hl opt">(</span>N <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">);</span></div>      <span class="hl kwa">end if</span><span class="hl opt">;</span>
+      <span class="hl kwa">return</span> Answer<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Factorial<span class="hl opt">;</span>
+</pre>
+
+<p>The highlighted line shows where this function calls itself.&nbsp;  Recursive
+subprograms always call themselves <b>conditionally</b>; otherwise the program
+would run out of memory, no matter how large the machine.&nbsp;  Here the
+recursive call is inside an <b>if</b> block.</p>
+
+<p>Note that Answer is initialized to 1.&nbsp;  If the function is called with
+N = 1, the <b>if</b> statement is False, Answer isn't modified, and <b>1</b> is
+returned as the value of the function.&nbsp;  If the function is called with
+N = 2, the <b>if</b> statement is True, and the highlighted line is
+executed.&nbsp;  The machine starts to compute the expression as 2 * ..., and
+then Factorial is called with N = 1.&nbsp;  It's as if the machine made another
+copy of the code for Factorial and called that.&nbsp; Actually there's only one
+copy of the code, but the machine maintains multiple pointers to it.</p>
+
+<p>When the recursive call is made, the system allocates additional memory for
+new versions of any local variables like Answer.&nbsp;  Also, the parameters
+like N are separate for each recursive call.</p>
+
+<p>Suppose the calling program calls Factorial with N = 2.&nbsp;  Then, in
+computing the expression, Factorial calls itself with N = 1.&nbsp;  In this
+second call, a new local variable Answer is created, separate from the one in
+the first call.&nbsp; Also, parameter N is 1 in the second call, but 2 in the
+first call.&nbsp;  In the second call, the <b>if</b> statement is False, and 1
+is returned.&nbsp;  In the first call, the calculation of the expression is
+completed, using the value 1 returned by the second call.&nbsp;  Thus, Answer
+becomes 2 * 1 = 2, and the first call returns the answer 2 to the calling
+program.</p>
+
+<p>If the calling program calls Factorial with N = 3, the function starts to
+compute the expression as Answer := 3 * ..., and calls Factorial with
+N = 2.&nbsp; In this second call, the function starts to compute Answer
+:= 2 * ..., and calls Factorial with N = 1.&nbsp;  In this third call, the
+<b>if</b> statement is False, and the answer 1 is returned to the second
+call.&nbsp;  The second call finishes the computation of the expression Answer
+:= 2 * 1, and returns the answer 2 to the first call.&nbsp;  Finally, the first
+call finishes computing the expression with Answer := 3 * 2, and returns the
+answer 6 to the calling program.</p>
+
+<p>This simple function wouldn't have been complicated even without
+recursion.&nbsp;  In a moment we'll discuss the Tower of Hanoi problem.&nbsp;
+The recursive solution is very simple, but a solution without recursion would
+be very complicated indeed.</p>
+
+<p>
+<div class="adat-q">
+<h2>Question</h2>
+In this question, function A calls B, and B conditionally calls A.&nbsp;  The
+specification of function B is given early so that A can call it.
+<pre class="hl">   <span class="hl kwa">function</span> B <span class="hl opt">(</span>I <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">function</span> A <span class="hl opt">(</span>I <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Integer</span> <span class="hl kwa">is</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">return</span> B<span class="hl opt">(</span>I <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">) +</span> <span class="hl num">1</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> A<span class="hl opt">;</span>
+
+   <span class="hl kwa">function</span> B <span class="hl opt">(</span>I <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Integer</span> <span class="hl kwa">is</span>
+      Ans <span class="hl opt">:</span> <span class="hl kwb">Integer</span> <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">if</span> I <span class="hl opt">&gt;</span> <span class="hl num">0</span> <span class="hl kwa">then</span>
+         Ans <span class="hl opt">:=</span> A<span class="hl opt">(</span>I<span class="hl opt">);</span>
+      <span class="hl kwa">end if</span><span class="hl opt">;</span>
+      <span class="hl kwa">return</span> Ans<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> B<span class="hl opt">;</span>
+</pre>
+If the main program calls function A with a parameter equal to 2, what value
+will A return:<br />
+<a href="javascript:adat_toggle('adat-recura0', 'adat-recura1', 'adat-recura2',
+ 'adat-recura3');">0</a>,
+<a href="javascript:adat_toggle('adat-recura1', 'adat-recura0', 'adat-recura2',
+ 'adat-recura3');">1</a>,
+<a href="javascript:adat_toggle('adat-recura2', 'adat-recura0', 'adat-recura1',
+ 'adat-recura3');">2</a>,
+or <a href="javascript:adat_toggle('adat-recura3', 'adat-recura0',
+'adat-recura1', 'adat-recura2');">3</a>?&nbsp;  You may need pencil and paper
+to figure this one out.
+
+<div id="adat-recura0" class="adat-a" style="display: none">0 - No, when the
+main program calls A(2), A starts to evaluate B(1) + 1.&nbsp;  The <b>if</b>
+statement in B is True, so B simply calls A(1).&nbsp;  The call A(1) starts to
+evaluate B(0) + 1.&nbsp;  The <b>if</b> statement in this call to B is False,
+so B(0) simply returns 0, and the call A(1) returns 0 + 1 = 1.&nbsp;  The call
+B(1) returns the same answer, so the call A(2) returns 1 + 1 = 2.
+</div>
+
+<div id="adat-recura1" class="adat-a" style="display: none">1 - No, when the
+main program calls A(2), A starts to evaluate B(1) + 1.&nbsp;  The <b>if</b>
+statement in B is True, so B simply calls A(1).&nbsp;  The call A(1) starts to
+evaluate B(0) + 1.&nbsp;  The <b>if</b> statement in this call to B is False,
+so B(0) simply returns 0, and the call A(1) returns 0 + 1 = 1.&nbsp;  The call
+B(1) returns the same answer, so the call A(2) returns 1 + 1 = 2.
+</div>
+
+<div id="adat-recura2" class="adat-a" style="display: none">2 - <b>You're
+right!</b>&nbsp; When the main program calls A(2), A starts to evaluate
+B(1) + 1.&nbsp;  The <b>if</b> statement in B is True, so B simply calls
+A(1).&nbsp;  The call A(1) starts to evaluate B(0) + 1.&nbsp;  The <b>if</b>
+statement in this call to B is False, so B(0) simply returns 0, and the call
+A(1) returns 0 + 1 = 1.&nbsp;  The call B(1) returns the same answer, so the
+call A(2) returns 1 + 1 = 2.
+</div>
+
+<div id="adat-recura3" class="adat-a" style="display: none">3 - No, when the
+main program calls A(2), A starts to evaluate B(1) + 1.&nbsp;  The <b>if</b>
+statement in B is True, so B simply calls A(1).&nbsp;  The call A(1) starts to
+evaluate B(0) + 1.&nbsp;  The <b>if</b> statement in this call to B is False,
+so B(0) simply returns 0, and the call A(1) returns 0 + 1 = 1.&nbsp;  The call
+B(1) returns the same answer, so the call A(2) returns 1 + 1 = 2.
+</div>
+</div>
+</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

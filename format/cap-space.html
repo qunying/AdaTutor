@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link href="../adatutor.css" type="text/css" rel="stylesheet">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='The Format of an Ada Program' href='index.html' />
+<link rel='prev' title='Local Declarations' href='local.html' />
+<link rel='next' title='Comments' href='comments.html' />
+
+<script type="text/javascript" src="adatutor.js"></script>
+
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, captialization, spacing">
+
+<title>AdaTutor - Capitalization and Spacing</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+<td><div class='nav-prev'><a href="local.html">Prev</a></div></td>
+<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+<td><div class="nav-next"><a href="comments.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<a name="f-cap"></a><h2>Capitalization and Spacing</h2>
+<pre class="hl"><span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>
+<span class="hl kwa">procedure</span> Hello <span class="hl kwa">is</span>
+<span class="hl kwa">begin</span>
+  Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">.</span>Put_Line<span class="hl opt">(</span><span class="hl str">&quot;Hello!&quot;</span><span class="hl opt">);</span>
+<span class="hl kwa">end</span> Hello<span class="hl opt">;</span>
+</pre>
+<p>
+Except in quoted Strings like &ldquo;Hello!&rdquo;, capitalization isn't
+important in Ada.&nbsp; The Ada 95 RM shows all reserved words in lower case
+and all identifiers with initial capitals, so that's the style we're using in
+our examples.&nbsp;  (The Ada 83 RM, by contrast, used all capitals for
+identifiers.&nbsp;  That style is rarely used today.)</p>
+
+<p>In Ada, unlike Fortran, statements may begin anywhere on the line; columns
+aren't significant.&nbsp;  Most people indent the local declarations and the
+executable statements two or three spaces, as shown above.&nbsp;  Spaces and
+tabs may not appear <b>within</b> reserved words and identifiers, but they may
+freely be used <b>between</b> elements of the program.</p>
+
+<p>Since a semicolon marks the end of a statement, we can put several
+statements on one line, like this:
+<pre class="hl">     I <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>   X<span class="hl opt">,</span> Y <span class="hl opt">:</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>We can also continue a statement over several lines, breaking anywhere a
+space would be permitted, like this:
+<pre class="hl">         Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">.</span>
+       Put_Line<span class="hl opt">(</span>
+       <span class="hl str">&quot;Hello!&quot;</span><span class="hl opt">);</span>
+
+</pre>
+</p>
+
+<p>Many people follow the capitalization and spacing style of the Ada 95 RM, so
+we'll do that in this course.</p>
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

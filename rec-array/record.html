@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Records and Arrays' href='index.html' />
+<link rel='prev' title='Records and Arrays' href='index.html' />
+<link rel='next' title='Arrays' href='array.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, records">
+
+<title>AdaTutor - Records</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="index.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="array.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Records</h2>
+<p>A <b>record</b> lets us group several declarations together and refer to
+them as one:
+<pre class="hl">   <span class="hl kwa">type</span> Month_Type <span class="hl kwa">is</span> <span class="hl opt">(</span>Jan<span class="hl opt">,</span> Feb<span class="hl opt">,</span> Mar<span class="hl opt">,</span> Apr<span class="hl opt">,</span> May<span class="hl opt">,</span> Jun<span class="hl opt">,</span> Jul<span class="hl opt">,</span> Aug<span class="hl opt">,</span>
+                       Sep<span class="hl opt">,</span> Oct<span class="hl opt">,</span> Nov<span class="hl opt">,</span> Dec<span class="hl opt">);</span>
+   <span class="hl kwa">subtype</span> Day_Subtype <span class="hl kwa">is</span> <span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">31</span><span class="hl opt">;</span>
+   <span class="hl kwa">type</span> Date <span class="hl kwa">is</span>
+    <span class="hl kwa">record</span>
+      Day   <span class="hl opt">:</span> Day_Subtype<span class="hl opt">;</span>   <span class="hl slc">-- Naturally, Day_Subtype and</span>
+      Month <span class="hl opt">:</span> Month_Type<span class="hl opt">;</span>    <span class="hl slc">-- Month_Type must be defined</span>
+      Year  <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>       <span class="hl slc">-- before type Date is defined.</span>
+    <span class="hl kwa">end record</span><span class="hl opt">;</span>
+   USA <span class="hl opt">:</span> Date<span class="hl opt">;</span>
+</pre></p>
+
+<p>In this example, <b>USA</b>  has three parts (called &ldquo;fields&rdquo;):
+<b>USA.Day</b>, <b>USA.Month</b>, and <b>USA.Year</b>.&nbsp;  The fields of a
+record can be of any type, including other records.&nbsp;  Here <b>USA.Day</b>
+is of <b>type</b> Integer, <b>USA.Month</b> is of type Month_Type, and
+<b>USA.Year</b> is of type Integer.&nbsp;  The fields of USA may be referenced
+separately:
+<pre class="hl">      USA<span class="hl opt">.</span>Day   <span class="hl opt">:=</span> <span class="hl num">4</span><span class="hl opt">;</span>
+      USA<span class="hl opt">.</span>Month <span class="hl opt">:=</span> Jul<span class="hl opt">;</span>
+      USA<span class="hl opt">.</span>Year  <span class="hl opt">:=</span> <span class="hl num">1776</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>However, <b>USA</b> can also be referenced as one object.&nbsp;  For example,
+we could have assigned all three fields in one statement:  <b>USA := (4, Jul,
+1776);</b>.&nbsp;  Here the object on the left is of type Date, and the object
+on the right is called an <b>aggregate</b>.&nbsp;  The aggregate fits the type
+Date because it contains an Integer, a Month_Type, and another Integer.&nbsp;
+This aggregate is said to use <b>positional</b> notation because its three
+parts appear in the same order as the three parts of the record definition:
+first Day, then Month, then Year.</p>
+
+<p>We can specify the parts of an aggregate in any order if we use <b>named</b> notation:<b>USA := (Month => Jul, Day => 4, Year => 1776);</b>.&nbsp;  (The
+symbol <b>=&t;</b> is read &ldquo;arrow&rdquo; and may not contain a
+space.)&nbsp;  Using named notation often improves program readability,
+especially if the names of the fields are well chosen.</p>
+
+<p>We can switch from positional to named notation in an aggregate.&nbsp;  But
+once we use named notation, the compiler loses track of position, so we can't
+switch back to positional.&nbsp;  For example, the following is legal:
+<pre class="hl">      USA <span class="hl opt">:= (</span><span class="hl num">4</span><span class="hl opt">,</span> Year <span class="hl opt">=&gt;</span> <span class="hl num">1776</span><span class="hl opt">,</span> Month <span class="hl opt">=&gt;</span> Jul<span class="hl opt">);</span>
+</pre>
+</p>
+
+<p>But the following is illegal because positional notation can't follow named:
+<pre class="hl">      USA <span class="hl opt">:= (</span><span class="hl num">4</span><span class="hl opt">,</span> Year <span class="hl opt">=&gt;</span> <span class="hl num">1776</span><span class="hl opt">,</span> Jul<span class="hl opt">);</span> <span class="hl slc">-- illegal</span>
+</pre>
+</p>
+
+<p>Record discriminants, record variants, and tagged records will be discussed
+in the section on <a href='../more/index.html'>More Records and Types.</a></p>
+
+<p>
+<div class="adat-q">
+<h2>Question</h2>
+<pre class="hl">  <span class="hl kwa">procedure</span> Record_Exercise <span class="hl kwa">is</span>
+    <span class="hl kwa">type</span> Month_Type <span class="hl kwa">is</span> <span class="hl opt">(</span>Jan<span class="hl opt">,</span> Feb<span class="hl opt">,</span> Mar<span class="hl opt">,</span> Apr<span class="hl opt">,</span> May<span class="hl opt">,</span> Jun<span class="hl opt">,</span>
+                        Jul<span class="hl opt">,</span> Aug<span class="hl opt">,</span> Sep<span class="hl opt">,</span> Oct<span class="hl opt">,</span> Nov<span class="hl opt">,</span> Dec<span class="hl opt">);</span>
+    <span class="hl kwa">subtype</span> Day_Subtype <span class="hl kwa">is</span> <span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">31</span><span class="hl opt">;</span>
+    <span class="hl kwa">type</span> Date <span class="hl kwa">is</span>
+      <span class="hl kwa">record</span>
+        Day   <span class="hl opt">:</span> Day_Subtype<span class="hl opt">;</span>
+        Month <span class="hl opt">:</span> Month_Type<span class="hl opt">;</span>
+        Year  <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      <span class="hl kwa">end record</span><span class="hl opt">;</span>
+    <a href="javascript:adat_toggle('adat-reca1', 'adat-reca4', 'adat-reca2', 'adat-reca3');">D1<span class="hl opt">,</span> D2<span class="hl opt">,</span> D3 <span class="hl opt">:</span> Date<span class="hl opt">;</span>  <span class="hl slc">-- 1</span></a>
+  <span class="hl kwa">begin</span>
+    <a href="javascript:adat_toggle('adat-reca2', 'adat-reca1', 'adat-reca4', 'adat-reca3');">D1       <span class="hl opt">:= (</span>Month <span class="hl opt">=&gt;</span> Jan<span class="hl opt">,</span> Day <span class="hl opt">=&gt;</span> <span class="hl num">22</span><span class="hl opt">,</span> Year <span class="hl opt">=&gt;</span> <span class="hl num">1983</span><span class="hl opt">);</span>  <span class="hl slc">-- 2</span></a>
+    D2<span class="hl opt">.</span>Day   <span class="hl opt">:=</span> <span class="hl num">22</span><span class="hl opt">;</span>
+    <a href="javascript:adat_toggle('adat-reca3', 'adat-reca1', 'adat-reca2', 'adat-reca4');">D2<span class="hl opt">.</span>Month <span class="hl opt">:=</span> <span class="hl num">1</span><span class="hl opt">;</span>  <span class="hl slc">-- 3</span></a>
+    D2<span class="hl opt">.</span>Year  <span class="hl opt">:=</span> <span class="hl num">1983</span><span class="hl opt">;</span>
+    <a href="javascript:adat_toggle('adat-reca4', 'adat-reca1', 'adat-reca2', 'adat-reca3');">D3       <span class="hl opt">:=</span> D2<span class="hl opt">;</span>  <span class="hl slc">-- 4</span></a>
+  <span class="hl kwa">end</span> Record_Exercise<span class="hl opt">;</span>
+</pre>
+
+<p> Which commented line in the above program is <b>illegal</b>?  </p>
+
+<div id="adat-reca1" class="adat-a" style="display: none">1 - No, this statement
+is legal, because several objects may be declared in one statement, if the
+objects are separated by commas.</div>
+
+<div id="adat-reca2" class="adat-a" style="display: none">2 - No, this statement
+is legal, because the fields within the aggregate may appear in any order when
+named notation is used.</div>
+ 
+<div id="adat-reca3" class="adat-a" style="display: none">3 - <b>You're
+right!</b>&nbsp;  This statement is illegal, because the types are mixed.&nbsp;
+<b>D2.Month</b> is of type Month_Type, and <b>1</b> is an integer.</div>
+
+<div id="adat-reca4" class="adat-a" style="display: none">4 - No, this statement is
+legal, because <b>D3</b> and <b>D2</b> both have the same type:
+<b>Date</b>.&nbsp; An entire record can be assigned with one statement.
+</div>
+
+</div>
+</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

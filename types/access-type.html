@@ -1,0 +1,469 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Access Types, User Defined Types, and Derived Types' href='index.html' />
+<link rel='prev' title='Access Types, User Defined Types, and Derived Types' href='index.html' />
+<link rel='next' title='Access Types' href='defined-type.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, access type">
+
+<title>AdaTutor - Access Types</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="index.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="defined-type.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Access Types</h2>
+<p>Access types are sometimes called &ldquo;pointers&rdquo; in other
+languages.&nbsp;  However, the name &ldquo;pointer&rdquo; fell into disrepute,
+because of &ldquo;dangling reference&rdquo; problems.&nbsp; Especially in C and
+C++, it's easy to make mistakes with pointers.&nbsp;  The results of pointer
+errors are unpredictable; often the system crashes.&nbsp;  With Ada's access
+types, dangling references are impossible, unless we deliberately instantiate
+Ada.Unchecked_Deallocation (discussed in the <a href='../advanced/index.html'>
+Advanced Topics</a> section) or use the attribute 'Unchecked_Access (discussed
+later in this section).&nbsp;  So Ada uses the reserved word <b>access</b>
+rather than the term &ldquo;pointer.&rdquo;</p>
+
+<p>If we define type Date as before, and write <b>USA : Date;</b> then USA has
+three fields: Day, Month, and Year.&nbsp;  However, if we write
+<pre class="hl">   <span class="hl kwa">type</span> P <span class="hl kwa">is access</span> Date<span class="hl opt">;</span>
+   D1<span class="hl opt">,</span> D2 <span class="hl opt">:</span> P<span class="hl opt">;</span>
+</pre>
+then D1 and D2 are capable of accessing (&ldquo;pointing to&rdquo;) objects of
+type Date.&nbsp; In most implementations of Ada, this means that D1 and D2 can
+each contain the machine address of the start of a record of type Date.&nbsp;
+However, this detail depends on the implementation of Ada.&nbsp; D1 and D2
+themselves don't have fields, but the objects they can access have fields.</p>
+
+<p>At present D1 and D2 access nothing.&nbsp;  However, if we execute <b>D1 :=
+new Date;</b>, then, at run time, enough memory for one record of type Date is
+allocated, and D1 is made to access (&ldquo;point to&rdquo;) to it.&nbsp;  This
+new object of type Date doesn't have a name; only the object of the access type
+has a name (D1).&nbsp;  By contrast, when we elaborate <b>USA : Date;</b> we
+create an object that has a name (USA), but nothing can access (&ldquo;point
+to&rdquo;) it.</p>
+
+<p>We can refer to the fields of the nameless object accessed by D1 as if D1
+itself had fields.&nbsp;  Thus, we can write D1.Day, D1.Month, and D1.Year, and
+use these on either side of an assignment: <b>D1.Day := 12;</b>.&nbsp; The
+entire object accessed by D1 is <b>D1.all</b>, so we could write <b>D1.all :=
+(12, Oct, 1492);</b>.&nbsp;  Note that <b>D1.Day</b> is simply an abbreviation
+for <b>D1.all.Day</b>.&nbsp;  Note also that <b>D1.Day</b> in Ada corresponds to
+D1-&gt;Day in C and C++.&nbsp;  Also, in Ada if A1 accesses an array rather than
+a record, then <b>A1.all(5)</b> may be abbreviated <b>A1(5)</b>.</p>
+
+<p>We can execute <b>D2 := new Date'(4, Jul, 1776);</b> giving the new object a
+value when it's created.&nbsp;  We can also declare <b>D3 : P := new Date;</b>
+to make D3 access an object when D3 is created, or even write <b>D3 : P := new
+Date'(4, Jul, 1776);</b> to make D3 access an object and also give the object a
+value.</p>
+
+<p>We can write <b>D3 := null; </b> to make D3 access nothing.&nbsp;  When an
+object of an access type is declared and no initialization is given, it's
+automatically initialized to <b>null</b>, so <b>D4 : P;</b> means <b>D4 : P :=
+null;</b>.&nbsp;  When such an object is null, it accesses nothing.&nbsp;  In
+this case, trying to reference the object accessed (<b>D4.Day</b> or
+<b>D4.all</b>, etc.) will raise a Constraint_Error, but will not do other damage
+such as crashing the system.&nbsp;  Of course, we can test to see if an object
+of an access type is null: <b>if D4 = null then ... end if; </b>.</p>
+
+<p>Copying an object of an access type isn't the same as copying the object
+accessed.&nbsp;  If we execute <b>D1.all := (12, Oct, 1492);</b> and then
+<b>D2.all := D1.all;</b>, the entire record is copied.&nbsp;  If we change
+D1.Day with <b>D1.Day := 13;</b>, D2.Day is still 12.&nbsp;  However, is we
+execute <b>D1.all := (12, Oct, 1492);</b> and then <b>D2 := D1;</b>, the address
+in D1 is copied to D2, so that D2 now accesses the same object as D1.&nbsp;
+Thus, if we change D1.Day with <b>D1.Day := 13;</b>, then D2.Day is also 13,
+because it references the same memory location.</p>
+
+<p>If we have <b>D1 := new Date'(12, Oct, 1492);</b> and <b>D2 := new Date'(4,
+Jul, 1776);</b> and then execute <b>D2 := D1;</b>, D2 now accesses what D1
+accesses, and nothing any longer accesses the object containing (4, Jul,
+1776).&nbsp;  Most systems cannot automatically reclaim the memory occupied by
+that object.&nbsp;  In the Advanced Topics section, we'll learn to use
+Ada.Unchecked_Deallocation to release the memory occupied by the object that D2
+accesses before we execute <b>D2 := D1;</b>.</p>
+
+<p>In Ada 95, it's possible to access an object that has a name.&nbsp;  This is
+useful when interfacing our program to other languages that use pointers, like
+C.&nbsp;  If we declare
+<pre class="hl">   <span class="hl kwa">type</span> P <span class="hl kwa">is access all</span> Date<span class="hl opt">;</span>
+   USA <span class="hl opt">:</span> <span class="hl kwa">aliased</span> Date <span class="hl opt">:= (</span><span class="hl num">4</span><span class="hl opt">,</span> Jul<span class="hl opt">,</span> <span class="hl num">1776</span><span class="hl opt">);</span>
+   D1  <span class="hl opt">:</span> P<span class="hl opt">;</span>
+</pre>
+then we can make D1 access USA by executing <b>D1 := USA'Access;</b>.&nbsp;  We
+can now refer to D1.Day, D1.Month, and D1.Year as well as USA.Day, USA.Month,
+and USA.Year.</p>
+
+<p>We can give D1 read-only access to USA by changing the first declaration
+above to &ldquo;type P is access <b>constant</b> Date;&rdquo; in that case, we
+can read, but not store into, D1.Day, D1.Month, and D1.Year (as well as the
+whole record D1.all).&nbsp;  We can still read and store into USA.Day,
+USA.Month, USA.Year, and the whole record USA.&nbsp;  To prevent ourselves from
+storing directly into USA, we can write &ldquo;USA : <b>aliased constant</b>
+Date := (4, Jul, 1776);&rdquo;.&nbsp;  In that case, we can still execute
+<b>D1 := USA'Access;</b>, but now we can't update USA either directly or
+through D1; we can only read it.</p>
+
+<p>The <b>'Access</b> attribute in Ada 95 performs an <b>accessibility check</b>
+to assure that the lifetime of the object accessed is at least as long as the
+lifetime of the access type.&nbsp;  This eliminates the danger of dangling
+references, that is, accessing an object that no longer exists in memory.&nbsp;
+For example, the highlighted line below is illegal and will be caught by the
+compiler:
+<pre class="hl"><span class="hl kwa">package</span> Schedule <span class="hl kwa">is</span>             
+   <span class="hl kwa">type</span> Date <span class="hl kwa">is</span> <span class="hl opt">...;</span>             
+   <span class="hl kwa">type</span> P <span class="hl kwa">is access all</span> Date<span class="hl opt">;</span>    
+   <span class="hl opt">...</span>                           
+<span class="hl kwa">end</span> Schedule<span class="hl opt">;</span>                   
+                              
+<span class="hl kwa">with</span> Schedule<span class="hl opt">;</span> <span class="hl kwa">use</span> Schedule<span class="hl opt">;</span>
+<span class="hl kwa">procedure</span> Test <span class="hl kwa">is</span>
+   Today <span class="hl opt">:</span> <span class="hl kwa">aliased</span> Date<span class="hl opt">;</span>
+<span class='adat-hl'>   T     <span class="hl opt">:</span> P <span class="hl opt">:=</span> Today<span class="hl kwd">'Access</span><span class="hl opt">;</span> <span class="hl slc">-- illegal</span></span>
+<span class="hl kwa">begin</span>
+   <span class="hl opt">...</span>
+<span class="hl kwa">end</span> Test<span class="hl opt">;</span>
+</pre></p>
+
+<p>The highlighted line is illegal because <b>T</b> could be stored in a global
+variable (some variable declared outside the procedure <b>Test</b>), or be
+passed to another routine.&nbsp;  Procedure <b>Test</b> could then reach its
+end, causing <b>Today</b> to cease to exist, because <b>Today</b> is declared
+inside <b>Test</b>.&nbsp;  But the copy of <b>T</b> could still exist, and it
+would then access an object that no longer exists in memory, with unpredictable
+results.&nbsp;  Ada guards against the dangling reference problem that plagues
+some other languages.</p>
+
+<p>However, Ada lets us get around the accessibility check if we want to.&nbsp;
+Our example becomes legal if we replace Today'Access with
+Today'Unchecked_Access:
+<pre class="hl"><span class="hl kwa">package</span> Schedule <span class="hl kwa">is</span>             
+   <span class="hl kwa">type</span> Date <span class="hl kwa">is</span> <span class="hl opt">...;</span>             
+   <span class="hl kwa">type</span> P <span class="hl kwa">is access all</span> Date<span class="hl opt">;</span>    
+   <span class="hl opt">...</span>                           
+<span class="hl kwa">end</span> Schedule<span class="hl opt">;</span>                   
+                              
+<span class="hl kwa">with</span> Schedule<span class="hl opt">;</span> <span class="hl kwa">use</span> Schedule<span class="hl opt">;</span>
+<span class="hl kwa">procedure</span> Test <span class="hl kwa">is</span>
+   Today <span class="hl opt">:</span> <span class="hl kwa">aliased</span> Date<span class="hl opt">;</span>
+   T     <span class="hl opt">:</span> P <span class="hl opt">:=</span> Today<span class="hl kwd">'Unchecked_Access</span><span class="hl opt">;</span> <span class="hl slc">-- legal</span>
+<span class="hl kwa">begin</span>
+   <span class="hl opt">...</span>
+<span class="hl kwa">end</span> Test<span class="hl opt">;</span>
+</pre></p>
+
+<p>In this case, the programmer must be very careful to assure that no copies of
+<b>T</b> are ever referenced when the object accessed (<b>Today</b>) has gone
+out of existence.</p>
+
+<p>We'll discuss accessibility checks further when we talk about access
+parameters in the section on More Records and Types.</p>
+
+<p>Note that if we have <b>type Acc_Str is access String;</b> and <b>A :
+Acc_Str;</b> then we can write <b>A := new String'("Hello");</b> or <b>A := new
+String(1 .. 5);</b> but not simply <b>A := new String;</b>.&nbsp;  The object
+created must be constrained, so the compiler will know how much memory to
+allocate.</p>
+
+<p>Access types are especially useful for creating <b>linked lists</b>.&nbsp; A
+simple linked list can be thought of as a chain.&nbsp;  Each link contains some
+useful data (perhaps one integer, perhaps pages of information), and an object
+of an access type to access the next item in the chain.&nbsp;  There's also an
+object of an access type, usually called Head, that accesses the first link in
+the chain.&nbsp;  The last link accesses nothing.&nbsp;  A linked list of
+integers might look something like this:
+<pre>
+      ____       __________          __________          __________ 
+     |  --|---->| Int   10 |   ,--->| Int   27 |   ,--->| Int   34 |
+     |____|     | Next  ---|---'    | Next  ---|---'    | Next null|
+      Head      |__________|        |__________|        |__________|
+
+</pre>
+
+<p>To add another integer to the chain, keeping the integers in ascending order,
+we simply break the chain at the appropriate point and insert another link.</p>
+
+<p>To set up our linked list, we'd like to write <b>type P is access Link;</b>
+and write
+<pre class="hl"><span class="hl kwa">type</span> Link <span class="hl kwa">is record</span>
+   Int  <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+   Next <span class="hl opt">:</span> P<span class="hl opt">;</span>
+<span class="hl kwa">end record</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>However, the declaration of type P involves Link, and the declaration of type
+Link involves P, so neither declaration can come first!&nbsp;  Ada provides a
+special means of solving this problem.&nbsp; We can write
+<pre class="hl">   <span class="hl kwa">type</span> Link<span class="hl opt">;</span>
+   <span class="hl kwa">type</span> P <span class="hl kwa">is access</span> Link<span class="hl opt">;</span>
+   <span class="hl kwa">type</span> Link <span class="hl kwa">is record</span>
+      Int  <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      Next <span class="hl opt">:</span> P<span class="hl opt">;</span>
+   <span class="hl kwa">end record</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>The first line is called an <b>incomplete type declaration</b>.&nbsp;  It
+simply tells the compiler that type Link exists.&nbsp;  That's all the
+information the compiler needs to compile the second line.&nbsp;  The second
+line tells the compiler that objects of type P will be able to access objects of
+type Link, but for this line the compiler doesn't need to know details of the
+type of object accessed.&nbsp;  The second line must be followed by the full
+declaration of type Link.</p>
+
+<p><div class="adat-q">
+<h2>Question</h2>
+<pre class="hl">   <span class="hl kwa">type</span> Person <span class="hl kwa">is record</span>
+      Name <span class="hl opt">:</span> <span class="hl kwb">String</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">10</span><span class="hl opt">);</span>
+      Age  <span class="hl opt">:</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span>
+   <span class="hl kwa">end record</span><span class="hl opt">;</span>
+   <span class="hl kwa">type</span> P <span class="hl kwa">is access</span> Person<span class="hl opt">;</span>
+   P1 <span class="hl opt">:</span> P <span class="hl opt">:=</span> <span class="hl kwa">new</span> Person<span class="hl opt">'(</span><span class="hl str">&quot;Susan     &quot;</span><span class="hl opt">,</span> <span class="hl num">21</span><span class="hl opt">);</span>
+   P2 <span class="hl opt">:</span> P <span class="hl opt">:=</span> <span class="hl kwa">new</span> Person<span class="hl opt">'(</span><span class="hl str">&quot;John      &quot;</span><span class="hl opt">,</span> <span class="hl num">35</span><span class="hl opt">);</span>
+   <span class="hl opt">...</span>
+   P2     <span class="hl opt">:=</span> P1<span class="hl opt">;</span>
+   P1<span class="hl opt">.</span>Age <span class="hl opt">:=</span> <span class="hl num">22</span><span class="hl opt">;</span>
+</pre>
+What is P2.Age?
+<ol>
+<li>
+<a href="javascript:adat_toggle('adat-acc-a1');"> P2.Age is 21.</a>
+<div id="adat-acc-a1" class="adat-a" style="display: none">No, the last line
+changed P1.Age to 22.&nbsp;  Since the previous line made P2 access what P1
+accesses, P2.Age is also 22.</div>
+</li>
+<li>
+<a href="javascript:adat_toggle('adat-acc-a2');"> P2.Age is 22.</a>
+<div id="adat-acc-a2" class="adat-a" style="display: none"><b>You're
+right!</b>&nbsp;  The last line changed P1.Age to 22.&nbsp;  Since the previous
+line made P2 access what P1 accesses, P2.Age is also 22.</div>
+</li>
+<li>
+<a href="javascript:adat_toggle('adat-acc-a3');"> P2.Age is 35.</a>
+<div id="adat-acc-a3" class="adat-a" style="display: none">No, the last line
+changed P1.Age to 22.&nbsp;  Since the previous line made P2 access what P1
+accesses, P2.Age is also 22.</div>
+</li>
+</ol>
+</div></p>
+
+<p>Let's use an access type to write a program that gets integers in random
+order from the keyboard, maintaining a linked list of them.&nbsp; When <b>0</b>
+is input, the program outputs the integers in ascending order.&nbsp; This
+program will be a good stepping-stone to Outside Assignment 5.&nbsp;  To
+simplify inserting an integer into the linked list, Head will access an unused
+Link, which will in turn access the first actual link in the chain:
+<pre>
+     ____      __________         __________         __________ 
+    |  --|--->| Int      |   ,-->| Int   10 |   ,-->| Int   27 |
+    |____|    | Next  ---|---'   | Next  ---|---'   | Next  ---|--
+     Head     |__________|       |__________|       |__________|  '
+                                                     __________   '
+                                                    | Int  34  |<-'
+                                                    | Next null|
+                                                    |__________|
+
+</pre></p>
+
+<p>We could create our linked list using arrays rather than an access
+type.&nbsp; However, we'd have to specify the size of the arrays, placing a
+limit on the number of integers the program can handle.&nbsp;  With the access
+type, the only limit is the amount of available memory.&nbsp;  We'll be able to
+move our program to a larger machine to increase this limit, without changing
+any code - not even one line to specify the size of an array.</p>
+
+<p>Here's our program ...
+
+<pre class="hl">   <span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">,</span> Ada<span class="hl opt">.</span>Integer_Text_IO<span class="hl opt">;</span>
+   <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">,</span> Ada<span class="hl opt">.</span>Integer_Text_IO<span class="hl opt">;</span>
+   <span class="hl kwa">procedure</span> LL_Demo <span class="hl kwa">is</span>
+      <span class="hl kwa">type</span> Link<span class="hl opt">;</span>
+      <span class="hl kwa">type</span> P <span class="hl kwa">is access</span> Link<span class="hl opt">;</span>
+      <span class="hl kwa">type</span> Link <span class="hl kwa">is record</span>
+         Int  <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+         Next <span class="hl opt">:</span> P<span class="hl opt">;</span>
+      <span class="hl kwa">end record</span><span class="hl opt">;</span>
+      Head <span class="hl opt">:</span> P <span class="hl opt">:=</span> <span class="hl kwa">new</span> Link<span class="hl opt">;</span>
+      I    <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      <span class="hl kwa">procedure</span> Add_I_To_Linked_List <span class="hl kwa">is separate</span><span class="hl opt">;</span>
+      <span class="hl kwa">procedure</span> Display_Linked_List <span class="hl kwa">is separate</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      Put<span class="hl opt">(</span><span class="hl str">&quot;Type an integer: &quot;</span><span class="hl opt">);</span>  Get<span class="hl opt">(</span>I<span class="hl opt">);</span>  Skip_Line<span class="hl opt">;</span>
+      <span class="hl kwa">while</span> I <span class="hl opt">/=</span> <span class="hl num">0</span> <span class="hl kwa">loop</span>
+         Add_I_To_Linked_List<span class="hl opt">;</span>
+         Put<span class="hl opt">(</span><span class="hl str">&quot;Type an integer: &quot;</span><span class="hl opt">);</span>  Get<span class="hl opt">(</span>I<span class="hl opt">);</span>  Skip_Line<span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+      Display_Linked_List<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> LL_Demo<span class="hl opt">;</span>
+
+   <span class="hl kwa">separate</span> <span class="hl opt">(</span>LL_Demo<span class="hl opt">)</span>
+   <span class="hl kwa">procedure</span> Display_Linked_List <span class="hl kwa">is</span>
+      <span class="hl slc">-- Skip unused link at the head of the list.</span>
+      Tmp <span class="hl opt">:</span> P <span class="hl opt">:=</span> Head<span class="hl opt">.</span>Next<span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">while</span> Tmp <span class="hl opt">/=</span> <span class="hl kwa">null loop</span>
+         <span class="hl slc">-- Display integer in the current link.</span>
+         Put<span class="hl opt">(</span>Tmp<span class="hl opt">.</span>Int<span class="hl opt">);</span>  New_Line<span class="hl opt">;</span>
+         <span class="hl slc">-- Go to next link in the list.</span>
+         Tmp <span class="hl opt">:=</span> Tmp<span class="hl opt">.</span>Next<span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Display_Linked_List<span class="hl opt">;</span>
+
+   <span class="hl kwa">separate</span> <span class="hl opt">(</span>LL_Demo<span class="hl opt">)</span>
+   <span class="hl kwa">procedure</span> Add_I_To_Linked_List <span class="hl kwa">is</span>
+      <span class="hl slc">-- Begin search of where to insert at start of list.</span>
+      Tmp <span class="hl opt">:</span> P <span class="hl opt">:=</span> Head<span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl slc">-- Note use of &quot;and then&quot; to avoid trying to reference</span>
+      <span class="hl slc">-- an object through a null access value.</span>
+      <span class="hl kwa">while</span> Tmp <span class="hl opt">/=</span> <span class="hl kwa">null and then</span> Tmp<span class="hl opt">.</span>Next <span class="hl opt">/=</span> <span class="hl kwa">null</span>
+         <span class="hl kwa">and then</span> Tmp<span class="hl opt">.</span>Next<span class="hl opt">.</span>Int <span class="hl opt">&lt;</span> I <span class="hl kwa">loop</span>
+         Tmp <span class="hl opt">:=</span> Tmp<span class="hl opt">.</span>Next<span class="hl opt">;</span>  
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>             
+      <span class="hl slc">-- Create new link and insert in list.</span>
+      Tmp<span class="hl opt">.</span>Next <span class="hl opt">:=</span> <span class="hl kwa">new</span> Link'<span class="hl opt">(</span>I<span class="hl opt">,</span> Tmp<span class="hl opt">.</span>Next<span class="hl opt">);</span>
+   <span class="hl kwa">end</span> Add_I_To_Linked_List<span class="hl opt">;</span>
+
+</pre>
+</p>
+
+<p>The best way to follow these two subprograms is to draw a linked list on a
+piece of scrap paper and &ldquo;hand execute&rdquo; the subprograms.</p>
+
+<p><div class="adat-q">
+<h2>Question</h2>
+<pre class="hl">   <span class="hl kwa">type</span> Link<span class="hl opt">;</span>                          <a href="javascript:adat_toggle('adat-acc2-a1', 'adat-acc2-a2', 'adat-acc2-a3', 'adat-acc2-a4', 'adat-acc2-a5');"><span class="hl slc">-- 1</span></a>
+   <span class="hl kwa">type</span> P <span class="hl kwa">is access</span> Link<span class="hl opt">;</span>
+   <span class="hl kwa">type</span> Link <span class="hl kwa">is record</span>
+       F <span class="hl opt">:</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>                      <a href="javascript:adat_toggle('adat-acc2-a2', 'adat-acc2-a1', 'adat-acc2-a3', 'adat-acc2-a4', 'adat-acc2-a5');"><span class="hl slc">-- 2</span></a>
+       S <span class="hl opt">:</span> <span class="hl kwb">String</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">10</span><span class="hl opt">);</span>            <a href="javascript:adat_toggle('adat-acc2-a3', 'adat-acc2-a2', 'adat-acc2-a1', 'adat-acc2-a4', 'adat-acc2-a5');"><span class="hl slc">-- 3</span></a>
+       A <span class="hl opt">:</span> <span class="hl kwa">array</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">10</span><span class="hl opt">)</span> <span class="hl kwa">of</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>  <a href="javascript:adat_toggle('adat-acc2-a4', 'adat-acc2-a2', 'adat-acc2-a3', 'adat-acc2-a1', 'adat-acc2-a5');"><span class="hl slc">-- 4</span></a>
+   <span class="hl kwa">end record</span><span class="hl opt">;</span>
+   L1 <span class="hl opt">:</span> Link<span class="hl opt">;</span>                          <a href="javascript:adat_toggle('adat-acc2-a5', 'adat-acc2-a2', 'adat-acc2-a3', 'adat-acc2-a4', 'adat-acc2-a1');"><span class="hl slc">-- 5</span></a>
+   P1 <span class="hl opt">:</span> P<span class="hl opt">;</span>
+</pre>
+
+Which commented line in the above is <b>illegal?</b> 
+<div id="adat-acc2-a1" class="adat-a" style="display: none">1 - No, the first
+line is legal.&nbsp;  Ada allows an incomplete type declaration to precede the
+declaration of an access type, provided the complete type declaration
+follows.</div>
+<div id="adat-acc2-a2" class="adat-a" style="display: none">2 - No, the
+declaration of F inside the record definition is legal, because Ada records may
+contain fields of any type.</div>
+<div id="adat-acc2-a3" class="adat-a" style="display: none">3 - No, the
+declaration of S inside the record definition is legal, because Ada records may
+contain fields of any type.</div>
+<div id="adat-acc2-a4" class="adat-a" style="display: none">4 - <b>You're
+right!</b>&nbsp;  Inside a record definition, the name of a field must be
+followed by a type name, not <b>array</b>.&nbsp;  We would first have to say
+something like <b>type List is array(Integer range &lt;&gt;) of Integer</b>,
+and then change the field definition to
+<pre class="hl">A <span class="hl opt">:</span> List<span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">10</span><span class="hl opt">);</span>
+</pre>
+</div>
+<div id="adat-acc2-a5" class="adat-a" style="display: none">5 - No, the
+declaration of L1 as type Link is legal.&nbsp;  Even though type P was
+declared to be <b>access Link</b> and we ordinarily would declare objects to be
+of type P, we may also directly declare objects to be of type Link.&nbsp;
+Normally, that's not useful, but it is legal.</div>
+
+</div></p>
+
+<p>In Ada 95 an access type can access a subprogram.&nbsp; Thus, the system can
+decide <b>at run time</b> which of several subprograms to call.&nbsp;  This is
+called <b>Dynamic Selection</b>.&nbsp;  For example, if we write
+<pre class="hl">   <span class="hl kwa">type</span> P <span class="hl kwa">is access procedure</span><span class="hl opt">;</span>
+</pre>
+then objects of type P can access any procedure that takes no parameters.&nbsp;
+If <b>Test</b> is such a procedure, we could write <b>Proc_Ptr : P :=
+Test'Access;</b>.</p>
+
+<p>Similarly, if we write
+<pre class="hl">   <span class="hl kwa">type</span> Q <span class="hl kwa">is access procedure</span> <span class="hl opt">(</span>S <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">String</span><span class="hl opt">);</span>
+</pre>
+then objects of type Q can access any procedure that has one String parameter
+of mode <b>in</b>.Proc_Ptr : P := Test'Access;&nbsp;  Finally, if we write
+<pre class="hl">   <span class="hl kwa">type</span> R <span class="hl kwa">is access function</span> <span class="hl opt">(</span>X <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+</pre>
+then objects of type R can access any function that has one Integer parameter
+and returns type Integer.</p>
+
+<p>Here's an example of Dynamic Selection:
+<pre class="hl">   <span class="hl kwa">package</span> P <span class="hl kwa">is</span>
+<span class='adat-hl'>      <span class="hl kwa">type</span> Int_Function <span class="hl kwa">is access function</span><span class="hl opt">(</span>X <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span>
+         <span class="hl kwa">return</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span></span>
+      F <span class="hl opt">:</span> <span class="hl kwa">array</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">2</span><span class="hl opt">)</span> <span class="hl kwa">of</span> Int_Function<span class="hl opt">;</span>
+      <span class="hl kwa">function</span> Square<span class="hl opt">(</span>X <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      <span class="hl kwa">function</span> Cube<span class="hl opt">(</span>X <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> P<span class="hl opt">;</span>
+
+   <span class="hl kwa">with</span> P<span class="hl opt">;</span> <span class="hl kwa">use</span> P<span class="hl opt">;</span>
+   <span class="hl kwa">procedure</span> Dynamic_Selection_Demo <span class="hl kwa">is</span>
+      X<span class="hl opt">,</span> Y <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      F<span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">) :=</span> Square<span class="hl kwd">'Access</span><span class="hl opt">;</span>
+      F<span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">) :=</span> Cube<span class="hl kwd">'Access</span><span class="hl opt">;</span>
+      X <span class="hl opt">:=</span> <span class="hl num">3</span><span class="hl opt">;</span>
+      <span class="hl kwa">for</span> I <span class="hl kwa">in</span> <span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">2</span> <span class="hl kwa">loop</span>
+<span class='adat-hl'>         <span class="hl slc">-- Decides at run time which function to call.</span>
+         Y <span class="hl opt">:=</span> F<span class="hl opt">(</span>I<span class="hl opt">)(</span>X<span class="hl opt">);</span></span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Dynamic_Selection_Demo<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Note that <b>F(I)(X)</b> is simply an abbreviation for
+<b>F(I).all(X)</b>.&nbsp;  The first time through the loop, the highlighted line
+above will call the function Square and set Y to 9; the second time through the
+loop the same line will call Cube and set Y to 27.</p>
+
+<p>In the section on More Records and Types, under Tagged Records and Dynamic
+Dispatching, we'll learn another way to make an Ada 95 system decide at run
+time which of several subprograms to call.</p>
+
+<p>In Ada 95, objects that access subprograms may also be used as parameters
+(&ldquo;dummy arguments&rdquo;) of other subprograms.&nbsp; For example:
+
+<pre class="hl">   <span class="hl kwa">type</span> Int_Function <span class="hl kwa">is access function</span><span class="hl opt">(</span>X <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span>
+      <span class="hl kwa">return</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">procedure</span> Demo <span class="hl opt">(</span><span class='adat-hl'>Fcn <span class="hl opt">:</span> <span class="hl kwa">in</span> Int_Function</span><span class="hl opt">)</span> <span class="hl kwa">is</span>
+      X<span class="hl opt">,</span> Y <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl opt">...</span>
+      Y <span class="hl opt">:=</span> Fcn<span class="hl opt">(</span>X<span class="hl opt">);</span>
+      <span class="hl opt">...</span>
+   <span class="hl kwa">end</span> Demo<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>If F(1) is set to Square'Access and we call <b>Demo(F(1));</b>, then Demo
+will set Y to Square(X).&nbsp;  If F(2) is Cube'Access and we call
+<b>Demo(F(2));</b>, then Demo will set Y to Cube(X).&nbsp;  When Demo calls
+function Square or function Cube, we refer to this action as
+<b>call back</b>.</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

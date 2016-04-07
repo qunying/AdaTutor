@@ -1,0 +1,227 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Records and Arrays' href='index.html' />
+<link rel='prev' title='Multidimentional Arrays' href='mul-array.html' />
+<link rel='next' title='Array Operators' href='array-op.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, string">
+
+<title>AdaTutor - Strings</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="array.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="array-op.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Strings</h2>
+<p>There's a very important array type declaration built into the Ada
+language.&nbsp; As with types Boolean and Character, and subtypes Positive and
+Natural, this definition comes with Ada and shouldn't be repeated in our
+programs:
+<pre class="hl">    <span class="hl kwa">type</span> <span class="hl kwb">String</span> <span class="hl kwa">is array</span><span class="hl opt">(</span><span class="hl kwb">Positive</span> <span class="hl kwa">range</span> <span class="hl opt">&lt;&gt;)</span> <span class="hl kwa">of</span> <span class="hl kwb">Character</span><span class="hl opt">;</span>
+</pre>
+(In Ada 95, type Wide_String is similarly defined as an array of
+Wide_Character.)&nbsp;  Thus we can declare, for example,
+<b>S : String(1 .. 5);</b>.&nbsp;  We can't simply write <b>S : String;</b>
+because we can't declare unconstrained array objects.&nbsp;  (We can declare
+<b>S : constant String := "Hello";</b> and in Ada 95, we may write
+<b>S : String := "Hello";</b> because the compiler will translate this to
+<b>S : String(1 .. 5) := "Hello";</b>).&nbsp;  Note that String isn't a special
+type in Ada; it's just an array of Characters.&nbsp;  Everything we learned
+about arrays applies to Strings.&nbsp;  For example, we can assign to S using
+the same syntax that we use when assigning to an array of any other type.&nbsp;
+If we write <b>S : String(1 .. 5);</b> we can write:
+<pre class="hl">    S <span class="hl opt">:= (</span><span class="hl str">'H'</span><span class="hl opt">,</span> <span class="hl str">'e'</span><span class="hl opt">,</span> <span class="hl str">'l'</span><span class="hl opt">,</span> <span class="hl str">'l'</span><span class="hl opt">,</span> <span class="hl str">'o'</span><span class="hl opt">);</span>
+</pre>
+</p>
+
+<p>However, this notation is clumsy, so Ada allows us to abbreviate an array of
+Character constants using double quotes.&nbsp;  Thus <b>S := "Hello";</b> is
+equivalent to the statement above.&nbsp;  If a quotation mark appears inside the
+string, it must be doubled.&nbsp;  Thus <b>Ada.Text_IO.Put_Line("a ""big""
+man");</b> will display <b>a "big" man</b>.</p>
+
+<p>It may seem disappointing that Ada Strings have fixed length, and that we
+can't declare a variable <b>S : String;</b>.&nbsp;  Fortunately, Ada 95 comes
+with several string-handling packages to simulate variable-length strings; see
+<a href='http://www.adahome.com/rm95/rm9x-A.html'>Annex A</a> of the Ada 95
+RM.&nbsp;  The name of the Ada 95 package that provides "Unbounded-Length
+String Handling" is <b>Ada.Strings.Unbounded</b>, described in
+<a href='http://www.adahome.com/rm95/rm9x-A-04-05.html'>Annex A.4.5</a> of the
+Ada 95 RM.</p>
+
+<p>Also, later we'll learn how to define our own type Text to get around this
+restriction and simulate variable-length Strings even in Ada 83.</p>
+
+<p>When arrays are assigned, the <b>lengths</b> must be the same on both sides
+of the <b>:=</b>, and the <b>types</b> must be the same, but the subscripts
+needn't be the same.&nbsp; For example, if we have
+<pre class="hl">    <span class="hl kwa">type</span> Vector <span class="hl kwa">is array</span><span class="hl opt">(</span><span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl opt">&lt;&gt;)</span> <span class="hl kwa">of</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+    V1 <span class="hl opt">:</span> Vector<span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">5</span><span class="hl opt">);</span>
+    V2 <span class="hl opt">:</span> Vector<span class="hl opt">(</span><span class="hl num">2</span> <span class="hl opt">..</span> <span class="hl num">6</span><span class="hl opt">) := (</span><span class="hl kwa">others</span> <span class="hl opt">=&gt;</span> <span class="hl num">0.0</span><span class="hl opt">);</span>
+
+    S1 <span class="hl opt">:</span> <span class="hl kwb">String</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">5</span><span class="hl opt">);</span>
+    S2 <span class="hl opt">:</span> <span class="hl kwb">String</span><span class="hl opt">(</span><span class="hl num">2</span> <span class="hl opt">..</span> <span class="hl num">6</span><span class="hl opt">) := (</span><span class="hl kwa">others</span> <span class="hl opt">=&gt;</span> <span class="hl str">' '</span><span class="hl opt">);</span>
+</pre>
+then we can write <b>V1 := V2;</b> and <b>S1 := S2;</b> even though the
+subscripts are different, because the array lengths are the same and the
+element types are the same.&nbsp;  But we'll get a Constraint_Error if we write
+<b>S1 := "Hello there";</b> or <b>S1 := "Hi";</b> or
+<b>V1 := (1.0, 2.0, 3.0);</b>, because these arrays have wrong lengths.&nbsp;
+Ada won't automatically truncate Strings or pad with blanks.&nbsp;  Of course,
+it would be easy to write our own procedure to assign Strings of different
+lengths, padding or truncating as necessary.</p>
+
+<p>A <b>slice</b> of an array is a portion of an array, and is indicated with a
+<b>range</b> in the subscript.&nbsp;  A slice is itself an array.&nbsp;  Some
+languages use the term &ldquo;substring&rdquo; to refer to a slice of a String,
+but in Ada we can take a slice of <b>any</b> kind of array, not just an array
+of Characters.&nbsp;  So instead of &ldquo;substring,&rdquo; Ada uses the more
+general term &ldquo;slice.&rdquo;&nbsp;  For example, if we have
+<pre class="hl">   A <span class="hl opt">:</span> <span class="hl kwa">array</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">10</span><span class="hl opt">)</span> <span class="hl kwa">of</span> <span class="hl kwb">Integer</span> <span class="hl opt">:= (</span><span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">2</span><span class="hl opt">,</span> <span class="hl num">3</span><span class="hl opt">,</span> <span class="hl num">4</span><span class="hl opt">,</span> <span class="hl num">5</span><span class="hl opt">,</span> <span class="hl num">6</span><span class="hl opt">,</span> <span class="hl num">7</span><span class="hl opt">,</span> <span class="hl num">8</span><span class="hl opt">,</span> <span class="hl num">9</span><span class="hl opt">,</span> <span class="hl num">10</span><span class="hl opt">);</span>
+</pre>
+then <b>A(1 .. 3)</b> is the array <b>(1, 2, 3)</b> and <b>A(6 .. 9)</b> is the
+array <b>(6, 7, 8, 9)</b>.&nbsp; Similarly, if we have <b>S : String(1 .. 11)
+:= "Hello there";</b> then <b>S(8 .. 11)</b> is <b>"here"</b> and
+<b>S(4 .. 5)</b> is <b>"lo"</b>.&nbsp;  We can also write <b>S(1 .. 10)
+:= S(2 .. 11);</b> and <b>A(1 .. 3) := A(4 .. 6);</b> since the lengths are the
+same on both sides.</p>
+
+<p>If the value preceding <b>..</b> is greater than the value following it, we
+have a <b>null range</b>.&nbsp;  A slice with a null range has a length of zero,
+and is called a <b>null slice</b>.&nbsp;  In the case of a null slice, the
+subscript is <b>not</b> checked for Constraint_Error.&nbsp;  Thus, even if N is
+0 we could write <b>S(1 .. N);</b> which would produce the null string
+<b>""</b>.&nbsp;  This is legal, even though Ada defines &ldquo;type String is
+array(<b>Positive</b> range &lt;&gt;) of Character;&rdquo;.&nbsp; Assigning a
+null slice to a null slice does no harm and generates no error; it does
+nothing.&nbsp; Also, if <b>S</b> is a null array, then <b>S'Length</b> is 0, and
+<b>S'First</b> and <b>S'Last</b> don't exist.&nbsp;  Using <b>'First</b> or
+<b>'Last</b> with a null array will raise a Constraint_Error.</p>
+
+<p>Beginners sometimes confuse a <b>Character</b> with a <b>String of length
+1</b>.&nbsp;  If we write
+<pre class="hl">    S <span class="hl opt">:</span> <span class="hl kwb">String</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">10</span><span class="hl opt">);</span>
+    I <span class="hl opt">:</span> <span class="hl kwb">Integer</span> <span class="hl opt">:=</span> <span class="hl num">5</span><span class="hl opt">;</span>
+</pre>
+then <b>S(I)</b> is a Character and <b>S(I .. I)</b> is a String of length
+1.&nbsp;  Also, <b>'X'</b> is a Character while <b>"X"</b> is a String of length
+1.&nbsp;  Thus we could write
+<pre class="hl">    S<span class="hl opt">(</span>I<span class="hl opt">) :=</span> <span class="hl str">'X'</span><span class="hl opt">;</span>
+    S<span class="hl opt">(</span>I <span class="hl opt">..</span> I<span class="hl opt">) :=</span> <span class="hl str">&quot;X&quot;</span><span class="hl opt">;</span>
+</pre>
+but we'd be mixing types if we were to write <b>S(I) := "X";</b> or
+<b>S(I .. I) := 'X';</b>.</p>
+
+<p>Fortunately, Ada.Text_IO has a Put for type Character as well as a Put for
+type String.&nbsp;  (It also has a Get for each of these types.)&nbsp;  Thus we
+can write either <b>Put(S(I .. I));</b> or <b>Put(S(I));</b>.&nbsp;  However,
+Put_Line and Get_Line exist only for Strings, not for Characters.&nbsp;  We'll
+learn about Ada.Text_IO in more detail later.</p>
+
+<p>
+<div class="adat-q">
+<h2>Question</h2>
+<ol>
+
+<li>
+<a href="javascript:adat_toggle('adat-stra1');">Hello  : String;</a>
+<div id="adat-stra1" class="adat-a" style="display: none">No, number 1 is
+illegal because it tries to create an unconstrained array.&nbsp;  We
+must constrain the String by writing, for example,
+<b>Hello : String(1 .. 5);</b></div>
+</li>
+
+<li>
+<a href="javascript:adat_toggle('adat-stra2');">Digit  : String(0 .. 9)
+:= "0123456789";</a>
+<div id="adat-stra2" class="adat-a" style="display: none">No, number 2 is
+illegal because of the zero subscript.&nbsp;  Ada defines &ldquo;type String is
+array(<b>Positive</b> range &lt;&gt;) of Character;&rdquo;.&nbsp;  Therefore,
+the subscripts must be 1 or greater.</div>
+</li>
+
+<li>
+<a href="javascript:adat_toggle('adat-stra3');">Line   : String(1 .. 80)
+:= (others => "*");</a>
+<div id="adat-stra3" class="adat-a" style="display: none">No, number 3 is
+illegal because <b>"*"</b> should be <b>'*'</b>.&nbsp;  As it stands, it tries
+to assign a String of length 1 to each of the elements, which are Characters.
+</div>
+</li>
+
+<li>
+<a href="javascript:adat_toggle('adat-stra4');">Hello  : String(2 .. 6)
+:= "Hello";</a>
+<div id="adat-stra4" class="adat-a" style="display: none"><p><b>You're
+right!</b>&nbsp;  Number 4 creates Hello, a String of length 5, and initializes
+it to &ldquo;Hello&rdquo;, a String of the same length.&nbsp;  The subscript of
+Hello need not start at 1, so long as the length is 5.</p>
+
+<p>Number 1 attempts to create an unconstrained array.&nbsp;  Number 2 has a
+zero subscript, while Ada defines type String for Positive subscripts.&nbsp;
+Number 3 should have '*' instead of "*".&nbsp;  Number 5 tries to set each of
+the first three elements, which are Characters, to a String.&nbsp;  Number 6
+tries to store a String of length 1 into a String of length 3, and number 7
+should have "Hello" instead of 'Hello'.</p>
+</div>
+</li>
+
+<li>
+<a href="javascript:adat_toggle('adat-stra5');">Hello  : String(1 .. 5)
+:= (1 .. 3 => "Hel",  4 => 'l',  5 => 'o');</a>
+<div id="adat-stra5" class="adat-a" style="display: none"><p>No, number 5 is
+illegal because it tries to initialize each of the first three elements, which
+are Characters, to a String of length 3.&nbsp;  We could, however, have written
+simply <b>Hello : String(1 .. 5);</b>, and then written the following in
+the executable region:
+<pre class="hl">    Hello<span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">3</span><span class="hl opt">) :=</span> <span class="hl str">&quot;Hel&quot;</span><span class="hl opt">;</span>
+    Hello<span class="hl opt">(</span><span class="hl num">4</span><span class="hl opt">)      :=</span> <span class="hl str">'l'</span><span class="hl opt">;</span>
+    Hello<span class="hl opt">(</span><span class="hl num">5</span><span class="hl opt">)      :=</span> <span class="hl str">'o'</span><span class="hl opt">;</span>
+</pre>
+</div>
+</li>
+
+<li>
+<a href="javascript:adat_toggle('adat-stra6');">Prompt : String(1 .. 3)
+:= ">";</a>
+<div id="adat-stra6" class="adat-a" style="display: none">No, number 6 is
+illegal because it tries to assign a String of length 1 to a String of length 3.
+</div>
+</li>
+
+<li>
+<a href="javascript:adat_toggle('adat-stra7');">Hello  : String(1 .. 5)
+:= 'Hello';</a>
+<div id="adat-stra7" class="adat-a" style="display: none">No, number 7 is
+illegal because it should say <b>"</b>Hello<b>"</b> instead of
+<b>'</b>Hello<b>'</b>.&nbsp;  Ada &ldquo;tic&rdquo; marks (<b>'</b>) always
+enclose a single Character, while double quotes (<b>"</b>) always enclose an
+array of Characters.</div>
+</li>
+
+</ol>
+Which <b>one</b> of the above is legal?
+</div>
+</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Advanced Topics' href='index.html' />
+<link rel='prev' title='Representation Clauses and System' href='rep-clause.html' />
+<link rel='next' title='Pragmas' href='pragma.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, Unchecked Conversion and Unchecked Deallocation">
+
+<title>AdaTutor - Unchecked Conversion and Unchecked Deallocation</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="rep-clause.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="pragma.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Unchecked Conversion and Unchecked Deallocation</h2>
+<p>Ada comes with a generic function <b>Ada.Unchecked_Conversion</b> and a
+generic procedure <b>Ada.Unchecked_Deallocation</b>.&nbsp;  (In Ada 83, the
+names don't contain <b>Ada.</b>, and Ada 95 accepts the shorter names for
+compatibility.)&nbsp;  They can be instantiated for any type.&nbsp;  Both are
+somewhat dangerous to use, but we'll describe them briefly.&nbsp;  Their
+specifications (slightly simplified) are below; the Ada 83 specifications don't
+have (<b>&lt;&gt;</b>).
+<pre class="hl">   <span class="hl kwa">generic</span>
+      <span class="hl kwa">type</span> Source<span class="hl opt">(&lt;&gt;)</span> <span class="hl kwa">is limited private</span><span class="hl opt">;</span>
+      <span class="hl kwa">type</span> Target<span class="hl opt">(&lt;&gt;)</span> <span class="hl kwa">is limited private</span><span class="hl opt">;</span>
+   <span class="hl kwa">function</span> Ada<span class="hl opt">.</span>Unchecked_Conversion<span class="hl opt">(</span>S <span class="hl opt">:</span> Source<span class="hl opt">)</span> <span class="hl kwa">return</span> Target<span class="hl opt">;</span>
+
+   <span class="hl kwa">generic</span>
+      <span class="hl kwa">type</span> Object<span class="hl opt">(&lt;&gt;)</span> <span class="hl kwa">is limited private</span><span class="hl opt">;</span>
+      <span class="hl kwa">type</span> Name       <span class="hl kwa">is access</span> Object<span class="hl opt">;</span>
+   <span class="hl kwa">procedure</span> Ada<span class="hl opt">.</span>Unchecked_Deallocation<span class="hl opt">(</span>X <span class="hl opt">:</span> <span class="hl kwa">in out</span> Name<span class="hl opt">);</span>
+</pre>
+</p>
+
+<p>Ada.Unchecked_Conversion &ldquo;converts&rdquo; from one type to another with
+out doing any arithmetic or bit manipulation, letting us look at an object of
+one type as if it were of another type.&nbsp;  (This is similar to using
+EQUIVALENCE in Fortran.)</p>
+
+<p>The results of using Ada.Unchecked_Conversion may be unpredictable if the two
+types don't occupy the same amount of storage.</p>
+
+<p>One use of Ada.Unchecked_Conversion might be to allow us to <b>and</b> two
+Integers.&nbsp; (Ada 95 allows us to <b>and</b> two objects of a modular type,
+but not two Integers.) Some Ada compilers come with a package that enables us to
+<b>and</b> two Integers, but many compilers have no such package.&nbsp; Suppose
+that types Integer and Boolean occupy the same amount of storage.&nbsp;  If our
+program says <b>with Ada.Unchecked_Conversion;</b> we could write
+
+<pre class="hl"><span class="hl kwa">function</span> Int_To_Bool <span class="hl kwa">is new</span> Ada<span class="hl opt">.</span>Unchecked_Conversion<span class="hl opt">(</span><span class="hl kwb">Integer</span><span class="hl opt">,</span> <span class="hl kwb">Boolean</span><span class="hl opt">);</span>
+<span class="hl kwa">function</span> Bool_To_Int <span class="hl kwa">is new</span> Ada<span class="hl opt">.</span>Unchecked_Conversion<span class="hl opt">(</span><span class="hl kwb">Boolean</span><span class="hl opt">,</span> <span class="hl kwb">Integer</span><span class="hl opt">);</span>
+<span class="hl kwa">function</span> <span class="hl str">&quot;and&quot;</span><span class="hl opt">(</span>Left<span class="hl opt">,</span> Right <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Integer</span> <span class="hl kwa">is</span>
+<span class="hl kwa">begin</span>
+   <span class="hl kwa">return</span> Bool_To_Int<span class="hl opt">(</span>Int_To_Bool<span class="hl opt">(</span>Left<span class="hl opt">)</span> <span class="hl kwa">and</span> Int_To_Bool<span class="hl opt">(</span>Right<span class="hl opt">));</span>
+<span class="hl kwa">end</span> <span class="hl str">&quot;and&quot;</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Using Ada.Unchecked_Conversion usually destroys program portability.</p>
+
+<p>Ada.Unchecked_Deallocation allows us to free the memory occupied by an object
+accessed through an access type.&nbsp; Some systems automatically reclaim memory
+when it's needed.&nbsp;  However, the execution time for that so-called
+<b>garbage collection</b> tends to be long and unpredictable.&nbsp;  Suppose we
+have <b>type P is access Link;</b> and <b>Ptr : P;</b>.&nbsp; Also suppose that
+we no longer need the object accessed by Ptr and we're sure that no other
+objects access the same object as Ptr.&nbsp;  If our program says with
+Ada.Unchecked_Deallocation; we can write
+<pre class="hl"><span class="hl kwa">procedure</span> Free <span class="hl kwa">is new</span> Ada<span class="hl opt">.</span>Unchecked_Deallocation<span class="hl opt">(</span>Link<span class="hl opt">,</span> P<span class="hl opt">);</span>
+<span class="hl opt">...</span>
+Free<span class="hl opt">(</span>Ptr<span class="hl opt">);</span>
+</pre>
+This will release the memory occupied by the object accessed by <b>Ptr</b>, and
+then set <b>Ptr</b> to <b>null</b>.&nbsp; But there's a danger.&nbsp; If there's
+another object that accessed what <b>Ptr</b> accessed, it now accesses released
+memory.&nbsp;  A reference through such an object will have unpredictable
+results.&nbsp;  In general, it's best to let the system handle the reclaiming of
+memory.&nbsp;  That way there's no danger of dangling references.</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Generic Instantiation' href='index.html' />
+<link rel='prev' title='Displaying Integers' href='disp-int.html' />
+<link rel='next' title='Outside Assignment 1' href='../oa1/index.html' />
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, generic instantiation">
+
+<title>AdaTutor - Generic Instantiation</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="disp-int.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="../oa1/index.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Generic Instantiation</h2>
+<pre class="hl">       <span class="hl kwa">package</span> My_Int_IO <span class="hl kwa">is new</span> Integer_IO<span class="hl opt">(</span><span class="hl kwb">Integer</span><span class="hl opt">);</span>
+
+    ______ Integer_IO ______    ______ My_Int_IO _______
+    | Put for type &lt;&gt;      |    | Put for type Integer |
+    | Get for type &lt;&gt;      |    | Get for type Integer |
+    | ...                  |    | ...                  |
+    |______________________|    |______________________|
+
+</pre>
+
+<p>This process of creating an <b>instance</b> of the generic package
+Integer_IO for the type Integer is called <b>generic instantiation</b>.&nbsp;
+Later in this course we'll learn to write our own generic packages, procedures,
+and functions.&nbsp;  However, we wanted to learn, early in the course, how to
+instantiate an already written generic package in order to display integers.
+</p>
+
+<p>But why does Ada make Ada.Text_IO ready-to-use for Strings, while Integer_IO
+is generic, and has to be instantiated for Integers?&nbsp;  Because programs
+normally use only one type String, but can have several integer types.&nbsp;
+Right now, we know of only one integer type, the standard Integer.&nbsp;  Later
+we'll learn about user-defined types and derived types, and we'll see how there
+can be many integer types.&nbsp;  Integer_IO can be instantiated for each of
+these types.</p>
+
+<p>Ada 95 provides a ready-to-use package <b>Ada.Integer_Text_IO</b>,
+which is equivalent to the package we obtain by instantiating
+Ada.Text_IO.Integer_IO for the type Integer.&nbsp;  Thus, with an Ada 95
+compiler, the above program wouldn't have to do its own instantiation of
+Integer_IO; instead, it could have added <b>Ada.Integer_Text_IO</b> to both the
+<b>with</b> and the <b>use</b> clause.&nbsp; However not all Ada 83 compilers
+provide such a package, and those that do use a non-standard name, such as IIO.
+</p>
+
+<p>There's another generic package within Ada.Text_IO called Float_IO.&nbsp;
+Input and output of floating point numbers is done by instantiating Float_IO
+for the type Float.&nbsp;  As with integers, we'll later learn how there can be
+several floating point types besides the standard Float; that's why
+Ada.Text_IO.Float_IO is generic.&nbsp;  (Ada 95 provides us with a ready-to-use
+package called Ada.Float_Text_IO, equivalent to the package we obtain by
+instantiating Ada.Text_IO.Float_IO for the type Float.&nbsp;  However, not all
+Ada 83 compilers provide a similar package, and those that do use a
+non-standard name like FIO.)</p> 
+
+<p>Later in this course, when we cover attributes, we'll learn another way to
+display Integers (and, in Ada 95, Floats as well), by using the <b>'Image</b>
+attribute.</p>
+
+<p>We're now ready for our first Outside Assignment!&nbsp;  Let's compile and
+run our two sample programs, Hello and Add.&nbsp;  The files
+<a href='../adatutor/hello.ada'>HELLO.ADA</a> and
+<a href='../adatutor/add.ada'>ADD.ADA</a> are already supplied for you, and
+they're written to work with Ada 83 compilers as well as Ada 95.&nbsp;  (That's
+why they say simply Text_IO instead of Ada.Text_IO.)</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

@@ -1,0 +1,287 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Simple Declarations and Simple Attributes' href='index.html' />
+<link rel='prev' title='Subtypes' href='subtype.html' />
+<link rel='next' title='Operators and Control Constructs' href='../op-ctrl/index.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor">
+
+<title>AdaTutor - Simple Attributes</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="subtype.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="../op-ctrl/index.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Simple Attributes</h2>
+<p>An <b>attribute</b> consists of an apostrophe (called a &ldquo;tic&rdquo;
+mark for short), and the name of the attribute.&nbsp;  Attributes often follow
+type names.&nbsp; They're something like functions, except that they usually
+involve a type.&nbsp; For example:
+
+<pre class="hl"> <span class="hl kwa">type</span> Rainbow_Color <span class="hl kwa">is</span> <span class="hl opt">(</span>Red<span class="hl opt">,</span> Orange<span class="hl opt">,</span> Yellow<span class="hl opt">,</span> Green<span class="hl opt">,</span> Blue<span class="hl opt">,</span> Indigo<span class="hl opt">,</span>
+                        Violet<span class="hl opt">);</span>
+ <span class="hl kwa">type</span> Traffic_Light_Color <span class="hl kwa">is</span> <span class="hl opt">(</span>Red<span class="hl opt">,</span> Amber<span class="hl opt">,</span> Green<span class="hl opt">);</span>
+ Rainbow_Color<span class="hl kwd">'Succ</span><span class="hl opt">(</span>Green<span class="hl opt">)</span>       <span class="hl kwa">is</span> Blue
+ Traffic_Light_Color<span class="hl kwd">'Pred</span><span class="hl opt">(</span>Green<span class="hl opt">)</span> <span class="hl kwa">is</span> Amber
+</pre></p>
+
+<p>The attribute <b>'Succ</b> stands for successor, and <b>'Pred</b> stands for
+predecessor.&nbsp;  In Rainbow_Colors, the successor of <b>Green</b> is
+<b>Blue</b>, and in Traffic_Light_Colors, the predecessor of <b>Green</b> is
+<b>Amber</b>.&nbsp; Thus we could write <b>R&nbsp;:&nbsp;Rainbow_Color;</b> and
+then <b>R&nbsp;:=&nbsp;Rainbow_Color'Succ(Green);</b>.&nbsp;  You'll get a
+Constraint_Error if you try to take the successor of the last value or the
+predecessor of the first; for example, taking Rainbow_Color'Pred(Red) will
+cause an error.</p>
+
+<p>'Succ and 'Pred work with any scalar type.&nbsp;  (In Ada 83, they work only
+with discrete types, meaning any integer or enumeration type.)&nbsp;  These two
+attributes aren't particularly useful with integer types, because we can simply
+add or subtract 1 instead.&nbsp;  So they're used most often with enumeration
+types.</p>
+
+<p>The attribute <b>'Pos</b> converts from a discrete type to an integer, and
+<b>'Val</b> converts from an integer to a discrete type.&nbsp;  Again, the type
+is usually an enumeration type; there's little point converting from integer to
+integer.</p>
+
+<p>For example, <b>Rainbow_Color'Pos(Orange)</b> is <b>1</b>.&nbsp; (The
+positions are numbered from zero.)&nbsp;  <b>Rainbow_Color'Pos(Red)</b> is
+<b>0</b> and <b>Rainbow_Color'Pos(Violet)</b> is <b>6</b>.&nbsp;
+<b>Traffic_Light_Color'Pos(Green)</b> is <b>2</b>, but
+<b>Rainbow_Color'Pos(Green)</b> is <b>3</b>.&nbsp; <b>Character'Pos('A')</b> is
+<b>65</b>, because the ASCII value of 'A' is 65, and the first 128 values of
+the Ada type Character contains the ASCII characters in order.&nbsp;
+<b>Character'Pos('0')</b> is <b>48</b>, because the ASCII value of the
+character '0' is 48.</p>
+
+<p><b>'Val</b> converts the other way, so <b>Rainbow_Color'Val(0)</b> is
+<b>Red</b>, and <b>Rainbow_Color'Val(6)</b> is <b>Violet</b>.&nbsp;  Taking the
+Rainbow_Color'Val of a parameter outside the range 0 .. 6 will raise a
+Constraint_Error.&nbsp;  <b>Character'Val(65)</b> is <b>'A'</b>, and
+<b>Character'Val(7)</b> is the "bell" character (control-G).&nbsp;  Since
+Boolean is an enumeration type, <b>Boolean'Val(0)</b> is <b>False</b> and
+<b>Boolean'Val(1)</b> is <b>True</b>.</p>
+
+<p>
+<div class='adat-q'>
+<h2>Question</h2>
+<pre class="hl"><span class="hl kwa">type</span> Month_Type <span class="hl kwa">is</span> <span class="hl opt">(</span>Jan<span class="hl opt">,</span> Feb<span class="hl opt">,</span> Mar<span class="hl opt">,</span> Apr<span class="hl opt">,</span> May<span class="hl opt">,</span> Jun<span class="hl opt">,</span>
+                    Jul<span class="hl opt">,</span> Aug<span class="hl opt">,</span> Sep<span class="hl opt">,</span> Oct<span class="hl opt">,</span> Nov<span class="hl opt">,</span> Dec<span class="hl opt">);</span>
+</pre>
+What is Month_Type'Pos(Feb)?
+<ol>
+<li><a href="javascript:adat_toggle('adat-enuma1');">Month_Type'Pos(Feb)
+is 1.</a>
+<div id="adat-enuma1" class="adat-a" style="display: none"><b>You're
+right!</b>&nbsp;  The positions are numbered from zero, so Feb is in position
+1, and Month_Type'Pos(Feb) is 1.</div></li>
+
+<li><a href="javascript:adat_toggle('adat-enuma2');">Month_Type'Pos(Feb)
+is 2.</a>
+<div id="adat-enuma2" class="adat-a" style="display: none">No, the positions
+are numbered from zero, so Feb is in position 1, and Month_Type'Pos(Feb) is 1.
+</div>
+</li>
+</ol>
+</div>
+</p>
+
+<p>While <b>'Pos</b> and <b>'Val</b> convert to and from integers, the
+attributes <b>'Image</b> and <b>'Value</b> convert to and from Strings.&nbsp;
+They work with any scalar types (in Ada 83, only with discrete types), and are
+useful with integer types as well as enumeration types.&nbsp;  For example,
+<pre class="hl">   <span class="hl kwa">type</span> Rainbow_Color <span class="hl kwa">is</span> <span class="hl opt">(</span>Red<span class="hl opt">,</span> Orange<span class="hl opt">,</span> Yellow<span class="hl opt">,</span> Green<span class="hl opt">,</span> Blue<span class="hl opt">,</span> Indigo<span class="hl opt">,</span>
+     Violet<span class="hl opt">);</span>
+   <span class="hl kwa">type</span> Traffic_Light_Color <span class="hl kwa">is</span> <span class="hl opt">(</span>Red<span class="hl opt">,</span> Amber<span class="hl opt">,</span> Green<span class="hl opt">);</span>
+
+   Rainbow_Color<span class="hl kwd">'Value</span><span class="hl opt">(</span><span class="hl str">&quot;RED&quot;</span><span class="hl opt">)</span>       <span class="hl kwa">is</span> Red
+   Rainbow_Color<span class="hl kwd">'Value</span><span class="hl opt">(</span><span class="hl str">&quot;yellow&quot;</span><span class="hl opt">)</span>    <span class="hl kwa">is</span> Yellow
+   Traffic_Light_Color<span class="hl kwd">'Image</span><span class="hl opt">(</span>Amber<span class="hl opt">)</span> <span class="hl kwa">is</span> <span class="hl str">&quot;AMBER&quot;</span>
+
+   <span class="hl kwb">Integer</span><span class="hl kwd">'Value</span><span class="hl opt">(</span><span class="hl str">&quot;123&quot;</span><span class="hl opt">)</span> <span class="hl kwa">is</span>  <span class="hl num">123</span>
+   <span class="hl kwb">Integer</span><span class="hl kwd">'Image</span><span class="hl opt">(</span><span class="hl num">123</span><span class="hl opt">)</span>   <span class="hl kwa">is</span> <span class="hl str">&quot; 123&quot;</span>
+   <span class="hl kwb">Integer</span><span class="hl kwd">'Image</span><span class="hl opt">(-</span><span class="hl num">123</span><span class="hl opt">)</span>  <span class="hl kwa">is</span> <span class="hl str">&quot;-123&quot;</span>
+</pre>
+</p>
+
+<p>If I is an Integer, we can write <b>Put(Integer'Image(I));</b> without
+instantiating Integer_IO or making use of Ada.Integer_Text_IO.&nbsp;  However,
+in Ada 83 this won't work for type Float, only for discrete types.&nbsp;
+<b>'Value</b> will raise a Constraint_Error if the String can't be converted
+to the discrete type.&nbsp;  For example, taking <b>Integer'Value("12X3")</b>
+or <b>Rainbow_Color'Value("CHARTREUSE")</b> will normally display
+Constraint_Error on the screen and stop the program.</p>
+
+<p>For any scalar type, the attributes <b>'First</b> and <b>'Last</b> are also
+available.</p>
+
+<pre class="hl">
+ Rainbow_Color<span class="hl kwd">'First</span> <span class="hl kwa">is</span> Red and
+ Traffic_Light_Color<span class="hl kwd">'Last</span> <span class="hl kwa">is</span> Green
+</pre>
+
+<p>A program can use these attributes with Integer to determine the size of
+integers on the host computer.&nbsp;  For example, if your PC Ada has 16-bit
+2's complement integers, while a mainframe Ada uses 32-bit 2's complement, then
+<pre class="hl"><span class="hl kwb">Integer</span><span class="hl kwd">'First</span> <span class="hl kwa">is</span> <span class="hl opt">-</span><span class="hl num">32_768</span> on your PC and <span class="hl opt">-</span><span class="hl num">2_147_483_648</span>
+ on the mainframe<span class="hl opt">.</span>
+<span class="hl kwb">Integer</span><span class="hl kwd">'Last</span>  <span class="hl kwa">is</span>  <span class="hl num">32_767</span> on your PC and <span class="hl num">2_147_483_647</span>
+ on the mainframe<span class="hl opt">.</span>
+</pre>
+</p>
+
+<p>Most attributes may also be used with subtypes:
+<pre class="hl"><span class="hl kwa">subtype</span> Day_Subtype <span class="hl kwa">is</span> <span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">31</span><span class="hl opt">;</span>
+Day_Subtype<span class="hl kwd">'First</span> <span class="hl kwa">is</span> <span class="hl num">1</span> and Day_Subtype<span class="hl kwd">'Last</span> <span class="hl kwa">is</span> <span class="hl num">31</span>
+</pre>
+</p>
+
+<p>There are two subtype definitions involving <b>'Last</b> built into the Ada
+language:
+<pre class="hl">    <span class="hl kwa">subtype</span> <span class="hl kwb">Positive</span> <span class="hl kwa">is</span> <span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl kwb">Integer</span><span class="hl kwd">'Last</span><span class="hl opt">;</span>
+    <span class="hl kwa">subtype</span> <span class="hl kwb">Natural</span>  <span class="hl kwa">is</span> <span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl kwb">Integer</span><span class="hl kwd">'Last</span><span class="hl opt">;</span>
+</pre></p>
+
+<P>We'll discuss more attributes later in the course.&nbsp;  In summary,
+<b>discrete type</b> means any integer or enumeration type.&nbsp;  (The only
+integer type we've learned about so far is the standard Integer.)</p>
+
+<ul>
+  <li><b>'Pos</b> converts from a discrete type to an integer.</li>
+  <li><b>'Val</b> converts from an integer to a discrete type.</li>
+  <li><b>'Image</b> converts from a scalar type to String.</li>
+  <li><b>'Value</b> converts from String to a scalar type.</li>
+  <li><b>'First</b> and <b>'Last</b> take no parameter and give a scalar
+type.</li>
+  <li><b>'Succ</b> and <b>'Pred</b> take a scalar type and give the same
+    scalar type.</li>
+</ul>
+
+<p>Also remember that a type name followed by <b>'</b> denotes an
+<b>attribute</b>:
+      <pre class="hl">    Put<span class="hl opt">(</span><span class="hl kwb">Character</span><span class="hl kwd">'Val</span><span class="hl opt">(</span><span class="hl num">7</span><span class="hl opt">));</span> <span class="hl slc">-- beep</span>
+</pre>
+</p>
+
+<p>A type name followed by <b>( )</b> denotes <b>conversion</b>:
+<pre class="hl">    G <span class="hl opt">:=</span> F <span class="hl opt">+</span> <span class="hl kwb">Float</span><span class="hl opt">(</span>I<span class="hl opt">);</span>
+</pre>                     
+</p>
+
+<p>And a type name followed by <b>'( )</b> denotes <b>qualification</b>:
+<pre class="hl">    Display<span class="hl opt">(</span>Rainbow_Color<span class="hl str">'(Red));</span>
+</pre>
+</p>
+
+<p>
+<div class='adat-q'>
+<h2>Question</h2>
+
+<ol>
+<li><a href="javascript:adat_toggle('adat-attra1');">Rainbow_Color'First</a>
+<div id="adat-attra1" class="adat-a" style="display: none">No, <b>'First</b>
+and <b>'Last</b> take no parameter and return a scalar type:
+<pre class="hl">
+ Rainbow_Color<span class="hl kwd">'First</span> <span class="hl kwa">is</span> Red and
+ RainBow_Color<span class="hl kwd">'Last</span> <span class="hl kwa">is</span> Violet.
+</pre>
+You want to convert from a String to a scalar type.
+</div>
+</li>
+
+<li><a href="javascript:adat_toggle('adat-attra2');">Rainbow_Color'Image</a>
+<div id="adat-attra2" class="adat-a" style="display: none">No, <b>'Image</b>
+converts from a scalar type to a String:
+ <pre class="hl"> Rainbow_Color<span class="hl kwd">'Image</span><span class="hl opt">(</span>Blue<span class="hl opt">)</span> <span class="hl kwa">is</span> <span class="hl str">&quot;BLUE&quot;</span>
+</pre>
+
+You want to convert from a String to a scalar type.
+</div>
+</li>
+
+<li><a href="javascript:adat_toggle('adat-attra3');">Rainbow_Color'Last</a>
+<div id="adat-attra3" class="adat-a" style="display: none">No, <b>'First</b>
+and <b>'Last</b> take no parameter and return a scalar type:
+<pre class="hl">
+ Rainbow_Color<span class="hl kwd">'First</span> <span class="hl kwa">is</span> Red and
+ RainBow_Color<span class="hl kwd">'Last</span> <span class="hl kwa">is</span> Violet.
+</pre>
+You want to convert from a String to a scalar type.
+</div>
+</li>
+
+<li><a href="javascript:adat_toggle('adat-attra4');">Rainbow_Color'Pos</a>
+<div id="adat-attra4" class="adat-a" style="display: none">No, <b>'Pos</b>
+converts from a (discrete) scalar type to an integer:
+<pre class="hl">    Rainbow_Color<span class="hl kwd">'Pos</span><span class="hl opt">(</span>Blue<span class="hl opt">)</span> <span class="hl kwa">is</span> <span class="hl num">4</span>
+</pre>
+You want to convert from a String to a scalar type.
+</div>
+</li>
+
+<li><a href="javascript:adat_toggle('adat-attra5');">Rainbow_Color'Pred
+</a>
+<div id="adat-attra5" class="adat-a" style="display: none">No, <b>'Pred</b> and
+<b>'Succ</b> take a scalar type and return the same scalar type.
+<pre class="hl">    Rainbow_Color<span class="hl kwd">'Pred</span><span class="hl opt">(</span>Blue<span class="hl opt">)</span> <span class="hl kwa">is</span> Green <span class="hl kwa">and</span>
+    Rainbow_Color<span class="hl kwd">'Succ</span><span class="hl opt">(</span>Blue<span class="hl opt">)</span> <span class="hl kwa">is</span> Indigo<span class="hl opt">.</span>
+</pre>
+You want to convert from a String to a scalar type.
+</div>
+</li>
+
+<li><a href="javascript:adat_toggle('adat-attra6');">Rainbow_Color'Succ</a>
+<div id="adat-attra6" class="adat-a" style="display: none">No, <b>'Pred</b> and
+<b>'Succ</b> take a scalar type and return the same scalar type.
+<pre class="hl">    Rainbow_Color<span class="hl kwd">'Pred</span><span class="hl opt">(</span>Blue<span class="hl opt">)</span> <span class="hl kwa">is</span> Green <span class="hl kwa">and</span>
+    Rainbow_Color<span class="hl kwd">'Succ</span><span class="hl opt">(</span>Blue<span class="hl opt">)</span> <span class="hl kwa">is</span> Indigo<span class="hl opt">.</span>
+</pre>
+You want to convert from a String to a scalar type.
+</div>
+</li>
+
+<li><a href="javascript:adat_toggle('adat-attra7');">Rainbow_Color'Val</a>
+<div id="adat-attra7" class="adat-a" style="display: none">No, <b>'Val</b>
+converts from an integer to a (discrete) scalar type.
+<pre class="hl">    Rainbow_Color<span class="hl kwd">'Val</span><span class="hl opt">(</span><span class="hl num">4</span><span class="hl opt">)</span> <span class="hl kwa">is</span> Blue<span class="hl opt">.</span>
+</pre>
+
+You want to convert from a String to a scalar type.
+</div>
+</li>
+
+<li><a href="javascript:adat_toggle('adat-attra8');">Rainbow_Color'Value</a>
+<div id="adat-attra8" class="adat-a" style="display: none"><b>You're right!</b>  The attribute 'Value converts from a String to a scalar type.
+<pre class="hl">    Rainbow_Color<span class="hl kwd">'Value</span><span class="hl opt">(</span><span class="hl str">&quot;Blue&quot;</span><span class="hl opt">)</span> <span class="hl kwa">is</span> Blue<span class="hl opt">.</span>
+</pre>
+</div>
+</li>
+
+</ol>
+
+Which one of the above attributes would you use to convert from the String
+<b>"Blue"</b> to the Rainbow_Color <b>Blue</b>?
+</div>
+</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

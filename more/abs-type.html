@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='More Records and Types' href='index.html' />
+<link rel='prev' title='Tagged Records and Dynamic Dispatching' href='tagged-rec.html' />
+<link rel='next' title='Controlled Types' href='ctrl-type.html' />
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor">
+
+<title>AdaTutor - Abstract Types and Abstract Subprograms</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="tagged-rec.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="ctrl-type.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Abstract Types and Abstract Subprograms</h2>
+
+<pre class="hl">   <span class="hl kwa">package</span> P <span class="hl kwa">is</span>
+      <span class="hl kwa">type</span> Abstract_Date <span class="hl kwa">is abstract tagged null record</span><span class="hl opt">;</span>
+      <span class="hl kwa">procedure</span> Display<span class="hl opt">(</span>Ad <span class="hl opt">:</span> <span class="hl kwa">in</span> Abstract_Date<span class="hl opt">)</span> <span class="hl kwa">is abstract</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> P<span class="hl opt">;</span>
+</pre>
+
+<p>In this example for Ada 95 only, type Abstract_Date is an <b>abstract
+type</b>.&nbsp;  We can't declare objects of that type, but we can derive other
+types from it.&nbsp;  For example, we can derive type Date by adding three
+fields, and then derive type Complete_Date from type Date by adding one more
+field.</p>
+
+<p>The <b>abstract procedure</b> does not have a body, only a
+specification.&nbsp;  However, it lets us write procedures built around types
+derived from the abstract type.&nbsp; For example, we could write overloaded
+procedures Display for types Date and Complete_Date (these procedures will have
+bodies as well as specifications).&nbsp; Also, by declaring an access type to
+type Abstract_Date, we could again make use of dynamic dispatching to our
+overloaded versions of Display:
+<pre class="hl">   <span class="hl kwa">package</span> P <span class="hl kwa">is</span>
+      <span class="hl kwa">type</span> Abstract_Date <span class="hl kwa">is abstract tagged null record</span><span class="hl opt">;</span>
+      <span class="hl kwa">procedure</span> Display<span class="hl opt">(</span>Ad <span class="hl opt">:</span> <span class="hl kwa">in</span> Abstract_Date<span class="hl opt">)</span> <span class="hl kwa">is abstract</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> P<span class="hl opt">;</span>
+
+   <span class="hl kwa">with</span> P<span class="hl opt">;</span> <span class="hl kwa">use</span> P<span class="hl opt">;</span>
+   <span class="hl kwa">package</span> Q <span class="hl kwa">is</span>
+      <span class="hl opt">...</span>
+      <span class="hl kwa">type</span> Ptr <span class="hl kwa">is access</span> Abstract_Date<span class="hl opt">;</span>
+      <span class="hl kwa">type</span> Date <span class="hl kwa">is new</span> Abstract_Date
+         <span class="hl kwa">with record</span> <span class="hl opt">...</span> <span class="hl slc">-- Day, Month, Year</span>
+      <span class="hl kwa">type</span> Complete_Date <span class="hl kwa">is new</span> Date
+         <span class="hl kwa">with record</span> <span class="hl opt">...</span> <span class="hl slc">-- Day_Of_Week</span>
+      <span class="hl kwa">procedure</span> Display<span class="hl opt">(</span>D <span class="hl opt">:</span> <span class="hl kwa">in</span> Date<span class="hl opt">);</span>
+      <span class="hl kwa">procedure</span> Display<span class="hl opt">(</span>Cd <span class="hl opt">:</span> <span class="hl kwa">in</span> Complete_Date<span class="hl opt">);</span>
+   <span class="hl kwa">end</span> Q<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>The advantage of this is that we can write package P, with all its abstract
+procedures, before we write the code in package Q detailing what the derived
+types (Date and Complete_Date) look like.</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

@@ -1,0 +1,272 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Advanced Topics' href='index.html' />
+<link rel='prev' title='Pragmas' href='pragma.html' />
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, pitfall">
+
+<title>AdaTutor - Loose Ends and Pitfalls</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="pragma.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Loose Ends and Pitfalls</h2>
+<p>This last section covers a few topics that were omitted earlier for
+simplicity.&nbsp; We also mention some common errors made by Ada
+programmers.&nbsp;  Beginners aren't expected to understand every paragraph, so
+we won't ask questions here.</p>
+
+<p>Some terminals and printers don't support the entire ASCII character
+set.&nbsp;  In an Ada program, the vertical bar <b>|</b> may be replaced with
+the exclamation mark <b>!</b>, as in when 3 ! 5 =&gt;.&nbsp;  Also, a pair of
+sharp signs <b>#</b> may be replaced with a pair of colons <b>:</b>, as in
+<b>16:7C03:</b>.&nbsp;  The quotation marks around a string constant may
+be replaced with percent signs if the string doesn't contain any quotation
+marks.&nbsp;  In that case, any percent signs within the string must be
+doubled.&nbsp;  For example, <b>Put(%a 10%% increase%);</b>.&nbsp;  These
+character replacements shouldn't be used in programs if the equipment will
+support the standard characters.</p>
+
+<p><a href="http://www.adahome.com/rm95/rm9x-04-09.html">Section 4.9(2)</a> of
+the Ada 95 RM gives a detailed definition of a <b>static expression</b>, but
+briefly, an expression is called <b>static</b> if it can be evaluated at compile
+time and isn't too complicated.&nbsp;  In almost every case where a constant
+normally appears, a static expression may also be used.&nbsp;  For example, an
+address representation clause normally takes a constant of type
+System.Address.&nbsp;  A static expression of this type is also acceptable, as
+in <b>for Clock_Interrupt'Address use 16*16;</b>.</p>
+
+<p>The unary minus is always an operator and never part of a constant.&nbsp;
+Thus <b>-5</b> is actually a static expression and not a constant.&nbsp;
+Normally, this doesn't concern the programmer, because, as we just said, static
+expressions can usually appear where a constant normally appears.&nbsp; However,
+in a few special situations we can get into trouble.&nbsp;  For example, in Ada
+83 we can write <b>for I in 10 .. 20 loop</b> and <b>A : array(10 .. 20) of
+Float;</b> but we can't omit the words <b>Integer range</b> in <b>for I in
+Integer range -10 .. 10 loop</b> and <b>A : array(Integer range -10 .. 10) of
+Float</b>!  (Ada 95 lets us write these without <b>Integer range</b>,
+however.)</p>
+
+<p>Also, if a package P declares <b>type Count is new Integer;</b> then the
+unary minus operator for that type is part of the package.&nbsp;  If our program
+<b>with</b>s but doesn't <b>use</b> P, we can write <b>A : P.Count := 1;</b> but
+not <b>B : P.Count := -1;</b>.&nbsp; We either have to <b>use</b> the package,
+<b>rename</b> P."-", or write <b>B : P.Count := P."-"(1);</b>.&nbsp;  Because we
+sometines don't want to <b>use</b> the package except to avoid writing
+<b>P."-"(1)</b>, Ada 95 lets us write
+<pre>
+<span class="hl kwa">with</span> P<span class="hl opt">;</span> <b><span class="hl kwa">use type</span> P<span class="hl opt">.</span>Count<span class="hl opt">;</span></b></pre>
+</p>
+
+<p>This automatically <b>use</b>s only the infix operators belonging to the type
+P.Count.&nbsp;  Other operators belonging to P.Count, and other identifiers in
+the package P still require dot notation with the above <b>use type</b> clause.
+</p>
+
+<p>The operators have precedence, so that 1 + 2 * 3 means 1 + (2 * 3).&nbsp; The
+precedence of all the operators is given in <a href="http://www.adahome.com/rm95/rm9x-04-05.html">section 4.5</a> of the Ada 95 RM.&nbsp;  A programmer should
+never have to look these up, because parentheses should be used for any cases
+that aren't obvious.&nbsp;  Unary minus has a low precedence, so
+<b>-A mod B</b> means <b>-(A mod B)</b>.</p>
+
+<p>If we write <b>A, B : array(1 .. 5) of Float;</b> then A and B have
+<b>different</b> anonymous types, and we can't write <b>A := B;</b>.&nbsp;  To
+fix this, write <b>type Vector5 is array(1 .. 5) of Float;</b> and then
+<b>A, B : Vector5;</b>, or write <b>type Vector is array(Integer range
+&lt;&gt;) of Float;</b> and <b>A, B : Vector(1 .. 5);</b>.</p>
+
+<p>Ada 83 and Ada 95 will automatically convert from a universal type to a named
+type, but only Ada 95 will convert the other way.&nbsp;  For example,
+<pre class="hl">   C1 <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl kwb">Integer</span> <span class="hl opt">:=</span> <span class="hl num">1</span><span class="hl opt">;</span>  <span class="hl slc">-- legal</span>
+   C2 <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl kwb">Integer</span> <span class="hl opt">:=</span> <span class="hl num">2</span><span class="hl opt">;</span>  <span class="hl slc">-- legal</span>
+   C3 <span class="hl opt">:</span> <span class="hl kwa">constant</span> <span class="hl opt">:=</span> C1 <span class="hl opt">+</span> C2<span class="hl opt">;</span>    <span class="hl slc">-- legal only in Ada 95</span>
+</pre>
+</p>
+
+
+<p>When arrays are assigned, the subscripts don't have to match; only the
+lengths and types need match.&nbsp;  But in Ada 83 (not Ada 95), if a formal
+parameter (&ldquo;dummy argument&rdquo;) of a subprogram is a constrained array,
+the subscripts in the call to the subprogram must match.&nbsp;  For example, the
+last line here will raise Constraint_Error in Ada 83:
+<pre class="hl">   <span class="hl kwa">subtype</span> Name <span class="hl kwa">is</span> <span class="hl kwb">String</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">30</span><span class="hl opt">);</span>
+   John <span class="hl opt">:</span> Name<span class="hl opt">;</span>
+   Line <span class="hl opt">:</span> <span class="hl kwb">String</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">80</span><span class="hl opt">);</span>
+   <span class="hl kwa">procedure</span> Display<span class="hl opt">(</span>Person <span class="hl opt">:</span> <span class="hl kwa">in</span> Name<span class="hl opt">);</span>
+   <span class="hl opt">...</span>
+   John <span class="hl opt">:=</span> Line<span class="hl opt">(</span><span class="hl num">51</span> <span class="hl opt">..</span> <span class="hl num">80</span><span class="hl opt">);</span>   <span class="hl slc">-- legal</span>
+   Display<span class="hl opt">(</span>Line<span class="hl opt">(</span> <span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">30</span><span class="hl opt">));</span>  <span class="hl slc">-- legal</span>
+   Display<span class="hl opt">(</span>Line<span class="hl opt">(</span><span class="hl num">51</span> <span class="hl opt">..</span> <span class="hl num">80</span><span class="hl opt">));</span>  <span class="hl slc">-- Raises Constraint_Error in Ada 83</span>
+</pre>
+</p>
+
+<p>When a subprogram formal parameter is an unconstrained array, beginners often
+wrongly assume that the subscripts will start with one.&nbsp;  For example,
+<pre class="hl">   Line <span class="hl opt">:</span> <span class="hl kwb">String</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">80</span><span class="hl opt">);</span>
+   <span class="hl kwa">procedure</span> Display<span class="hl opt">(</span>S <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">String</span><span class="hl opt">)</span> <span class="hl kwa">is</span>
+   <span class="hl kwa">begin</span>
+     <span class="hl kwa">for</span> I <span class="hl kwa">in</span> <span class="hl num">1</span> <span class="hl opt">..</span> S<span class="hl kwd">'Length</span> <span class="hl kwa">loop</span>
+       <span class="hl opt">...</span> S<span class="hl opt">(</span>I<span class="hl opt">) ...</span>
+</pre>
+
+This will raise Constraint_Error if we call
+<b>Display(Line(51 .. 80));</b>.&nbsp;  The for statement should be changed to
+say <b>for I in S'Range loop.</b>.</p>
+
+<p>Remember that elaboration occurs at run time.&nbsp;  The following raises
+Program_Error by trying to activate a task before elaborating its body:
+<pre>
+   <span class="hl kwa">task type</span> T <span class="hl kwa">is</span> <span class="hl opt">...</span> <span class="hl kwa">end</span> T<span class="hl opt">;</span>
+   <span class="hl kwa">type</span> P <span class="hl kwa">is access</span> T<span class="hl opt">;</span>
+   T1 <span class="hl opt">:</span> P <span class="hl opt">:=</span> <span class="hl kwa">new</span> T<span class="hl opt">;</span>
+   <span class="hl kwa">task body</span> T <span class="hl kwa">is</span> <span class="hl opt">...</span> <span class="hl kwa">end</span> T<span class="hl opt">;</span>
+</pre>
+The third line should be changed to <b>T1 : P;</b> and the statement <b>T1 :=
+new T;</b> should be placed in the executable region.</p>
+
+<p>Similarly, this procedure tries to activate a function before elaborating its
+body.&nbsp;  The initialization of J should be moved to the executable region:
+<pre class="hl">   <span class="hl kwa">procedure</span> Test <span class="hl kwa">is</span>
+   <span class="hl kwa">function</span> X <span class="hl kwa">return</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      J <span class="hl opt">:</span> <span class="hl kwb">Integer</span> <span class="hl opt">:=</span> X<span class="hl opt">;</span>  <span class="hl slc">-- Raises Program_Error.</span>
+      <span class="hl kwa">function</span> X <span class="hl kwa">return</span> <span class="hl kwb">Integer</span> <span class="hl kwa">is</span>
+      <span class="hl kwa">begin</span>
+         <span class="hl kwa">return</span> <span class="hl num">5</span><span class="hl opt">;</span>
+      <span class="hl kwa">end</span> X<span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">null</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Test<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>A <b>return</b> statement in a function is used with an object: <b>return
+Answer;</b>.&nbsp; However, <b>return</b> may also appear without an object in
+a <b>procedure</b>; we simply write <b>return;</b>.&nbsp;  Normally, a procedure
+returns after executing its last statement, but an early return is possible by
+this method.&nbsp;  In the author's opinion, such early returns should be used
+rarely, if at all.</p>
+
+<p>Many implementations of Ada allow us to insert <b>machine code</b> into a
+program.&nbsp;  Ada 95 compilers that allow machine code insertions provide a
+package <b>System.Machine_Code</b> which usually contains a rather complex
+record definition representing the format of a machine instruction.&nbsp;  We
+can write a procedure or function that <b>with</b>s and <b>use</b>s that
+package.&nbsp;  In place of the usual Ada statements in the executable region,
+we write record aggregates, each one representing a machine code
+instruction.&nbsp;  Since the package <b>System.Machine_Code</b> varies greatly
+from one implementation to the next, you'll have to consult the compiler
+documentation.</p>
+
+<p>Ada 83 compilers that allow machine code insertions sometimes provide a
+package <b>Machine_Code</b> and sometimes provide a pragma, such as <b>pragma
+Native</b>, which can be inserted in the middle of a procedure, function,
+etc.&nbsp;  Again, the details vary widely from one implementation to the next,
+and you'll have to consult the compiler documentation.</p>
+
+<p>In the unusual case of a for loop index hiding an explicitly declared object
+of the same name, the explicitly declared object can be referenced inside the
+loop.&nbsp;  Simply use dot notation with the name of the compilation unit
+(function, procedure, etc.)&nbsp;  For example, the following is legal:
+<pre class="hl">   <span class="hl kwa">procedure</span> Main <span class="hl kwa">is</span>
+      Ix <span class="hl opt">:</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+      J  <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      Ix <span class="hl opt">:=</span> <span class="hl num">3.2</span><span class="hl opt">;</span>
+      <span class="hl kwa">for</span> Ix <span class="hl kwa">in</span> <span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">10</span> <span class="hl kwa">loop</span>
+         Main<span class="hl opt">.</span>Ix <span class="hl opt">:=</span> <span class="hl num">6.0</span><span class="hl opt">;</span>
+         J <span class="hl opt">:=</span> Ix<span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Main<span class="hl opt">;</span>
+</pre>
+<b>Inside</b> the loop, <b>Ix</b> refers to the loop index, and the explicitly
+declared object can be referenced by writing <b>Main.Ix</b>.&nbsp;
+<b>Outside</b> the loop, <b>Ix</b> refers to the explicitly declared object, and
+the loop index doesn't exist.</p>
+
+<p>In the rare case of an aggregate containing just one element, we must use
+named notation rather than positional notation.&nbsp; For example, the last line
+is illegal in the following program segment, because the right hand side is a
+Float rather than an array of one Float.</p>
+<pre class="hl">   <span class="hl kwa">type</span> Vector <span class="hl kwa">is array</span><span class="hl opt">(</span><span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl opt">&lt;&gt;)</span> <span class="hl kwa">of</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+   A <span class="hl opt">:</span> Vector<span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">1</span><span class="hl opt">);</span>
+   <span class="hl opt">...</span>
+   A <span class="hl opt">:= (</span><span class="hl num">1</span> <span class="hl opt">=&gt;</span> <span class="hl num">2.3</span><span class="hl opt">);</span>  <span class="hl slc">-- legal</span>
+   A <span class="hl opt">:= (</span><span class="hl num">2.3</span><span class="hl opt">);</span>  <span class="hl slc">-- illegal</span>
+</pre>
+
+<p>Of course, it's OK to use positional notation in calls to subprograms with
+only one parameter, for example, <b>Put_Line(&quot;Hello&quot;);</b>.</p>
+
+<p>Annexes C through H of the
+<a href="http://www.adahome.com/rm95/rm9x-toc.html">Ada 95 RM</a> describe
+optional features of Ada 95.&nbsp;  An Ada 95 compiler may implement any, all,
+or none of these.&nbsp;  Consult your compiler documentation for details.&nbsp;
+The optional Ada 95 features are as follows:
+<ul>
+    <li><a href="http://www.adahome.com/rm95/rm9x-C.html">ANNEX C.</a>
+    <b>Systems Programming:</b>  Access to machine operations, interrupt
+    support, shared variable control, task identification, etc.</li>
+
+    <li><a href="http://www.adahome.com/rm95/rm9x-D.html">ANNEX D.</a>
+    <b>Real-Time Systems:</b>  Dynamic task priorities, scheduling, dispatching,
+    queueing, monotonic time, etc.&nbsp;  An implementation that provides this
+    must provide Systems Programming as well.</li>
+
+    <li><a href="http://www.adahome.com/rm95/rm9x-E.html">ANNEX E.</a>
+    <b>Distributed Systems:</b>  Multiple partitions of an Ada program executing
+    concurrently.</li>
+
+    <li> <a href="http://www.adahome.com/rm95/rm9x-F.html">ANNEX F.</a>
+    <b>Information Systems:</b>  Decimal types for handling monetary
+    values.&nbsp; &ldquo;Picture&rdquo; strings to simplify output of monetary
+    amounts.</li>
+
+    <li><a href="http://www.adahome.com/rm95/rm9x-G.html">ANNEX G.</a>
+    <b>Numerics:</b>  Complex numbers, improved accuracy requirements for
+    floating-point arithmetic, random number generation, etc.</li>
+
+    <li><a href="http://www.adahome.com/rm95/rm9x-H.html">ANNEX H.</a>
+    <b>Safety and Security:</b>  Adds requirements on compilers for
+    safety-critical systems.</li>
+</ul>
+
+<p>Well, we haven't covered <b>all</b> there is to know about Ada, but this has
+been a very thorough course.&nbsp;  If you've come this far and completed the
+six Outside Assignments, you should be an excellent Ada programmer.&nbsp;  To
+continue learning, start doing all your casual programming in Ada.&nbsp;  If you
+need a simple program to balance your checkbook, write it in Ada!&nbsp;  At this
+point, switching to Ada for all your programming will do you much more good than
+further instruction from a tutorial program.</p>
+
+<p>The best way to answer any remaining questions about Ada is to &ldquo;ask the
+compiler&rdquo; by writing a brief test program, especially if your compiler is
+validated.&nbsp;  You can also look in the
+<a href="http://www.adahome.com/rm95/rm9x-toc.html">Ada 95 RM</a>, which, by
+definition, does cover all of the Ada language.&nbsp;  However, the RM isn't
+easy reading!</p>
+
+<p>The best way to debug a short program is often to execute it by hand, with
+pencil and paper.&nbsp;  You can also add extra statements to the program to
+display intermediate results, and remove them later.</p>
+
+<p>We wish you success with Ada, and welcome your comments and suggestions!</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

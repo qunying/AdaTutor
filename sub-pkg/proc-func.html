@@ -1,0 +1,239 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Subprograms and Packages' href='index.html' />
+<link rel='prev' title='Subprograms and Packages' href='index.html' />
+<link rel='next' title='Default Parameters' href='def-param.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, procedure, functions">
+
+<title>AdaTutor - Procedures and Functions</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="index.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="def-param.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Procedures and Functions</h2>
+<p>When we compiled procedures Hello and Add, we made it possible for other
+units to <b>with</b> them and call them.&nbsp;  We can also compile just a
+<b>specification</b>, supplying the body later.&nbsp;  For example, we could
+compile
+<pre class="hl">   <span class="hl kwa">function</span> English_Upper_Case<span class="hl opt">(</span>S <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">String</span><span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">String</span><span class="hl opt">;</span>
+</pre>
+and then compile the calling program.&nbsp;  When we later write the body, it
+must agree with the specification:
+<pre class="hl">   <span class="hl kwa">function</span> English_Upper_Case<span class="hl opt">(</span>S <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">String</span><span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">String</span> <span class="hl kwa">is</span>
+      Answer <span class="hl opt">:</span> <span class="hl kwb">String</span><span class="hl opt">(</span>S<span class="hl kwd">'Range</span><span class="hl opt">) :=</span> S<span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">for</span> I <span class="hl kwa">in</span> S<span class="hl kwd">'Range</span> <span class="hl kwa">loop</span>
+         <span class="hl kwa">if</span> S<span class="hl opt">(</span>I<span class="hl opt">)</span> <span class="hl kwa">in</span> <span class="hl str">'a'</span> <span class="hl opt">..</span> <span class="hl str">'z'</span> <span class="hl kwa">then</span>
+            Answer<span class="hl opt">(</span>I<span class="hl opt">) :=</span> <span class="hl kwb">Character</span><span class="hl kwd">'Val</span><span class="hl opt">(</span><span class="hl kwb">Character</span><span class="hl kwd">'Pos</span><span class="hl opt">(</span>S<span class="hl opt">(</span>I<span class="hl opt">)) -</span> <span class="hl num">32</span><span class="hl opt">);</span>
+         <span class="hl kwa">end if</span><span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+      <span class="hl kwa">return</span> Answer<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> English_Upper_Case<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Functions and procedures may also be declared locally.&nbsp;  In Ada 83, such
+declarations must follow any simple declarations like
+<b>S : String(1 .. 5);</b>.
+<pre class="hl">   <span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span> <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>
+   <span class="hl kwa">procedure</span> Greeting <span class="hl kwa">is</span>
+     S <span class="hl opt">:</span> <span class="hl kwb">String</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">5</span><span class="hl opt">) :=</span> <span class="hl str">&quot;Hello&quot;</span><span class="hl opt">;</span>
+     <span class="hl kwa">function</span> English_Upper_Case<span class="hl opt">(</span>S <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">String</span><span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">String</span> <span class="hl kwa">is</span>
+       Answer <span class="hl opt">:</span> <span class="hl kwb">String</span><span class="hl opt">(</span>S<span class="hl kwd">'Range</span><span class="hl opt">) :=</span> S<span class="hl opt">;</span>
+     <span class="hl kwa">begin</span>
+       <span class="hl kwa">for</span> I <span class="hl kwa">in</span> S<span class="hl kwd">'Range</span> <span class="hl kwa">loop</span>
+         <span class="hl kwa">if</span> S<span class="hl opt">(</span>I<span class="hl opt">)</span> <span class="hl kwa">in</span> <span class="hl str">'a'</span> <span class="hl opt">..</span> <span class="hl str">'z'</span> <span class="hl kwa">then</span>
+           Answer<span class="hl opt">(</span>I<span class="hl opt">) :=</span> <span class="hl kwb">Character</span><span class="hl kwd">'Val</span><span class="hl opt">(</span><span class="hl kwb">Character</span><span class="hl kwd">'Pos</span><span class="hl opt">(</span>S<span class="hl opt">(</span>I<span class="hl opt">)) -</span> <span class="hl num">32</span><span class="hl opt">);</span>
+         <span class="hl kwa">end if</span><span class="hl opt">;</span>
+       <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+      <span class="hl kwa">return</span> Answer<span class="hl opt">;</span>
+     <span class="hl kwa">end</span> English_Upper_Case<span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+     Put_Line<span class="hl opt">(</span>English_Upper_Case<span class="hl opt">(</span>S<span class="hl opt">));</span>
+   <span class="hl kwa">end</span> Greeting<span class="hl opt">;</span>
+</pre>
+
+<p>It's usually better to declare local functions and procedures to be
+<b>separate</b>.&nbsp; These subprograms can in turn declare <b>separate</b> sub
+programs, to any depth:
+<pre class="hl">   <span class="hl kwa">procedure</span> Main <span class="hl kwa">is</span>
+   <span class="hl kwa">function</span> A <span class="hl kwa">return</span> <span class="hl kwb">Float</span> <span class="hl kwa">is separate</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+     <span class="hl opt">...</span>
+   <span class="hl kwa">end</span> Main<span class="hl opt">;</span>
+
+   <span class="hl kwa">separate</span> <span class="hl opt">(</span>Main<span class="hl opt">)</span>
+   <span class="hl kwa">function</span> A <span class="hl kwa">return</span> <span class="hl kwb">Float</span> <span class="hl kwa">is</span>
+      <span class="hl kwa">procedure</span> B <span class="hl kwa">is separate</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+     <span class="hl opt">...</span>
+   <span class="hl kwa">end</span> A<span class="hl opt">;</span>
+
+   <span class="hl kwa">separate</span> <span class="hl opt">(</span>Main<span class="hl opt">.</span>A<span class="hl opt">)</span>
+   <span class="hl kwa">procedure</span> B <span class="hl kwa">is</span>
+      <span class="hl kwa">procedure</span> C<span class="hl opt">(</span>I <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span> <span class="hl kwa">is separate</span><span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+     <span class="hl opt">...</span>
+   <span class="hl kwa">end</span> B<span class="hl opt">;</span>
+
+   <span class="hl kwa">separate</span> <span class="hl opt">(</span>Main<span class="hl opt">.</span>A<span class="hl opt">.</span>B<span class="hl opt">)</span>
+   <span class="hl kwa">procedure</span> C<span class="hl opt">(</span>I <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Integer</span><span class="hl opt">)</span> <span class="hl kwa">is</span> <span class="hl opt">... (</span>etc<span class="hl opt">.)</span>
+</pre>
+</p>
+
+<p>However, <b>is separate</b> may be used only at the outermost level.&nbsp;
+The example below is legal as it stands, but we may not make procedure B
+separate unless we also make function A separate, thus bringing function A to
+the outermost level.</p>
+<pre class="hl"><span class="hl kwa">procedure</span> Main <span class="hl kwa">is</span>
+   F <span class="hl opt">:</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+   <span class="hl kwa">function</span> A <span class="hl kwa">return</span> <span class="hl kwb">Float</span> <span class="hl kwa">is</span>
+      Answer <span class="hl opt">:</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+      <span class="hl kwa">procedure</span> B <span class="hl kwa">is</span>
+      <span class="hl kwa">begin</span>
+         <span class="hl opt">...</span>
+      <span class="hl kwa">end</span> B<span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl opt">...</span>
+      <span class="hl kwa">return</span> Answer<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> A<span class="hl opt">;</span>
+<span class="hl kwa">begin</span>
+  <span class="hl opt">...</span>
+<span class="hl kwa">end</span> Main<span class="hl opt">;</span>
+</pre>
+<p>A program that begins <b>separate (...)</b> must be compiled after the
+program that says <b>is separate</b>, because a subprogram depends on its
+&ldquo;parent.&rdquo;</p>
+
+<p>In Ada 95, Hierarchial Libraries provide an alternative to <b>separate</b>
+subprograms.&nbsp;  We'll learn about Hierarchial Libraries a little
+later.&nbsp;  Also, the function To_Upper in the Ada 95 package
+Ada.Characters.Handling is better than our function English_Upper_Case, because
+it handles accented letters.&nbsp;  We presented our function only to give a
+simple example that will work in both Ada 83 and Ada 95.</p>
+
+<p>A procedure or function specification gives the name, mode, and type of each
+parameter.&nbsp;  A function specification also gives the type of the
+result.&nbsp;  The mode of the parameters can be <b>in</b>, <b>out</b>, or
+<b>in out</b>.&nbsp;  The subprogram may read from, but not write to, <b>in</b>
+parameters, and it may write to, but not read from, <b>out</b> parameters.&nbsp;
+(In Ada 95, it may read <b>out</b> parameters.)&nbsp;  If the mode is omitted,
+it's assumed to be <b>in</b>.&nbsp;  Thus, these two lines have the same effect:
+<pre class="hl">   <span class="hl kwa">procedure</span> Hanoi<span class="hl opt">(</span>N <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span> From<span class="hl opt">,</span> To<span class="hl opt">,</span> Spare <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Character</span><span class="hl opt">);</span>
+   <span class="hl kwa">procedure</span> Hanoi<span class="hl opt">(</span>N <span class="hl opt">:</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span>    From<span class="hl opt">,</span> To<span class="hl opt">,</span> Spare <span class="hl opt">:</span> <span class="hl kwb">Character</span><span class="hl opt">);</span>
+</pre>
+
+<p>The parameters of a <b>function</b> must always be of mode <b>in</b>, never
+<b>out</b> or <b>in out</b>.</p>
+
+<p>Note that when several parameters have the same mode and type, they can be
+placed in one list, separated by commas.&nbsp;  The lists themselves are
+separated by semicolons.&nbsp;  The two specifications above are equivalent to:
+<pre class="hl">   <span class="hl kwa">procedure</span> Hanoi<span class="hl opt">(</span>N <span class="hl opt">:</span> <span class="hl kwb">Natural</span><span class="hl opt">;</span> From<span class="hl opt">:</span> <span class="hl kwb">Character</span><span class="hl opt">;</span> To<span class="hl opt">:</span> <span class="hl kwb">Character</span><span class="hl opt">;</span>
+                   Spare<span class="hl opt">:</span> <span class="hl kwb">Character</span><span class="hl opt">);</span>
+</pre>
+
+<p>In any event, the parameters in a <b>call</b> to a procedure or function are
+always separated by <b>commas</b>:
+<pre class="hl">   Hanoi<span class="hl opt">(</span><span class="hl num">5</span><span class="hl opt">,</span> <span class="hl str">'A'</span><span class="hl opt">,</span> <span class="hl str">'B'</span><span class="hl opt">,</span> <span class="hl str">'C'</span><span class="hl opt">);</span>
+</pre>
+</p>
+
+<p><div class="adat-q">
+<h2>Question</h2>
+<ol>
+<li>
+<a href="javascript:adat_toggle('adat-proca1');">procedure P(A; B; C : in Integer);</a>
+<div id="adat-proca1" class="adat-a" style="display: none">No, in number 1 the
+items should be separated by commas, not semicolons.&nbsp;  In a subprogram
+specification, the items in a list are separated by commas, and the lists are
+separated by semicolons.&nbsp;  Here a &ldquo;list&rdquo; means a collection of
+parameters sharing the same mode and type (<b>in Integer</b>).</div>
+</li>
+<li>
+<a href="javascript:adat_toggle('adat-proca2');">procedure P(A, B, C : Integer; D, E : in out Float) return Character;</a>
+<div id="adat-proca2" class="adat-a" style="display: none">No, number 2 is
+illegal because a <b>return</b> clause applies only to a function specification,
+not a procedure specification.</div>
+</li>
+<li>
+<a href="javascript:adat_toggle('adat-proca3');">function  F(A, B, C : Integer; D, E : in out Float) return Character;
+</a>
+<div id="adat-proca3" class="adat-a" style="display: none">No, number 3 is
+illegal because all parameters of a function must have mode <b>in</b>.</div>
+</li>
+<li>
+<a href="javascript:adat_toggle('adat-proca4');">procedure P(A, B, C : Integer; D, E : in out Float);
+</a>
+<div id="adat-proca4" class="adat-a" style="display: none">
+<p><b>You're right!</b>&nbsp;  In a subprogram specification, the items of a
+list are separated by commas, and the lists are separated by semicolons.&nbsp;
+In a list, the mode may be omitted; it's assumed to be <b>in</b>.</p>
+
+<p>In number 1, the items should be separated by commas.&nbsp;  Number 2 has a
+<b>return</b> clause in a procedure specification, and number 3 has a mode other
+than <b>in</b> in a <b>function</b> specification.
+</div>
+</li>
+</ol>
+Which one of the above is <b>legal</b>?
+</div></p>
+
+<p>Recall that type conversion from Float to Integer in Ada rounds to the
+nearest integer.&nbsp;  (The Ada 83 standard doesn't specify which way rounding
+occurs when the fractional part is exactly 0.5; the Ada 95 standard specifies
+rounding away from zero in such cases.)&nbsp;  This function Floor computes the
+largest integer less than or equal to a given Float, always rounding toward
+negative infinity:
+<pre class="hl">   <span class="hl kwa">function</span> Floor<span class="hl opt">(</span>X <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Float</span><span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Integer</span> <span class="hl kwa">is</span>
+      Answer <span class="hl opt">:</span> <span class="hl kwb">Integer</span> <span class="hl opt">:=</span> <span class="hl kwb">Integer</span><span class="hl opt">(</span>X<span class="hl opt">);</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">if</span> <span class="hl kwb">Float</span><span class="hl opt">(</span>Answer<span class="hl opt">) &gt;</span> X <span class="hl kwa">then</span>
+         Answer <span class="hl opt">:=</span> Answer <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      <span class="hl kwa">end if</span><span class="hl opt">;</span>
+      <span class="hl kwa">return</span> Answer<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Floor<span class="hl opt">;</span>
+</pre>
+Similarly, this function Truncate converts from Float to Integer, always
+truncating toward zero:
+<pre class="hl">   <span class="hl kwa">function</span> Truncate<span class="hl opt">(</span>X <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Float</span><span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Integer</span> <span class="hl kwa">is</span>
+      Answer <span class="hl opt">:</span> <span class="hl kwb">Integer</span> <span class="hl opt">:=</span> <span class="hl kwb">Integer</span><span class="hl opt">(</span>X<span class="hl opt">);</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">if</span> Answer <span class="hl opt">&gt;</span> <span class="hl num">0</span> <span class="hl kwa">and</span> <span class="hl kwb">Float</span><span class="hl opt">(</span>Answer<span class="hl opt">) &gt;</span> X <span class="hl kwa">then</span>
+         Answer <span class="hl opt">:=</span> Answer <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      <span class="hl kwa">elsif</span> Answer <span class="hl opt">&lt;</span> <span class="hl num">0</span> <span class="hl kwa">and</span> <span class="hl kwb">Float</span><span class="hl opt">(</span>Answer<span class="hl opt">) &lt;</span> X <span class="hl kwa">then</span>
+         Answer <span class="hl opt">:=</span> Answer <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl opt">;</span>
+      <span class="hl kwa">end if</span><span class="hl opt">;</span>
+      <span class="hl kwa">return</span> Answer<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Truncate<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>In Ada 95, the attributes <b>'Floor</b>, <b>'Ceiling</b>, and
+<b>'Truncation</b>, available for any floating point type, are better than the
+above functions.&nbsp;  If X is of type Float, then <b>Float'Floor(X)</b> is the
+largest integer &lt;= X, <b>Float'Ceiling(X)</b> is the smallest integer &gt;=
+X, and <b>Float'Truncation</b> always truncates toward zero.</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

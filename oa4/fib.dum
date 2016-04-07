@@ -1,0 +1,6 @@
+-- Dummy solution to Outside Assignment 4
+separate (Fibtest)
+function Fib(N : in Positive) return Positive is
+begin
+  return 4;
+end Fib;

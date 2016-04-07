@@ -1,0 +1,35 @@
+with text_io, calendar; use text_io, calendar;
+procedure tasking is
+  interval        : constant duration := 5.0;
+  total_intervals : constant positive := 9;
+  start_time      : constant time := clock;
+  quitting_time   : constant time := start_time +
+                                             total_intervals*interval;
+  next_time       : time := start_time;
+  task type tick is
+    entry make_noise;
+    entry shutdown;
+  end tick;
+  t               : tick;
+  task body tick is
+    quit : boolean := false;
+  begin
+    while not quit loop
+      select
+        accept make_noise do
+          put_line("Tick!");
+        end make_noise;
+      or
+        accept shutdown;
+        quit := true;
+      end select;
+    end loop;
+  end tick;
+begin
+  while next_time < quitting_time loop
+    t.make_noise;
+    next_time := next_time + interval;
+    put_line("(5-second delay)"); delay next_time - clock;
+  end loop;
+  t.shutdown;
+end tasking;

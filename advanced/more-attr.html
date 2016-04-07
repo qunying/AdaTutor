@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Advanced Topics' href='index.html' />
+<link rel='prev' title='Packages Standard and Ada.Characters.Latin_1' href='pkg-std.html' />
+<link rel='next' title='More Attributes' href='more-attr.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor">
+
+<title>AdaTutor - More Attributes</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="alt-n.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="io.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>More Attributes</h2>
+<p>Ada provides many attributes, all described in
+<a href='http://www.adahome.com/rm95/rm9x-K.html'>Annex K</a> of the Ada 95
+RM.&nbsp;  The most important ones that we haven't yet discussed are these:</p>
+
+<p>For any real type or subtype (floating or fixed), <b>'Small</b> and
+<b>'Large</b> are the smallest and largest positive model numbers.&nbsp;  Thus
+<b>Float'Small</b> is the difference between zero and the next larger number in
+type Float.&nbsp;  Also, for any floating point (sub)type, <b>'Model_Epsilon</b>
+is the difference between one and the next larger number.&nbsp;  (In Ada 83,
+<b>'Model_Epsilon</b> is simply called <b>'Epsilon</b>.)&nbsp; We'll use
+<b>'Epsilon</b> in an Ada 83 generic function in a moment.</p>
+
+<p>For a floating point (sub)type, <b>'Digits</b> returns the value given for
+<b>digits</b> in the declaration, and for a fixed point (sub)type, <b>'Delta</b>
+returns the value given for <b>delta</b> in the declaration.&nbsp;  These
+attributes may not seem too useful, because the programmer already knows what
+he or she wrote in the declarations.&nbsp; However, they're useful in generic
+packages and subprograms.&nbsp;  For example, if the generic part says <b>type
+Dummy is delta &lt;&gt;;</b>, the body can use <b>Dummy'Delta</b>.</p>
+
+<p>Ada 95 has <b>'Max</b> and <b>'Min</b>, both of which take two scalar
+parameters.&nbsp;  For example, if we have <b>I : Integer := 1;</b> and
+<b>J : Integer := 2;</b>, then <b>Integer'Max(I, J)</b> is 2.</p>
+
+<p>For any discrete (sub)type, <b>'Width</b> gives the maximum length that the
+attribute <b>'Image</b> can produce.&nbsp;  <b>Boolean'Width</b> is 5 because
+&ldquo;False&rdquo; has length 5.&nbsp;  With our earlier definition of
+Rainbow_Color, <b>Rainbow_Color'Width</b> is 6.&nbsp;  For versions of Ada using
+16-bit Integers, <b>Integer'Width</b> is also 6, the length of
+&lduqo;-32768&rdquo;.</p>
+
+<p><b>'Count</b> is used with the name of a task entry.&nbsp;  It returns the
+number of calls presently queued on the entry.&nbsp;  <b>'Terminated</b> is of
+type Boolean.&nbsp;  It's used with a task name, and tells if the task is
+terminated.</p>
+
+<p>Ada 95 has a package Ada.Numerics.Generic_Elementary_Functions containing a
+square root (Sqrt) function, but Ada 83 doesn't have this package.&nbsp;  As an
+exercise, let's write a generic Ada 83 function to compute the square root for
+any floating point type, using Newton-Raphson iteration.</p>
+
+<p>Let's suppose that G is our guess of the square root of X.&nbsp;  If our
+guess is correct, then X/G equals G.&nbsp;  If our guess is too low, then X/G is
+larger than G, and if our guess is too high, then X/G is smaller than G.&nbsp;
+The Newton--Raphson method simply says that our next guess is the average of G
+and X/G (one of which is too high, and the other of which is too low).&nbsp; For
+example, if we want to compute the square root of 9.0 and our first guess is
+9.0, successive guesses are 5.0, 3.4, 3.02352941, 3.00009155, 3.00000000.&nbsp;
+Note that convergence is very rapid.</p>
+
+<p>However, the problem in writing a program like this is knowing when to stop
+the iteration.&nbsp;  We'll use the Ada 83 attribute <b>'Epsilon</b> (called
+<b>'Model_Epsilon</b> in Ada 95).&nbsp;  Since G*G/X should be 1.0, we'll quit
+when the absolute value of the difference between G*G/X and 1.0 is less than or
+equal to 3.0 times Epsilon.&nbsp; Recall that <b>Dummy'Epsilon</b> is the
+difference between 1.0 and the next higher number for type Dummy.&nbsp;  If we
+use 1.0 times Epsilon, the loop might never terminate, and if we use 10.0 times
+Epsilon, we might not get full precision.&nbsp; So we'll use 3.0 times
+Epsilon.&nbsp;  Here's our function:
+<pre class="hl">   <span class="hl kwa">generic</span>
+      <span class="hl kwa">type</span> Dummy <span class="hl kwa">is digits</span> <span class="hl opt">&lt;&gt;;</span>
+   <span class="hl kwa">function</span> Sqrt<span class="hl opt">(</span>X <span class="hl opt">:</span><span class="hl kwa">in</span> Dummy<span class="hl opt">)</span> <span class="hl kwa">return</span> Dummy<span class="hl opt">;</span>
+   <span class="hl kwa">function</span> Sqrt<span class="hl opt">(</span>X <span class="hl opt">:</span><span class="hl kwa">in</span> Dummy<span class="hl opt">)</span> <span class="hl kwa">return</span> Dummy <span class="hl kwa">is</span>
+      Guess <span class="hl opt">:</span> Dummy <span class="hl opt">:=</span> X<span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">if</span> X <span class="hl opt">&lt;</span> <span class="hl num">0.0</span> <span class="hl kwa">then</span>
+         <span class="hl kwa">raise</span> Constraint_Error<span class="hl opt">;</span>
+      <span class="hl kwa">end if</span><span class="hl opt">;</span>
+      <span class="hl kwa">while</span> X <span class="hl opt">/=</span> <span class="hl num">0.0</span> <span class="hl kwa">and then abs</span><span class="hl opt">(</span>Guess<span class="hl opt">*</span>Guess<span class="hl opt">/</span>X <span class="hl opt">-</span> <span class="hl num">1.0</span><span class="hl opt">)</span>
+                               <span class="hl opt">&gt;</span> <span class="hl num">3.0</span><span class="hl opt">*</span>Dummy<span class="hl kwd">'Epsilon</span> <span class="hl kwa">loop</span>
+         Guess <span class="hl opt">:= (</span>X<span class="hl opt">/</span>Guess <span class="hl opt">+</span> Guess<span class="hl opt">) *</span> <span class="hl num">0.5</span><span class="hl opt">;</span>
+      <span class="hl kwa">end loop</span><span class="hl opt">;</span>
+      <span class="hl kwa">return</span> Guess<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Sqrt<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>We tested our Sqrt with an implementation of Ada 83 having types Float,
+Long_Float, and Long_Long_Float.&nbsp;  The last gives at least 33 decimal
+digits of precision.&nbsp;  Sqrt was instantiated for all three floating point
+types, as was Float_IO to display the results.&nbsp;  When tested with the
+three types, all displayed digits of the answers were correct.</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

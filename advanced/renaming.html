@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Advanced Topics' href='index.html' />
+<link rel='prev' title='Ada.Sequential_IO, Ada.Direct_IO, and Ada.Streams.Stream_IO' href='io.html' />
+<link rel='next' title='Subprogram Parameters with Generics' href='subprg-gen.html' />
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, renaming">
+
+<title>AdaTutor - Renaming</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="io.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="subprg-gen.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Renaming</h2>
+<p>A subprogram can be renamed in Ada.&nbsp;  This allows us to avoid the dot
+notation without a <b>use</b> clause.&nbsp;  For example, if our program
+<b>with</b>s Ada.Text_IO, we can write:
+<pre class="hl"><span class="hl kwa">procedure</span> Print<span class="hl opt">(</span>Object <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">String</span><span class="hl opt">)</span> <span class="hl kwa">renames</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">.</span>Put_Line<span class="hl opt">;</span>
+</pre>
+</p>
+   
+
+<p>We can now call Print instead of Ada.Text_IO.Put_Line.&nbsp;  The old name is
+still available.&nbsp;  Note that renaming can change the names of the formal
+parameters (&ldquo;dummy arguments&rdquo;).&nbsp;  Renaming can also add,
+delete, or change default values.&nbsp; When used in a package in Ada 83, a
+renaming declaration like the above must appear in the specification, not the
+body.&nbsp;  In Ada 95, the specification can say simply <b>procedure
+Print(Object : in String);</b>, and the renames declaration above may appear in
+the body.</p>
+
+<p>We can also rename task entries as procedures.&nbsp;  This is the only way to
+avoid the dot notation when calling a task entry.</p>
+
+<p>A function can be renamed as an infix operator, if it has the right number
+and types of parameters.&nbsp;  Also, an infix operator can be renamed as a
+function.&nbsp; For example, earlier we defined type Vector and wrote:
+<pre class="hl"><span class="hl kwa">function</span> <span class="hl str">&quot;*&quot;</span><span class="hl opt">(</span>Left<span class="hl opt">,</span> Right <span class="hl opt">:</span> <span class="hl kwa">in</span> Vector<span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>
+</pre>
+This could be renamed as follows:
+<pre class="hl"><span class="hl kwa">function</span> Dot_Product<span class="hl opt">(</span>X<span class="hl opt">,</span> Y <span class="hl opt">:</span> <span class="hl kwa">in</span> Vector<span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Float</span> <span class="hl kwa">renames</span> <span class="hl str">&quot;*&quot;</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Renaming can get around the restriction that library subprograms can't be
+infix operators.&nbsp;  We can use a normal function name for the library, and
+rename it as an infix operator for our program.&nbsp;  Similarly, we can get
+around the rule that library subprograms can't overload each other.&nbsp;  We
+can give subprograms distinct names in the library, and rename them in our
+program to overload each other.</p>
+
+<p>An attribute that takes a parameter, such as <b>'Pred</b> and <b>'Succ</b>,
+can be renamed as a function.&nbsp;  For example,
+<pre class="hl"><span class="hl kwa">function</span> Next<span class="hl opt">(</span>M <span class="hl opt">:</span> <span class="hl kwa">in</span> Month_Type<span class="hl opt">)</span> <span class="hl kwa">return</span> Month_Type
+   <span class="hl kwa">renames</span> Month_Type<span class="hl kwd">'Succ</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+  
+<p>Record components can be renamed.&nbsp;  If D is of type Date, we can write
+<pre class="hl">Y <span class="hl opt">:</span> <span class="hl kwb">Integer</span> <span class="hl kwa">renames</span> D<span class="hl opt">.</span>Year<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Exceptions can also be renamed.&nbsp;  For example,
+<pre class="hl">No_Such_File <span class="hl opt">:</span> <span class="hl kwa">exception renames</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">.</span>Name_Error<span class="hl opt">;</span>
+</pre>
+The ability to rename exceptions is used by Ada.Text_IO, Ada.Sequential_IO,
+Ada.Direct_IO, etc.&nbsp;  Earlier, when we gave a simplified specification of
+Ada.Text_IO, we pretended that the exceptions Status_Error, Mode_Error,
+End_Error, etc. were defined in that package.&nbsp;  Actually, they're defined
+in a package Ada.IO_Exceptions.&nbsp;  Ada.Text_IO withs that package, and
+declares
+<pre class="hl">Status_Error <span class="hl opt">:</span> <span class="hl kwa">exception renames</span> IO_Exceptions<span class="hl opt">.</span>Status_Error<span class="hl opt">;</span>
+Mode_Error   <span class="hl opt">:</span> <span class="hl kwa">exception renames</span> IO_Exceptions<span class="hl opt">.</span>Mode_Error<span class="hl opt">;</span>
+</pre>
+etc.&nbsp;  Other packages like Ada.Direct_IO and Ada.Sequential_IO do exactly
+the same thing.&nbsp;  Suppose Random_IO is an instantiation of
+Ada.Direct_IO.&nbsp;  Then Ada.Text_IO.File_Type and Random_IO.File_Type are two
+different types, but Ada.Text_IO.Status_Error and Random_IO.Status_Error are the
+same exception, because they both rename Ada.IO_Exceptions.Status_Error.</p>
+
+<p>A subtype can be used to achieve the effect of renaming a type.&nbsp;  For
+example,
+<pre class="hl"><span class="hl kwa">subtype</span> File <span class="hl kwa">is</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">.</span>File_Type<span class="hl opt">;</span>
+</pre>
+</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

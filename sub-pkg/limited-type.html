@@ -1,0 +1,331 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Subprograms and Packages' href='index.html' />
+<link rel='prev' title='Information Hiding: Private Types' href='private-type.html' />
+<link rel='next' title='Hierarchical Libraries' href='hierarch-lib.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, limited type">
+
+<title>AdaTutor - Type Text and Limited Private Types</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="index.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="hierarch-lib.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Type Text and Limited Private Types</h2>
+<p>Earlier we remarked that Ada strings are of fixed length.&nbsp;  Ada 95 comes
+with several string handling packages not found in Ada 83.&nbsp;  All of them
+are described in <a href='http://www.adahome.com/rm95/rm9x-A-04-01.html'>Annex
+A.4</a> of the Ada 95 LRM.&nbsp;  The most important of these are
+
+<table><tr>
+<td>Fixed-Length String Handling:</td><td>&nbsp;&nbsp;&nbsp;</td>
+<td><b>Ada.Strings.Fixed</b></td></tr>
+<tr>
+<td>Bounded-Length String Handling:</td><td>&nbsp;&nbsp;&nbsp;</td>
+<td><b>Ada.Strings.Bounded</b></td></tr>
+<tr>
+<td>Unbounded-Length String Handling:</td><td>&nbsp;&nbsp;&nbsp;</td>
+<td><b>Ada.Strings.Unbounded</b></td></tr></table>
+</p>
+
+<p>Since Ada 83 doesn't have these packages,
+<a href='http://www.adahome.com/LRM/83/RM/rm83html/lrm-07-06.html#7.6'>section
+7.6</a> of the Ada 83 RM suggested that we create a type Text to get around the
+fact that Ada strings have fixed length.&nbsp;  Instead of declaring objects to
+be Strings, we'll declare them to be of type Text, which will simulate
+variable-length strings.&nbsp;  Then we'll see how this creates a need for
+limited private types.<?p>
+
+<p>The package specification in
+<a href='http://www.adahome.com/LRM/83/RM/rm83html/lrm-07-06.html#7.6'>section
+7.6</a> of the Ada 83 RM makes use of discriminated records.&nbsp;  Since we
+haven't yet covered that topic, we'll give a simplified presentation here.&nbsp;
+Our type Text corresponds closely to the type
+<b>Bounded_String</b> in the Ada 95 package <b>Ada.Strings.Bounded</b>.</p>
+
+<p>Let's declare
+<pre class="hl">      <span class="hl kwa">type</span> Text <span class="hl kwa">is record</span>
+         Len <span class="hl opt">:</span> <span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">80</span> <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+         Val <span class="hl opt">:</span> <span class="hl kwb">String</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">80</span><span class="hl opt">);</span>
+      <span class="hl kwa">end record</span><span class="hl opt">;</span>
+</pre>
+Any appropriate maximum length may be used in place of 80.&nbsp;  It isn't
+necessary to initialize the Val field to all blanks, because the Len field
+keeps track of how much of the Val field is significant.&nbsp; The Len field is
+given a default value of 0, so that objects of type Text will be initialized to
+zero length.</p>
+
+<p>For example, we could declare <b>T1 : Text;</b>.&nbsp;  We could then set
+<b>T1.Len := 5;</b> and <b>T1.Val(1 .. 5) := "Hello";</b>.&nbsp;  The fact that
+the last 75 characters of T1.Val might contain garbage is of no consequence,
+because T1.Len tells our program to consider only the first 5 characters of
+T1.Val.&nbsp;  For example, if our program <b>with</b>s and <b>use</b>s
+Ada.Text_IO, it might say <b>Put_Line(T1.Val(1 .. T1.Len));</b>.&nbsp;  Since
+T1.Len is a variable, we've simulated variable-length strings.</p>
+
+<p>A minor disadvantage is that, for each object of type Text, we reserve enough
+memory for the longest possible length (80 in this example).&nbsp; Discriminated
+records, to be covered in the section on More Records and Types, can overcome
+this disadvantage.</p>
+
+<p>Type Text will be much easier to use if we write some subprograms.&nbsp;
+First, we need to convert between types Text and String.&nbsp;  Conversion in
+both directions is very simple:
+<pre class="hl">      <span class="hl kwa">function</span> Str<span class="hl opt">(</span>T <span class="hl opt">:</span> <span class="hl kwa">in</span> Text<span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">String</span> <span class="hl kwa">is</span>
+      <span class="hl kwa">begin</span>
+         <span class="hl kwa">return</span> T<span class="hl opt">.</span>Val<span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> T<span class="hl opt">.</span>Len<span class="hl opt">);</span>
+      <span class="hl kwa">end</span> Str<span class="hl opt">;</span>
+
+      <span class="hl kwa">function</span> Txt<span class="hl opt">(</span>S <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">String</span><span class="hl opt">)</span> <span class="hl kwa">return</span> Text <span class="hl kwa">is</span>
+         Answer <span class="hl opt">:</span> Text<span class="hl opt">;</span>
+      <span class="hl kwa">begin</span>
+         Answer<span class="hl opt">.</span>Len <span class="hl opt">:=</span> S<span class="hl kwd">'Length</span><span class="hl opt">;</span>
+         Answer<span class="hl opt">.</span>Val<span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> Answer<span class="hl opt">.</span>Len<span class="hl opt">) :=</span> S<span class="hl opt">;</span>
+         <span class="hl kwa">return</span> Answer<span class="hl opt">;</span>
+      <span class="hl kwa">end</span> Txt<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Now we can write, for example, <b>T1 : Text := Txt("Hello");</b> and we don't
+even have to count the characters of &ldquo;Hello&rdquo;.&nbsp;  Later, the
+program might execute <b>T1 := Txt("Type Text is very convenient.");</b>
+showing that T1 simulates a variable-length string.&nbsp;  If we with and use
+Ada.Text_IO in our program, we can write <b>Put_Line(Str(T1));</b>.</p>
+
+<p>It would be convenient to overload the <b>&amp;</b> operator to concatenate
+two Texts, or a Text with a String.&nbsp;  We can also overload four of the
+relational operators:
+<pre class="hl"><span class="hl kwa">function</span> <span class="hl str">&quot;&amp;&quot;</span>  <span class="hl opt">(</span>Left<span class="hl opt">,</span> Right <span class="hl opt">:</span> <span class="hl kwa">in</span> Text<span class="hl opt">)</span>               <span class="hl kwa">return</span> Text<span class="hl opt">;</span>
+<span class="hl kwa">function</span> <span class="hl str">&quot;&amp;&quot;</span>  <span class="hl opt">(</span>Left <span class="hl opt">:</span> <span class="hl kwa">in</span> Text<span class="hl opt">;</span>   Right <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">String</span><span class="hl opt">)</span> <span class="hl kwa">return</span> Text<span class="hl opt">;</span>
+<span class="hl kwa">function</span> <span class="hl str">&quot;&amp;&quot;</span>  <span class="hl opt">(</span>Left <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">String</span><span class="hl opt">;</span> Right <span class="hl opt">:</span> <span class="hl kwa">in</span> Text<span class="hl opt">)</span>   <span class="hl kwa">return</span> Text<span class="hl opt">;</span>
+<span class="hl kwa">function</span> <span class="hl str">&quot;&lt;&quot;</span>  <span class="hl opt">(</span>Left<span class="hl opt">,</span> Right <span class="hl opt">:</span> <span class="hl kwa">in</span> Text<span class="hl opt">)</span>            <span class="hl kwa">return</span> <span class="hl kwb">Boolean</span><span class="hl opt">;</span>
+<span class="hl kwa">function</span> <span class="hl str">&quot;&gt;&quot;</span>  <span class="hl opt">(</span>Left<span class="hl opt">,</span> Right <span class="hl opt">:</span> <span class="hl kwa">in</span> Text<span class="hl opt">)</span>            <span class="hl kwa">return</span> <span class="hl kwb">Boolean</span><span class="hl opt">;</span>
+<span class="hl kwa">function</span> <span class="hl str">&quot;&lt;=&quot;</span> <span class="hl opt">(</span>Left<span class="hl opt">,</span> Right <span class="hl opt">:</span> <span class="hl kwa">in</span> Text<span class="hl opt">)</span>            <span class="hl kwa">return</span> <span class="hl kwb">Boolean</span><span class="hl opt">;</span>
+<span class="hl kwa">function</span> <span class="hl str">&quot;&gt;=&quot;</span> <span class="hl opt">(</span>Left<span class="hl opt">,</span> Right <span class="hl opt">:</span> <span class="hl kwa">in</span> Text<span class="hl opt">)</span>            <span class="hl kwa">return</span> <span class="hl kwb">Boolean</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>The bodies of these subprograms are very simple!  For example:
+<pre class="hl">   <span class="hl kwa">function</span> <span class="hl str">&quot;&amp;&quot;</span><span class="hl opt">(</span>Left<span class="hl opt">,</span> Right <span class="hl opt">:</span> <span class="hl kwa">in</span> Text<span class="hl opt">)</span> <span class="hl kwa">return</span> Text <span class="hl kwa">is</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">return</span> Txt<span class="hl opt">(</span>Str<span class="hl opt">(</span>Left<span class="hl opt">) &amp;</span> Str<span class="hl opt">(</span>Right<span class="hl opt">));</span>
+   <span class="hl kwa">end</span> <span class="hl str">&quot;&amp;&quot;</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">function</span> <span class="hl str">&quot;&lt;&quot;</span><span class="hl opt">(</span>Left<span class="hl opt">,</span> Right <span class="hl opt">:</span> <span class="hl kwa">in</span> Text<span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Boolean</span> <span class="hl kwa">is</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">return</span> Str<span class="hl opt">(</span>Left<span class="hl opt">) &lt;</span> Str<span class="hl opt">(</span>Right<span class="hl opt">);</span>
+   <span class="hl kwa">end</span> <span class="hl str">&quot;&lt;&quot;</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p><div class="adat-q">
+<h2>Question</h2>
+<pre class="hl">   <span class="hl kwa">function</span> Txt<span class="hl opt">(</span>S <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">String</span><span class="hl opt">)</span> <span class="hl kwa">return</span> Text <span class="hl kwa">is</span>
+      Answer <span class="hl opt">:</span> Text<span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      Answer<span class="hl opt">.</span>Len <span class="hl opt">:=</span> S<span class="hl kwd">'Length</span><span class="hl opt">;</span>
+      Answer<span class="hl opt">.</span>Val<span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> Answer<span class="hl opt">.</span>Len<span class="hl opt">) :=</span> S<span class="hl opt">;</span>
+      <span class="hl kwa">return</span> Answer<span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Txt<span class="hl opt">;</span>
+</pre>
+<a href="javascript:adat_toggle('adat-lima1', 'adat-lima2');">True</a> or
+<a href="javascript:adat_toggle('adat-lima2', 'adat-lima1');">False</a>?&nbsp;
+A call to Txt with the null string, <b>Txt("")</b>, will raise a
+Constraint_Error.
+
+<div id="adat-lima1" class="adat-a" style="display: none">False.&nbsp;  The
+function will work correctly even for the null string.&nbsp;  The first
+executable statement will set Answer.Len to 0, and the second executable
+statement will do nothing.&nbsp;  The check for Constraint_Error is suppressed
+when a null slice is involved.
+</div>
+<div id="adat-lima2" class="adat-a" style="display: none"><b>You're
+right!</b>&nbsp;  The first executable statement will set Answer.Len to 0, and
+the second executable statement will do nothing.&nbsp;  The check for
+Constraint_Error is suppressed when a null slice is involved.&nbsp;  Thus the
+function will work correctly even for the null string.</div>
+</div></p>
+
+
+<pre class="hl">   <span class="hl kwa">type</span> Text <span class="hl kwa">is record</span>
+      Len <span class="hl opt">:</span> <span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">80</span> <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+      Val <span class="hl opt">:</span> <span class="hl kwb">String</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">80</span><span class="hl opt">);</span>
+   <span class="hl kwa">end record</span><span class="hl opt">;</span>
+</pre>
+
+<p>There are two problems with type Text.&nbsp;  The way Ada assigns arrays is
+less than ideal when assigning objects of type Text, and the way Ada tests for
+equality is totally unacceptable.&nbsp;  Suppose we have <b>T1, T2 : Text;</b>
+and then we execute <b>T1 := Txt("Hello");</b> and then <b>T2 := T1;</b>.&nbsp;
+In doing the assignment, Ada will copy all 80 characters of T1.Val, even though
+the last 75 characters contain garbage and only the first 5 characters (and the
+Len field) need be copied.&nbsp; Perhaps we could live with this inefficiency,
+but Ada's test for equality of arrays creates a more serious problem.</p>
+
+<p>If we write <b>T1 := Txt("aaaaaaaaaa");</b> and
+<b>T2 := Txt("bbbbbbbbbb");</b> and then <b>T1 := Txt("Hello");</b> and
+<b>T2 := Txt("Hello");</b>, Ada will say that T1 /= T2, because it compares the
+entire Val fields:  T1.Val(6 .. 10) is &ldquo;aaaaa&rdquo;, but T2.Val(6 . .10)
+is &ldquo;bbbbb&rdquo;.&nbsp; We want Ada to compare only the first 5 characters
+of T1 and T2, as both Len fields are 5.  We could modify function Txt (that
+converts from String to Text) to pad the rest of the Val field with blanks, so
+that the test for equality would be correct, but that would reduce
+efficiency.</p>
+
+<p>We could also try to get around this problem by writing our own function
+Equal:
+<pre class="hl">   <span class="hl kwa">function</span> Equal<span class="hl opt">(</span>T1<span class="hl opt">,</span> T2 <span class="hl opt">:</span> <span class="hl kwa">in</span> Text<span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Boolean</span> <span class="hl kwa">is</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">return</span> Str<span class="hl opt">(</span>T1<span class="hl opt">) =</span> Str<span class="hl opt">(</span>T2<span class="hl opt">);</span>
+   <span class="hl kwa">end</span> Equal<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>This function would work, but we might forget to write <b>if
+Equal(T1, T2)</b> and write <b>if T1 = T2</b> instead.&nbsp; Similarly, we could
+write a procedure to assign Texts efficiently, and forget to use it and write
+<b>T2 := T1;</b>.</p>
+
+<p>Ada 95 lets us write a function "=" similar to the function above:
+<pre class="hl">   <span class="hl kwa">function</span> <span class="hl str">&quot;=&quot;</span><span class="hl opt">(</span>T1<span class="hl opt">,</span> T2 <span class="hl opt">:</span> <span class="hl kwa">in</span> Text<span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Boolean</span> <span class="hl kwa">is</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">return</span> Str<span class="hl opt">(</span>T1<span class="hl opt">) =</span> Str<span class="hl opt">(</span>T2<span class="hl opt">);</span>
+   <span class="hl kwa">end</span> <span class="hl str">&quot;=&quot;</span><span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>This gets around the problem that we might forget to write <b>if
+Equal(T1, T2)</b> and write &ldquo;if T1 = T2&rdquo; instead.&nbsp;  However,
+it doesn't solve the problem of assigning Texts efficiently.&nbsp;  For this we
+need a <b>limited private</b> type.</p>
+
+<p>Ada will prevent us from assigning Texts and testing them for equality if we
+create a package and make type Text limited private.&nbsp;  Outside the package
+there are only <b>two</b> things we may do with objects of a limited private
+type:
+<ol><li><b>Create them:</b>  T1, T2 : Text;</li>
+<li><b>Use any procedures, functions, and infix operators provided by the package:</b>
+    T1 &amp; T2   etc.</li>
+</ol>
+
+<p>We can't test for equality and inequality unless the package includes a
+function "=".&nbsp;  Also, Ada won't let us write <b>T2 := T1;</b>, but the
+package could provide a procedure to assign Texts.&nbsp;  Here's our package
+specification:
+
+<pre class="hl">   <span class="hl kwa">package</span> Text_Handler <span class="hl kwa">is</span>
+      <span class='adat-hl'><span class="hl kwa">type</span> Text <span class="hl kwa">is limited private</span><span class="hl opt">;</span></span>
+      <span class="hl kwa">function</span> Str<span class="hl opt">(</span>T <span class="hl opt">:</span> <span class="hl kwa">in</span> Text<span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">String</span><span class="hl opt">;</span>
+      <span class="hl kwa">function</span> Txt<span class="hl opt">(</span>S <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">String</span><span class="hl opt">)</span> <span class="hl kwa">return</span> Text<span class="hl opt">;</span>
+      <span class="hl kwa">function</span> <span class="hl str">&quot;&amp;&quot;</span><span class="hl opt">(</span>Left<span class="hl opt">,</span> Right <span class="hl opt">:</span> <span class="hl kwa">in</span> Text<span class="hl opt">)</span> <span class="hl kwa">return</span> Text<span class="hl opt">;</span>
+      <span class="hl opt">...</span>
+      <span class='adat-hl'><span class="hl kwa">function</span> <span class="hl str">&quot;=&quot;</span><span class="hl opt">(</span>Left<span class="hl opt">,</span> Right <span class="hl opt">:</span> <span class="hl kwa">in</span> Text<span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Boolean</span><span class="hl opt">;</span></span>
+      <span class="hl kwa">function</span> <span class="hl str">&quot;&lt;&quot;</span><span class="hl opt">(</span>Left<span class="hl opt">,</span> Right <span class="hl opt">:</span> <span class="hl kwa">in</span> Text<span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Boolean</span><span class="hl opt">;</span>
+      <span class="hl opt">...</span>
+      <span class='adat-hl'><span class="hl kwa">procedure</span> Set<span class="hl opt">(</span>Target <span class="hl opt">:</span> <span class="hl kwa">in out</span> Text<span class="hl opt">;</span> To <span class="hl opt">:</span> <span class="hl kwa">in</span> Text<span class="hl opt">);</span></span>
+   <span class='adat-hl'><span class="hl kwa">private</span></span>
+      <span class="hl kwa">type</span> Text <span class="hl kwa">is record</span>
+         Len <span class="hl opt">:</span> <span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl num">0</span> <span class="hl opt">..</span> <span class="hl num">80</span> <span class="hl opt">:=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+         Val <span class="hl opt">:</span> <span class="hl kwb">String</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">80</span><span class="hl opt">);</span>
+      <span class="hl kwa">end record</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Text_Handler<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>Note that we write <b>type Text is limited private</b>, but we still
+introduce the private part of the package simply with the word <b>private</b>.
+</p>
+
+<p>The two new subprograms are as easy to write as the others:
+<pre class="hl">   <span class="hl kwa">function</span> <span class="hl str">&quot;=&quot;</span><span class="hl opt">(</span>Left<span class="hl opt">,</span> Right <span class="hl opt">:</span> <span class="hl kwa">in</span> Text<span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Boolean</span> <span class="hl kwa">is</span>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">return</span> Str<span class="hl opt">(</span>Left<span class="hl opt">) =</span> Str<span class="hl opt">(</span>Right<span class="hl opt">);</span>
+   <span class="hl kwa">end</span> <span class="hl str">&quot;=&quot;</span><span class="hl opt">;</span>
+
+   <span class="hl kwa">procedure</span> Set<span class="hl opt">(</span>Target <span class="hl opt">:</span> <span class="hl kwa">in out</span> Text<span class="hl opt">;</span> To <span class="hl opt">:</span> <span class="hl kwa">in</span> Text<span class="hl opt">)</span> <span class="hl kwa">is</span>
+   <span class="hl kwa">begin</span>
+      Target<span class="hl opt">.</span>Len <span class="hl opt">:=</span> To<span class="hl opt">.</span>Len<span class="hl opt">;</span>
+      Target<span class="hl opt">.</span>Val<span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> Target<span class="hl opt">.</span>Len<span class="hl opt">) :=</span> To<span class="hl opt">.</span>Val<span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> To<span class="hl opt">.</span>Len<span class="hl opt">);</span>
+   <span class="hl kwa">end</span> Set<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>In summary, we used <b>limited private</b> for type Text because Ada's
+definitions of equality and assignment weren't appropriate for that type, and we
+wanted to provide our own definitions.&nbsp;  However, Ada's definitions
+<b>were</b> appropriate for Screen_Type, so we made that a <b>private</b> type
+to contain the effects of changes.</p>
+
+<p>In Ada 95, the choice between private and limited private should depend on
+whether we need to redefine assignment, not equality, because Ada 95 lets us
+redefine "=" even if the type isn't limited private.</p>
+
+<p><div class="adat-q">
+<h2>Question</h2>
+<pre class="hl">   <span class="hl kwa">package</span> Stacks <span class="hl kwa">is</span>
+      <span class="hl kwa">type</span> Stack <span class="hl kwa">is</span> <b>?</b>
+      <span class="hl kwa">procedure</span> Push <span class="hl opt">(</span>S <span class="hl opt">:</span> <span class="hl kwa">in out</span> Stack<span class="hl opt">;</span> Item <span class="hl opt">:</span> <span class="hl kwa">in</span>  <span class="hl kwb">Integer</span><span class="hl opt">);</span>
+      <span class="hl kwa">procedure</span> Pop  <span class="hl opt">(</span>S <span class="hl opt">:</span> <span class="hl kwa">in out</span> Stack<span class="hl opt">;</span> Item <span class="hl opt">:</span> <span class="hl kwa">out</span> <span class="hl kwb">Integer</span><span class="hl opt">);</span>
+   <span class="hl kwa">private</span>
+      <span class="hl kwa">type</span> Ivector <span class="hl kwa">is array</span><span class="hl opt">(</span><span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl opt">&lt;&gt;)</span> <span class="hl kwa">of</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span>
+      <span class="hl kwa">type</span> Stack <span class="hl kwa">is record</span>
+         Sp <span class="hl opt">:</span> <span class="hl kwb">Integer</span> <span class="hl kwa">range</span> <span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">11</span> <span class="hl opt">:=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+         St <span class="hl opt">:</span> Ivector<span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">10</span><span class="hl opt">);</span>
+      <span class="hl kwa">end record</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> Stacks<span class="hl opt">;</span>
+</pre>
+Suppose we want to write a package that lets us create objects of type Stack,
+and Push and Pop integers on them.&nbsp;  The stacks will be last in, first
+out.&nbsp; (For now, ignore the possibilities of stack underflow and
+overflow.)&nbsp;  Should type Stack be <b>private</b> or <b>limited private</b>?
+<ol>
+<li>
+<a href="javascript:adat_toggle('adat-lima21');">Type Stack should be
+<b>private</b>.</a>
+<div id="adat-lima21" class="adat-a" style="display: none">No, type Stack is
+similar to type Text in that only part of the array (the part up through Sp - 1)
+is significant; the rest contains garbage.&nbsp;  Thus, if we wanted to assign
+Stacks, we would want to copy only the significant part of the array, not the
+whole array.&nbsp;  Also, Ada's built-in test for equality of Stacks is
+unsatisfactory for the same reason as for Texts.&nbsp;  Therefore, type Stack
+should be <b>limited private</b>.
+</div>
+</li>
+<li>
+<a href="javascript:adat_toggle('adat-lima22');">Type Stack should be
+<b>limited private</b>.</a>
+<div id="adat-lima22" class="adat-a" style="display: none"><b>You're
+right!</b>&nbsp;  Similar to type Text, only part of the array in type Stack
+(the part up through Sp - 1) is significant; the rest contains garbage.&nbsp;
+Thus, if we wanted to assign Stacks, we would want to copy only the significant
+part of the array, not the whole array.&nbsp;  Also, Ada's built-in test for
+equality of Stacks is unsatisfactory for the same reason as for Texts.&nbsp;
+Therefore, type Stack should be <b>limited private</b>.
+</div>
+</li>
+</ol>
+
+</div></p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

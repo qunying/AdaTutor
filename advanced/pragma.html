@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Advanced Topics' href='index.html' />
+<link rel='prev' title='Unchecked Conversion and Unchecked Deallocation' href='rep-clause.html' />
+<link rel='next' title='Loose Ends and Pitfalls' href='pitfall.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, Pragmas">
+
+<title>AdaTutor - Pragmas</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="unchecked.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="pitfall.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Pragmas</h2>
+<p>A <b>pragma</b> is a message to the compiler.&nbsp; The pragmas that are
+predefined by Ada are all referenced in
+<a href="http://www.adahome.com/rm95/rm9x-L.html">Annex L</a> of the Ada 95 RM;
+we'll discuss the most important ones here.&nbsp;  A particular implementation
+of Ada need not honor all the predefined pragmas, and it may add some of its
+own.&nbsp;  (One implementation of Ada adds a pragma Time_Slice, used with
+tasking.)&nbsp;  Unlike representation clauses, unimplemented predefined
+pragmas do <b>not</b> cause error messages; the compiler simply ignores
+them.&nbsp;  This enhances program portability.&nbsp;  Any additional pragmas
+added by a particular implementation of Ada will be explained in the compiler
+documentation.&nbsp;  The most important predefined pragmas are these:</p>
+
+<p>The statements <b>pragma List(On); </b> and <b>pragma List(Off);</b> turn on
+and off the compiler listing.&nbsp;  Also, <b> pragma Page;</b> will cause the
+compiler listing to start a new page, if the listing is turned on.&nbsp;  These
+pragmas are allowed almost anywhere in the program.</p>
+
+<p>Within the declarative region we can write <b>pragma Optimize(Time);</b> or
+<b>pragma Optimize(Space);</b> to ask the compiler to optimize the program for
+minimum execution time or minimum memory usage.</p>
+
+<p>We can write <b>pragma Inline(...);</b> with the name of a subprogram to ask
+the compiler to write inline code in place of every call to the
+subprogram.&nbsp;  Even implementations of Ada that honor this pragma will
+ignore it if the subprogram is recursive.</p>
+
+<p>We can call a subprogram or reference an object written in another langauge
+with the Ada 95 pragma <b>Import</b>.&nbsp; This pragma takes three parameters:
+the name of the language, the Ada name of the subprogram or object, and an
+optional external linker name for the subprogram or object.&nbsp;  Similarly, a
+program written in another language can call an Ada program with the Ada 95
+pragma <b>Export</b>, taking the same three parameters.&nbsp; The Ada 95 pragma
+<b>Convention</b> specifies that objects of a type should be stored using the
+conventions of another language.&nbsp;  Pragma Convention takes two parameters:
+the name of the language and the Ada name of the type whose storage convention
+is being specified.</p>
+
+<p>Ada 83 provides only a pragma <b>Interface</b>.&nbsp;  It is similar to the
+Ada 95 pragma <b>Import</b>, but is useful only to call a subprogram written in
+another language, not to reference an object.&nbsp;  Pragma Interface takes only
+two parameters: the name of the language and the subprogram name.</p>
+
+<p>We can ask the compiler to minimize memory occupied by a record or array by
+writing, after the type declaration, <b>pragma Pack(...);</b> with the name of
+the type.&nbsp;  Note that the specification for package Standard (in
+<a href="http://www.adahome.com/rm95/rm9x-A-01.html">Annex A.1</a> of the Ada 95
+RM) contains <b>pragma Pack(String); </b> after the definition of type String.
+</p>
+
+<p>Package System defines a subtype of Integer called Priority.&nbsp;  We can
+assign a priority to a task by writing, in the specification, <b>pragma
+Priority(...);</b> with a parameter of subtype System.Priority.&nbsp;  Higher
+numbers denote greater urgency.</p>
+
+<p>The pragma <b>Suppress</b> can be used to ask the compiler to turn off
+certain checks, such as Constraint_Error.&nbsp; It's dangerous and shouldn't be
+used unless absolutely necessary because of time or memory constraints.</p>
+
+<p><div class="adat-q">
+<h2>Question</h2>
+In the author's opinion, which one of these is <b>not</b> dangerous?
+<ol>
+<li>
+<a href="javascript:adat_toggle('adat-adv-pragma-a1');">Ada.Unchecked
+Deallocation</a>
+<div id="adat-adv-pragma-a1" class="adat-a" style="display: none">No,
+Ada.Unchecked_Deallocation is dangerous because it could allow referencing
+memory that has been released, with unpredictable results.
+</div>
+</li>
+
+<li>
+<a href="javascript:adat_toggle('adat-adv-pragma-a2');">pragma Pack</a>
+<div id="adat-adv-pragma-a2" class="adat-a" style="display: none"><b>You're
+right!</b>&nbsp;  The worst <b>pragma Pack</b> could do is slow the program
+down, and this pragma is used in package Standard.&nbsp;
+Ada.Unchecked_Deallocation could allow referencing memory that has been
+released, with unpredictable results.&nbsp; Pragma Suppress could allow a
+program to use a subscript that's out of range, etc.
+</div>
+</li>
+
+<li>
+<a href="javascript:adat_toggle('adat-adv-pragma-a3');">pragma Suppress</a>
+<div id="adat-adv-pragma-a3" class="adat-a" style="display: none">No, pragma
+Suppress is dangerous because it could allow a program to use a subscript that's
+out of range, etc.
+</div>
+</li>
+
+</ol>
+</div></p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

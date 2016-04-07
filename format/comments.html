@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link href="../adatutor.css" type="text/css" rel="stylesheet">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='The Format of an Ada Program' href='index.html' />
+<link rel='prev' title='Capitalization and Spacing' href='cap-space.html' />
+<link rel='next' title='Identifiers' href='identifier.html' />
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, comments">
+
+<title>AdaTutor - Comments</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+<td><div class='nav-prev'><a href="cap-space.html">Prev</a></div></td>
+<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+<td ><div class="nav-next"><a href="identifier.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<a name="f-comment"></a><h2>Comments</h2>
+<pre class="hl"><span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span>
+<span class="hl kwa">procedure</span> Hello <span class="hl kwa">is</span>
+  <span class="hl slc">-- This program displays &quot;Hello!&quot; on the screen.</span>
+  I    <span class="hl opt">:</span> <span class="hl kwb">Integer</span><span class="hl opt">;</span> <span class="hl slc">-- These declarations aren't needed; they</span>
+  X<span class="hl opt">,</span> Y <span class="hl opt">:</span> <span class="hl kwb">Float</span><span class="hl opt">;</span>   <span class="hl slc">-- were added only to provide examples.</span>
+<span class="hl kwa">begin</span>
+  Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">.</span>Put_Line<span class="hl opt">(</span><span class="hl str">&quot;Hello!&quot;</span><span class="hl opt">);</span>
+<span class="hl kwa">end</span> Hello<span class="hl opt">;</span>
+</pre>
+
+<p>Comments in Ada begin with a double hyphen (double minus sign) and continue
+through the end of the line.&nbsp;  No space is permitted inside the double
+hyphen.&nbsp; As shown, a comment can be an entire line, or it can follow code
+on a line.&nbsp; Comments spanning several lines require -- on each line.</p>
+
+<p>Ada programs generally have less need for comments than programs written in
+other languages.&nbsp;  The reason is that, as we'll see, the identifiers may be
+as long as we like (up to the length of a line) and can have very meaningful
+names.&nbsp;  Also, when we learn about named notation, we'll see that calls to
+subprograms can be made much more readable in Ada than in other languages.&nbsp;
+These features and others tend to make Ada programs self documenting.</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>

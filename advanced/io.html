@@ -1,0 +1,270 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+<link rel="stylesheet" href="../adatutor.css" type="text/css">
+<link rel='top' title='AdaTutor' href='../index.html' />
+<link rel='up' title='Advanced Topics' href='index.html' />
+<link rel='prev' title='More Attributes' href='more-attr.html' />
+<link rel='next' title='Renaming' href='renaming.html' />
+
+<script type="text/javascript" src="../adatutor.js"></script>
+
+<meta name="author" content="John J. Herro">
+<meta name="converted_by" content="Zhu, Qun-Ying">
+<meta name="description" content="AdaTutor on Web">
+<meta name="keywords" content="Ada, Tutorial, AdaTutor, Ada.Sequential_IO, Ada.Direct_IO, and Ada.Streams.Stream_IO">
+
+<title>AdaTutor - Ada.Sequential_IO, Ada.Direct_IO, and Ada.Streams.Stream_IO</title>
+
+</head><body>
+<div class="outer-box">
+<div class="nav">
+<table><tr>
+	<td><div class='nav-prev'><a href="more-attr.html">Prev</a></div></td>
+	<td><div class='nav-conents'><a href="index.html">Up</a></div></td>
+	<td><div class="nav-next"><a href="renaming.html">Next</a></div></td>
+</tr>
+</table>
+</div> <!-- end nav -->
+
+<div class="main-content">
+<h2>Ada.Sequential_IO, Ada.Direct_IO, and Ada.Streams.Stream_IO</h2>
+<p>Ada.Text_IO creates, reads and writes text files that can be typed on the
+screen or printed.&nbsp;  Ada also provides generic packages
+<b>Ada.Sequential_IO</b> and <b>Ada.Direct_IO</b>, which create, read, and write
+binary files.&nbsp;  (In Ada 83, the names don't contain <b>Ada.</b>, and Ada 95
+accepts the shorter names for compatibility.)</p>
+
+<p>Binary files usually can't be typed or printed, but they tend to be more
+efficient than text files, because the computer doesn't have to convert numbers
+between its internal representation and text to read and write binary files.</p>
+
+<p>The full specifications of <b>Ada.Sequential_IO</b> and <b>Ada.Direct_IO</b> are in Annex
+<a href="http://www.adahome.com/rm95/rm9x-A-08-01.html">A.8.1</a> and
+<a href="http://www.adahome.com/rm95/rm9x-A-08-04.html">A.8.4</a> of the Ada 95
+RM.&nbsp;  They begin as follows:
+<pre class="hl">   <span class="hl opt">...</span>
+   <span class="hl kwa">generic</span>
+      <span class="hl slc">-- &quot;(&lt;&gt;)&quot; is omitted in Ada 83.</span>
+      <span class="hl kwa">type</span> Element_Type<span class="hl opt">(&lt;&gt;)</span> <span class="hl kwa">is private</span><span class="hl opt">;</span>
+   <span class="hl slc">-- &quot;Ada.&quot; is omitted in Ada 83.</span>
+   <span class="hl kwa">package</span> Ada<span class="hl opt">.</span>Sequential_IO <span class="hl kwa">is</span>
+     <span class="hl opt">...</span>
+
+   <span class="hl opt">...</span>
+   <span class="hl kwa">generic</span>
+      <span class="hl kwa">type</span> Element_Type <span class="hl kwa">is private</span><span class="hl opt">;</span>
+   <span class="hl slc">-- &quot;Ada.&quot; is omitted in Ada 83.</span>
+   <span class="hl kwa">package</span> Ada<span class="hl opt">.</span>Direct_IO <span class="hl kwa">is</span>
+      <span class="hl opt">...</span>
+</pre>
+</p>
+
+<p>Like Ada.Text_IO, both packages have procedures to <b>Create</b>,
+<b>Open</b>, and <b>Close</b> files, but the I/O procedures are called
+<b>Read</b> and <b>Write</b>, rather than Get, Put, Get_Line, and
+Put_Line.&nbsp;  The first parameter is an object of type File_Type; the second
+is the item being read or written.&nbsp;  Ada.Sequential_IO always reads and
+writes sequentially, but Ada.Direct_IO is capable of random access.&nbsp;  In
+Ada.Direct_IO, an optional third parameter in Read and Write tells the
+procedure the position in the file to read <b>From</b> or write <b>To</b>; this
+parameter is sometimes referred to as the &ldquo;index.&rdquo;&nbsp;  The start
+of the file is position 1.</p>
+
+<p>Both <b>Ada.Sequential_IO</b> and <b>Ada.Direct_IO</b> can be instantiated
+for any non-limited type.&nbsp; In Ada 95, Ada.Sequential_IO can be instantiated
+for class-wide types.&nbsp;  This means that a file created by Ada.Sequential_IO
+can be heterogeneous, containing objects of different types belonging to the
+same class.&nbsp;  However, Ada.Direct_IO can't be instantiated for class-wide
+types.&nbsp; Files created by Ada.Direct_IO must be homogeneous (containing
+objects of one type only), because of the ability to use an index.&nbsp; (We'll
+discuss Ada.Streams.Stream_IO shortly.)</p>
+
+<p>Ada.Direct_IO provides a File_Mode of Inout_File as well as the usual In_File
+and Out_File.&nbsp;  In Ada 95, Ada.Sequential_IO, like Ada.Text_IO, provides an
+additional File_Mode, Append_File, not present in Ada 83.&nbsp;  Note that
+Ada.Text_IO and instantiations of Ada.Sequential_IO and Ada.Direct_IO each
+define their <b>own</b> File_Type, so we can't open a file with one package and
+then do I/O on it with another.</p>
+
+<p>If you like, you can examine the file
+<a href='../adatutor/adatu401.ada'>ADATU401.ADA</a> for an example of the use of
+Direct_IO.&nbsp;  (This file is written to compile with either Ada 83 or Ada 95,
+so it uses the name Direct_IO rather than Ada.Direct_IO.)&nbsp;  <b>AdaTutor</b>
+creates a subtype for a block of characters and then instantiates Direct_IO for
+that subtype.&nbsp;  It then opens ADATUTOR.DAT with mode In_File so that it can
+read blocks of characters by random access.&nbsp;  This enables <b>AdaTutor</b>
+to find and display any screen quickly.&nbsp;  The preliminary comments in
+ADATU401.ADA describe the format of the data file ADATUTOR.DAT in detail.</p>
+
+<p>You may also want to examine the files
+<a href='../adatutor/dat2txt.ada'>DAT2TXT.ADA</a> and
+<a href='../adatutor/txt2dat.ada'>TXT2DAT.ADA</a>, which are much simpler than
+ADATU400.ADA.&nbsp;  Again, these were written to compile with either Ada 83 or
+Ada 95.&nbsp;  These two programs are used when installing <b>AdaTutor</b>
+on non-PC computers.&nbsp;  Their use is described on pages 41-42 of your
+printed course notes.&nbsp; They <b>with</b> both Text_IO and Direct_IO, because
+they access a text file as well as a binary file.&nbsp;  However, to avoid
+confusion between the two packages, they <b>use</b> neither Text_IO nor the
+instantiation of Direct_IO.&nbsp;  Dot notation is used instead.</p>
+
+<p>DAT2TXT.ADA and TXT2DAT.ADA could have used Sequential_IO instead of
+Direct_IO, because they don't do random access.&nbsp;  (In contrast,
+ADATU401.ADA does random access and requires Direct_IO).&nbsp; However, the file
+written by TXT2DAT.ADA is meant to be read by ADATU401.ADA, using an
+instantiation of Direct_IO, on a non-PC computer.&nbsp;  To avoid any possible
+incompatibilities between different file types on an unknown system,
+TXT2DAT.ADA produces the file with an instantiation of Direct_IO, because
+ADATU401.ADA will use a similar instantiation of Direct_IO to read the file.</p>
+
+<p><div class="adat-q">
+<h2>Question</h2>
+Which commented line is <b>illegal</b>?
+<pre class="hl">   <span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">,</span> Ada<span class="hl opt">.</span>Sequential_IO<span class="hl opt">;</span> <a href="javascript:adat_toggle('adat-aio-a1', 'adat-aio-a2', 'adat-aio-a3');"><span class="hl slc">--</span></a>
+   <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">,</span> Ada<span class="hl opt">.</span>Sequential_IO<span class="hl opt">;</span>  <a href="javascript:adat_toggle('adat-aio-a1', 'adat-aio-a2', 'adat-aio-a3');"><span class="hl slc">-- 1</span></a>
+   <span class="hl kwa">procedure</span> IO <span class="hl kwa">is</span>
+      <span class="hl kwa">subtype</span> Line <span class="hl kwa">is</span> <span class="hl kwb">String</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">80</span><span class="hl opt">);</span>
+      <span class="hl kwa">type</span> Screen <span class="hl kwa">is array</span><span class="hl opt">(</span><span class="hl num">1</span> <span class="hl opt">..</span> <span class="hl num">24</span><span class="hl opt">)</span> <span class="hl kwa">of</span> Line<span class="hl opt">;</span>
+      <span class="hl kwa">package</span> Line_IO <span class="hl kwa">is new</span> Ada<span class="hl opt">.</span>Sequential_IO<span class="hl opt">(</span>Line<span class="hl opt">);</span> <a href="javascript:adat_toggle('adat-aio-a2', 'adat-aio-a1', 'adat-aio-a3');"><span class="hl slc">--</span></a>
+      <span class="hl kwa">use</span> Line_IO<span class="hl opt">;</span>                                    <a href="javascript:adat_toggle('adat-aio-a2', 'adat-aio-a1', 'adat-aio-a3');"><span class="hl slc">-- 2</span></a>
+      <span class="hl kwa">package</span> Screen_IO <span class="hl kwa">is new</span> Ada<span class="hl opt">.</span>Sequential_IO<span class="hl opt">(</span>Screen<span class="hl opt">);</span> <a href="javascript:adat_toggle('adat-aio-a3', 'adat-aio-a1', 'adat-aio-a2');"><span class="hl slc">--</span></a>
+      <span class="hl kwa">use</span> Screen_IO<span class="hl opt">;</span>                                      <a href="javascript:adat_toggle('adat-aio-a3', 'adat-aio-a1', 'adat-aio-a2');"><span class="hl slc">-- 3</span></a>
+   <span class="hl kwa">begin</span>
+      <span class="hl kwa">null</span><span class="hl opt">;</span>
+   <span class="hl kwa">end</span> IO<span class="hl opt">;</span>
+</pre>
+
+<div id="adat-aio-a1" class="adat-a" style="display: none">1 - <b>You're
+right!</b>&nbsp;  We can't use a generic package, only its instantiations,
+because we can't call the subprograms in a generic package.&nbsp;  The first
+line should read
+<pre class="hl"><span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">,</span> Ada<span class="hl opt">.</span>Sequential_IO<span class="hl opt">;</span> <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Text_IO<span class="hl opt">;</span> <span class="hl slc">-- 1</span>
+</pre>
+
+</div>
+<div id="adat-aio-a2" class="adat-a" style="display: none">2 - No, the
+instantiation of Ada.Sequential_IO for the subtype Line is correct.</div>
+<div id="adat-aio-a3" class="adat-a" style="display: none">3 - No, the
+instantiation of Ada.Sequential_IO for the type Screen is correct.</div>
+</div></p>
+
+<p>The specification of the Ada 95 package <b>Ada.Streams.Stream_IO</b> is in
+<a href="http://www.adahome.com/rm95/rm9x-A-12-01.html">Annex A.12.1</a> of the
+Ada 95 RM.&nbsp;  This package enables us to create a truly heterogenous
+file.&nbsp;  It's not generic, so all the files it creates are of the same
+type.&nbsp;  The file modes available are In_File, Out_File, and Append_File.
+</p>
+
+<p>Suppose we define type Date as before, and we want to create a file
+containing dates and random-length strings.&nbsp;  We Create a file in the same
+way as with Ada.Text_IO.&nbsp;  To write an object of a constrained type like
+Date to the file, we give the name of the type followed by the attribute
+<b>'Write</b>.&nbsp; (Similarly, to read, we use the attribute
+<b>'Read</b>.)&nbsp;  The first parameter is of type Stream_Access; the second
+is the object being read or written.&nbsp; The first parameter is obtained from
+the following function in Ada.Streams.Stream_IO:
+<pre class="hl">   <span class="hl kwa">function</span> Stream<span class="hl opt">(</span>File <span class="hl opt">:</span> <span class="hl kwa">in</span> File_Type<span class="hl opt">)</span> <span class="hl kwa">return</span> Stream_Access<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>For example if we <b>with</b> and <b>use</b> Ada.Streams.Stream_IO and we
+have <b>F : File_Type;</b> and <b>D : Date;</b>, we can Create a file with F and
+then write
+<pre class="hl">   Date<span class="hl kwd">'Write</span><span class="hl opt">(</span>Stream<span class="hl opt">(</span>F<span class="hl opt">),</span> D<span class="hl opt">);</span>
+</pre>
+</p>
+
+<p>If we use <b>'Write</b> or <b>'Read</b> with an <b>un</b>constrained type,
+the constraint information is not read or written.&nbsp;  So with unconstrained
+types, we should use the attributes <b>'Output</b> and <b>'Input</b> instead of
+<b>'Write</b> and <b>'Read</b>.&nbsp;  For example, if we want to write the
+string &ldquo;Hello&rdquo; to our file F, we would say
+<pre class="hl">   <span class="hl kwb">String</span><span class="hl kwd">'Output</span><span class="hl opt">(</span>Stream<span class="hl opt">(</span>F<span class="hl opt">),</span> <span class="hl str">&quot;Hello&quot;</span><span class="hl opt">);</span>
+</pre>
+</p>
+
+<p>This would first store the string bounds (1 and 5), and then store the five
+characters of the string.</p>
+
+<p>We can write our own procedures to be called by <b>'Read</b>, <b>'Write</b>,
+<b>'Input</b>, and <b>'Output</b> if we want to.&nbsp;  Our procedures can do
+anything they want - they don't even have to do I/O!&nbsp;  For example:
+<pre class="hl"><span class="hl kwa">procedure</span> My_Date_Write<span class="hl opt">(</span>
+     Stream <span class="hl opt">:</span> <span class="hl kwa">access</span> Ada<span class="hl opt">.</span>Streams<span class="hl opt">.</span>Root_Stream_Type<span class="hl kwd">'Class</span><span class="hl opt">;</span>
+     D      <span class="hl opt">:</span> <span class="hl kwa">in</span> Date<span class="hl opt">);</span>
+  <span class="hl kwa">for</span> Date<span class="hl kwd">'Write</span> <span class="hl kwa">use</span> My_Date_Write<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>However, overwriting the standard attributes is normally not recommended.</p>
+
+<p>Here's a program that stores a String, a Date, another String, and another
+Date in a heterogeneous file:
+
+<pre class="hl">   <span class="hl kwa">with</span> Ada<span class="hl opt">.</span>Streams<span class="hl opt">.</span>Stream_IO<span class="hl opt">;</span> <span class="hl kwa">use</span> Ada<span class="hl opt">.</span>Streams<span class="hl opt">.</span>Stream_IO<span class="hl opt">;</span>
+   <span class="hl kwa">procedure</span> Test <span class="hl kwa">is</span>
+      <span class="hl kwa">type</span> Date <span class="hl kwa">is</span> <span class="hl opt">...</span>
+      F <span class="hl opt">:</span> File_Type<span class="hl opt">;</span>
+   <span class="hl kwa">begin</span>
+      Create<span class="hl opt">(</span>F<span class="hl opt">,</span> Out_File<span class="hl opt">,</span> <span class="hl str">&quot;STREAM.DAT&quot;</span><span class="hl opt">);</span>
+      <span class="hl kwb">String</span><span class="hl kwd">'Output</span><span class="hl opt">(</span>Stream<span class="hl opt">(</span>F<span class="hl opt">),</span> <span class="hl str">&quot;Ada&quot;</span><span class="hl opt">);</span>
+      Date<span class="hl kwd">'Write</span><span class="hl opt">(</span>Stream<span class="hl opt">(</span>F<span class="hl opt">), (</span><span class="hl num">12</span><span class="hl opt">,</span> Dec<span class="hl opt">,</span> <span class="hl num">1815</span><span class="hl opt">));</span>
+      <span class="hl kwb">String</span><span class="hl kwd">'Output</span><span class="hl opt">(</span>Stream<span class="hl opt">(</span>F<span class="hl opt">),</span> <span class="hl str">&quot;United States&quot;</span><span class="hl opt">);</span>
+      Date<span class="hl kwd">'Write</span><span class="hl opt">(</span>Stream<span class="hl opt">(</span>F<span class="hl opt">), (</span> <span class="hl num">4</span><span class="hl opt">,</span> Jul<span class="hl opt">,</span> <span class="hl num">1776</span><span class="hl opt">));</span>
+      Close<span class="hl opt">(</span>F<span class="hl opt">);</span>
+   <span class="hl kwa">end</span> Test<span class="hl opt">;</span>
+</pre>
+</p>
+
+<p>After executing the above, we could <b>Open</b> the file in mode In_File, and
+then use <b>'Input</b>, <b>'Read</b>, <b>'Input</b>, and <b>'Read</b> in that
+order to read the four items back.</p>
+
+<p>Ada.Streams.Stream_IO can do random as well as sequential access.&nbsp;  We
+can call
+<pre class="hl">   <span class="hl kwa">procedure</span> Set_Index<span class="hl opt">(</span>File <span class="hl opt">:</span> <span class="hl kwa">in</span> File_Type<span class="hl opt">;</span> To <span class="hl opt">:</span> <span class="hl kwa">in</span> Positive_Count<span class="hl opt">);</span>
+</pre>
+in Ada.Streams.Stream_IO to set the index before using any of the four
+attributes mentioned above.&nbsp;  The index of the first byte of the file is 1.</p>
+
+<p>However, we have to know where to set the index, and that can vary from one
+implementation of Ada 95 to the next.&nbsp;  For example, when we ran the above
+program Test on a particular Ada 95 system, it created a 50-byte file.&nbsp;
+That's because the Ada compiler that we used allows four bytes for each Integer,
+one byte for each object of an enumeration type like Month_Type, and of course
+one byte for each Character.&nbsp;  Recall that two Integers are stored before
+each String (the bounds).</p>
+
+<p>With that particular Ada 95 compiler we could retrieve the second Date stored
+by adding <b>D : Date;</b> to our declarations and executing
+<pre class="hl">   Open<span class="hl opt">(</span>F<span class="hl opt">,</span> In_File<span class="hl opt">,</span> <span class="hl str">&quot;STREAM.DAT&quot;</span><span class="hl opt">);</span>
+   Set_Index<span class="hl opt">(</span>F<span class="hl opt">,</span> <span class="hl num">42</span><span class="hl opt">);</span>
+   Date<span class="hl kwd">'Read</span><span class="hl opt">(</span>Stream<span class="hl opt">(</span>F<span class="hl opt">),</span> D<span class="hl opt">);</span>
+   Close<span class="hl opt">(</span>F<span class="hl opt">);</span>
+</pre>
+</p>
+
+<p>However, with Ada 95 compilers that use a different size for Integer, the
+call to Set_Index would have to be changed.</p>
+
+<p>In contrast, when we instantiate Ada.Direct_IO for type Date, for example,
+the first Date in the file is always at position 1, the second Date is always at
+position 2, etc., regardless of the number of bytes per Date.&nbsp;  In this
+case, the difference between position 1 and position 2 is the length of a Date,
+not one byte.&nbsp;  If our instantiation of Ada.Direct_IO is called
+<b>Date_IO</b>, and we declare <b>D : Date;</b> and
+<b>F : Date_IO.File_Type;</b>, we can write
+<pre class="hl">   Date_IO<span class="hl opt">.</span>Read<span class="hl opt">(</span>File <span class="hl opt">=&gt;</span> F<span class="hl opt">,</span> Item <span class="hl opt">=&gt;</span> D<span class="hl opt">,</span> From <span class="hl opt">=&gt;</span> <span class="hl num">2</span><span class="hl opt">);</span>
+</pre>
+and be certain that we have read the second Date in the file.</p>
+
+<p>Thus, using an instantiation of Ada.Direct_IO instead of using
+Ada.Streams.Stream_IO makes our program more portable, at the expense of
+requiring the file to be homogeneous.&nbsp;  Ada.Direct_IO has another
+advantage: mode Inout_File is available with Ada.Direct_IO, but not with
+Ada.Streams.Stream_IO.</p>
+
+</div> <!-- end main-content -->
+</div> <!-- end outer-box -->
+
+</body></html>
