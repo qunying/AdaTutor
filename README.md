@@ -11,9 +11,8 @@ Here I have the AdaTutor presented on the Web.
 
 You could visit [my blog](http://blog.zsoft.ca) to browse directly on the web.
 
-It is licensed [CC0 1.0 Universal (CC0
+The HTML version is licensed [CC0 1.0 Universal (CC0
 1.0)](https://creativecommons.org/publicdomain/zero/1.0/), in another words,
 it is in public domain.
-
 
 ![CC0 1.0](http://i.creativecommons.org/p/zero/1.0/88x31.png)
