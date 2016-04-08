@@ -50,7 +50,7 @@ div.nav-next {
 }
 
 div.nav a:link {color:#A0A0A0; background-color: rgb(34,34,34);}
-div.nav a:visited {color:#A0A0A0; background-color: rgb(34,34,34);}
+div.nav a:visited {color:#808080; background-color: rgb(34,34,34);}
 div.nav a:active {color: #FFFFFF; background-color: #000000;}
 div.nav a:hover {color: #FFFFFF; background-color: #000000;}
 
