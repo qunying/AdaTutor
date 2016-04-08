@@ -42,7 +42,7 @@ doubled.&nbsp;  For example, <b>Put(%a 10%% increase%);</b>.&nbsp;  These
 character replacements shouldn't be used in programs if the equipment will
 support the standard characters.</p>
 
-<p><a href="http://www.adahome.com/rm95/rm9x-04-09.html">Section 4.9(2)</a> of
+<p><a href="http://www.adaic.org/resources/add_content/standards/95lrm/ARM_HTML/RM-4-9.html">Section 4.9(2)</a> of
 the Ada 95 RM gives a detailed definition of a <b>static expression</b>, but
 briefly, an expression is called <b>static</b> if it can be evaluated at compile
 time and isn't too complicated.&nbsp;  In almost every case where a constant
@@ -79,7 +79,9 @@ the package P still require dot notation with the above <b>use type</b> clause.
 </p>
 
 <p>The operators have precedence, so that 1 + 2 * 3 means 1 + (2 * 3).&nbsp; The
-precedence of all the operators is given in <a href="http://www.adahome.com/rm95/rm9x-04-05.html">section 4.5</a> of the Ada 95 RM.&nbsp;  A programmer should
+precedence of all the operators is given in
+<a href="http://www.adaic.org/resources/add_content/standards/95lrm/ARM_HTML/RM-4-5.html">section 4.5</a>
+of the Ada 95 RM.&nbsp;  A programmer should
 never have to look these up, because parentheses should be used for any cases
 that aren't obvious.&nbsp;  Unary minus has a low precedence, so
 <b>-A mod B</b> means <b>-(A mod B)</b>.</p>
@@ -213,34 +215,34 @@ Float rather than an array of one Float.</p>
 only one parameter, for example, <b>Put_Line(&quot;Hello&quot;);</b>.</p>
 
 <p>Annexes C through H of the
-<a href="http://www.adahome.com/rm95/rm9x-toc.html">Ada 95 RM</a> describe
+<a href="http://www.adaic.org/resources/add_content/standards/95lrm/ARM_HTML/RM-TOC.html">Ada 95 RM</a> describe
 optional features of Ada 95.&nbsp;  An Ada 95 compiler may implement any, all,
 or none of these.&nbsp;  Consult your compiler documentation for details.&nbsp;
 The optional Ada 95 features are as follows:
 <ul>
-    <li><a href="http://www.adahome.com/rm95/rm9x-C.html">ANNEX C.</a>
+    <li><a href="http://www.adaic.org/resources/add_content/standards/95lrm/ARM_HTML/RM-C.html">ANNEX C.</a>
     <b>Systems Programming:</b>  Access to machine operations, interrupt
     support, shared variable control, task identification, etc.</li>
 
-    <li><a href="http://www.adahome.com/rm95/rm9x-D.html">ANNEX D.</a>
+    <li><a href="http://www.adaic.org/resources/add_content/standards/95lrm/ARM_HTML/RM-D.html">ANNEX D.</a>
     <b>Real-Time Systems:</b>  Dynamic task priorities, scheduling, dispatching,
     queueing, monotonic time, etc.&nbsp;  An implementation that provides this
     must provide Systems Programming as well.</li>
 
-    <li><a href="http://www.adahome.com/rm95/rm9x-E.html">ANNEX E.</a>
+    <li><a href="http://www.adaic.org/resources/add_content/standards/95lrm/ARM_HTML/RM-E.html">ANNEX E.</a>
     <b>Distributed Systems:</b>  Multiple partitions of an Ada program executing
     concurrently.</li>
 
-    <li> <a href="http://www.adahome.com/rm95/rm9x-F.html">ANNEX F.</a>
+    <li> <a href="http://www.adaic.org/resources/add_content/standards/95lrm/ARM_HTML/RM-F.html">ANNEX F.</a>
     <b>Information Systems:</b>  Decimal types for handling monetary
     values.&nbsp; &ldquo;Picture&rdquo; strings to simplify output of monetary
     amounts.</li>
 
-    <li><a href="http://www.adahome.com/rm95/rm9x-G.html">ANNEX G.</a>
+    <li><a href="http://www.adaic.org/resources/add_content/standards/95lrm/ARM_HTML/RM-G.html">ANNEX G.</a>
     <b>Numerics:</b>  Complex numbers, improved accuracy requirements for
     floating-point arithmetic, random number generation, etc.</li>
 
-    <li><a href="http://www.adahome.com/rm95/rm9x-H.html">ANNEX H.</a>
+    <li><a href="http://www.adaic.org/resources/add_content/standards/95lrm/ARM_HTML/RM-H.html">ANNEX H.</a>
     <b>Safety and Security:</b>  Adds requirements on compilers for
     safety-critical systems.</li>
 </ul>
@@ -256,9 +258,9 @@ further instruction from a tutorial program.</p>
 <p>The best way to answer any remaining questions about Ada is to &ldquo;ask the
 compiler&rdquo; by writing a brief test program, especially if your compiler is
 validated.&nbsp;  You can also look in the
-<a href="http://www.adahome.com/rm95/rm9x-toc.html">Ada 95 RM</a>, which, by
-definition, does cover all of the Ada language.&nbsp;  However, the RM isn't
-easy reading!</p>
+<a href="http://www.adaic.org/resources/add_content/standards/95lrm/ARM_HTML/RM-TOC.html">Ada 95 RM</a>,
+which, by definition, does cover all of the Ada language.&nbsp;
+However, the RM isn't easy reading!</p>
 
 <p>The best way to debug a short program is often to execute it by hand, with
 pencil and paper.&nbsp;  You can also add extra statements to the program to
