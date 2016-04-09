@@ -1,6 +1,6 @@
 body {
-  color: rgb(204, 204, 204);
-  background-color: rgb(41, 41, 41);
+  color: black;
+  background-color: #C8C8C8;
   margin: 0; padding: 0;
   text-align: center; /* !!! */
 }
@@ -9,7 +9,7 @@ div.outer-box {
    max-width: 800px;
    margin: 0 auto;
    text-align: left;
-   background-color: rgb(51,51,51);
+   background-color: #B4B4B4;
 }
 
 div.main-content {
@@ -54,8 +54,8 @@ div.nav a:visited {color:#808080; background-color: rgb(34,34,34);}
 div.nav a:active {color: #FFFFFF; background-color: #000000;}
 div.nav a:hover {color: #FFFFFF; background-color: #000000;}
 
-div.main-content a:link {color:#b45f06}      /* unvisited link */
-div.main-content a:visited {color:#b45f06;}  /* visited link */
+div.main-content a:link {color:darkblue;}      /* unvisited link */
+div.main-content a:visited {color:#151B54;}  /* visited link */
 div.main-content a:hover {color: #FFFFFF; background-color: #000000;}  /* mouse over link */
 div.main-content a:active {color:#cc6600;}
 
@@ -67,7 +67,7 @@ span.adatree-mark {
 }
 
 span.adat-hl {
-  background-color:#404040;
+  background-color: #505050;
 }
 
 div.adat-q {
@@ -77,11 +77,17 @@ div.adat-q {
 }
 
 div.adat-a {
-  background-color:#404040;
+  background-color: #C8C8C8;
+  padding: 5px;
+}
+
+div.pre-a {
+  background-color: #505050;
   padding: 5px;
 }
 
 pre {
+  color: #dedede;
   background-color:#333333;
   border: 1px dashed;
   border-radius:5px;
@@ -89,7 +95,7 @@ pre {
   white-space:pre-wrap;
 }
 
-pre.hl	{ color:#dedede; background-color:#333333; font-size:10pt; font-family:'Courier New';}
+pre.hl	{ color:#dedede; background-color:#333333; font-size:10pt;}
 .hl.num { color:#ffa0a0; }
 .hl.esc { color:#ffddad; }
 .hl.str { color:#ffa0a0; }
