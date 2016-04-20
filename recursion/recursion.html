@@ -45,7 +45,7 @@ otherwise, Factorial(N) = N * Factorial(N - 1).</p>
 <pre class="hl">   <span class="hl kwa">function</span> Factorial<span class="hl opt">(</span>N <span class="hl opt">:</span> <span class="hl kwa">in</span> <span class="hl kwb">Positive</span><span class="hl opt">)</span> <span class="hl kwa">return</span> <span class="hl kwb">Positive</span> <span class="hl kwa">is</span>
       Answer <span class="hl opt">:</span> <span class="hl kwb">Positive</span> <span class="hl opt">:=</span> <span class="hl num">1</span><span class="hl opt">;</span>
    <span class="hl kwa">begin</span>
-      <span class="hl kwa">if</span> N <span class="hl opt">&gt;</span> <span class="hl num">1</span> <span class="hl kwa">then</span><div class="adat-a">         Answer <span class="hl opt">:=</span> N <span class="hl opt">*</span> Factorial<span class="hl opt">(</span>N <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">);</span></div>      <span class="hl kwa">end if</span><span class="hl opt">;</span>
+      <span class="hl kwa">if</span> N <span class="hl opt">&gt;</span> <span class="hl num">1</span> <span class="hl kwa">then</span><div class="pre-a">         Answer <span class="hl opt">:=</span> N <span class="hl opt">*</span> Factorial<span class="hl opt">(</span>N <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">);</span></div>      <span class="hl kwa">end if</span><span class="hl opt">;</span>
       <span class="hl kwa">return</span> Answer<span class="hl opt">;</span>
    <span class="hl kwa">end</span> Factorial<span class="hl opt">;</span>
 </pre>
